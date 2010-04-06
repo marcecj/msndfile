@@ -18,7 +18,7 @@ include(FindMatlab)
 # stupid error message.
 #
 # include(CheckIncludeFile)
-# check_include_file(sndfile.h SNDFILE_H) 
+# check_include_file(sndfile.h SNDFILE_H)
 
 # TODO: why must "lib" be prepended to library names?
 if(WIN32)
@@ -92,7 +92,7 @@ include_directories(${MSNDFILE_SOURCE_DIR} ${MATLAB_INCLUDE_DIR} ${SNDFILE_H_DIR
 link_directories(${MSNDFILE_SOURCE_DIR}/${LIB_DIR} ${SNDFILE_LIB_DIR})
 
 add_library(msndfile MODULE
-    msndfile.c
+    msndfile.c msndfile.def
     ${MEX_VERSION_C})
 
 set_target_properties(msndfile PROPERTIES
