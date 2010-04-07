@@ -39,9 +39,13 @@ if(WIN32)
     #     "C:/Programme/Mega-Nerd/libsndfile")
     # find_path(SNDFILE_H_DIR sndfile.h ${SNDFILE_DIRS})
     # find_path(SNDFILE_LIB_DIR libsndfile-1 ${SNDFILE_DIRS})
+    find_file(SNDFILE_H_WIN sndfile.h ${LIB_DIR})
 
     set(MEX_VERSION_C "${MATLAB_INCLUDE_DIR}/mexversion.rc")
     set(MEX_EXT "mexw32")
+
+    # bundle libsndfile under Windows
+    set(SNDFILE_H_DIR ${LIB_DIR})
 
 elseif(APPLE)
 
@@ -68,8 +72,9 @@ elseif(UNIX)
 
     message("Configuring for Unix (Linux)")
 
-    # enforce 32 bit compilation; add "exceptions" option, without which certain
-    # mex functions cause matlab to crash
+    # enforce 32 bit compilation; add "exceptions" option, without which any mex
+    # function that raises an exception (e.g. mexErrMsgTxt()) causes matlab to
+    # crash
     set(CMAKE_C_FLAGS
         "${CMAKE_C_FLAGS} -m32 -fexceptions")
     message("Compiler flags:\t${CMAKE_C_FLAGS}")
@@ -85,7 +90,7 @@ elseif(UNIX)
 
     # additional CFLAGS; "-dr" dumps GCCs internal code representation (for a
     # call graph utility)
-    set(EXTRA_CFLAGS "-ansi -Wall -Wextra -Wpadded -dr")
+    set(EXTRA_CFLAGS "-std=c99 -Wall -Wextra -Wpadded -dr")
     # here we need to link to libm
     set(ADDITIONAL_LIBS "m")
 
@@ -101,7 +106,8 @@ include_directories(${MSNDFILE_SOURCE_DIR} ${MATLAB_INCLUDE_DIR} ${SNDFILE_H_DIR
 link_directories(${MSNDFILE_SOURCE_DIR}/${LIB_DIR} ${SNDFILE_LIB_DIR})
 
 add_library(msndfile MODULE
-    msndfile.c sndfile.h msndfile.def
+    msndfile.c msndfile.def
+    ${SNDFILE_H_WIN}
     ${MEX_VERSION_C})
 
 set_target_properties(msndfile PROPERTIES
