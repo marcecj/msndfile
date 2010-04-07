@@ -35,10 +35,10 @@ if(WIN32)
     # Deal with stupid non-standard library/header locations under Windows.
     # Maybe more possibilities need to be added here.
     # (alternative: copy relevant files to project directory)
-    set(SNDFILE_DIRS
-        "C:/Programme/Mega-Nerd/libsndfile")
-    find_path(SNDFILE_H_DIR sndfile.h ${SNDFILE_DIRS})
-    find_path(SNDFILE_LIB_DIR sndfile ${SNDFILE_DIRS})
+    # set(SNDFILE_DIRS
+    #     "C:/Programme/Mega-Nerd/libsndfile")
+    # find_path(SNDFILE_H_DIR sndfile.h ${SNDFILE_DIRS})
+    # find_path(SNDFILE_LIB_DIR libsndfile-1 ${SNDFILE_DIRS})
 
     set(MEX_VERSION_C "${MATLAB_INCLUDE_DIR}/mexversion.rc")
     set(MEX_EXT "mexw32")
@@ -61,6 +61,9 @@ elseif(APPLE)
     set(MEX_VERSION_C "${MATLAB_INCLUDE_DIR}/../src/mexversion.c")
     set(MEX_EXT "mexmaci")
 
+    # here we need to link to libm
+    set(ADDITIONAL_LIBS "m")
+
 elseif(UNIX)
 
     message("Configuring for Unix (Linux)")
@@ -80,6 +83,12 @@ elseif(UNIX)
     set(MEX_VERSION_C "${MATLAB_INCLUDE_DIR}/../src/mexversion.c")
     set(MEX_EXT "mexglx")
 
+    # additional CFLAGS; "-dr" dumps GCCs internal code representation (for a
+    # call graph utility)
+    set(EXTRA_CFLAGS "-ansi -Wall -Wextra -Wpadded -dr")
+    # here we need to link to libm
+    set(ADDITIONAL_LIBS "m")
+
 else()
 
     message("Unsupported platform, exiting.")
@@ -92,15 +101,15 @@ include_directories(${MSNDFILE_SOURCE_DIR} ${MATLAB_INCLUDE_DIR} ${SNDFILE_H_DIR
 link_directories(${MSNDFILE_SOURCE_DIR}/${LIB_DIR} ${SNDFILE_LIB_DIR})
 
 add_library(msndfile MODULE
-    msndfile.c msndfile.def
+    msndfile.c sndfile.h msndfile.def
     ${MEX_VERSION_C})
 
 set_target_properties(msndfile PROPERTIES
-    COMPILE_FLAGS "-Wall -Wextra -Wpadded -dr" # dump GCCs internal code representation
+    COMPILE_FLAGS "${EXTRA_CFLAGS}"
     LINK_FLAGS ""
     DEFINE_SYMBOL "MATLAB_MEX_FILE"
     PREFIX ""
     SUFFIX ".${MEX_EXT}")
 
 target_link_libraries(msndfile
-    m ${SNDFILE_LIB} ${MATLAB_MEX_LIBRARY})
+    ${ADDITIONAL_LIBS} ${SNDFILE_LIB} ${MATLAB_MX_LIBRARY} ${MATLAB_MEX_LIBRARY})
