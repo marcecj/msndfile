@@ -32,7 +32,7 @@ void mexFunction(int nlhs, mxArray *plhs[],
     mexAtExit(&clear_memory);
 
     if( nrhs < 1 )
-        mexErrMsgTxt("Missing argument: you need to at least pass an array or a file name.");
+        mexErrMsgTxt("Missing argument: you need to pass a file name.");
 
     /* get input filename string */
     sf_input_fname = (char*)mxCalloc(str_size, sizeof(char));
@@ -48,11 +48,9 @@ void mexFunction(int nlhs, mxArray *plhs[],
     sf_file_info->format = 0;
 
     /* open sound file */
-    mexPrintf("Opening file...\n");
     sf_input_file = sf_open(sf_input_fname, SFM_READ, sf_file_info);
     if( !sf_input_file )
         mexErrMsgTxt("Could not open audio file.");
-    mexPrintf("Opened file.\n");
 
     num_frames = sf_file_info->frames;
 
