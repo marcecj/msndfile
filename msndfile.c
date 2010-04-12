@@ -34,13 +34,13 @@ void mexFunction(int nlhs, mxArray *plhs[],
     if( nrhs < 1 )
         mexErrMsgTxt("Missing argument: you need to pass a file name.");
 
-    /* get input filename string */
+    /* get input filename */
     sf_input_fname = (char*)mxCalloc(str_size, sizeof(char));
     if( !sf_input_fname )
         mexErrMsgTxt("mxCalloc error!");
     mxGetString(prhs[0], sf_input_fname, str_size);
 
-    /* initiate sf_file_info struct pointer */
+    /* initialize sf_file_info struct pointer */
     sf_file_info = (SF_INFO*)mxMalloc(sizeof(SF_INFO));
     if( !sf_file_info )
         mexErrMsgTxt("Could not allocate SF_INFO* instance");
@@ -54,7 +54,7 @@ void mexFunction(int nlhs, mxArray *plhs[],
 
     num_frames = sf_file_info->frames;
 
-    /* set channels to 2 due to a bug in Gentoos 32 bit libsndfile */
+    /* set channels to 2 due to a bug in Gentoo's 32 bit libsndfile */
     /* num_channels = 2; */
     num_channels = sf_file_info->channels;
     plhs[0]      = mxCreateDoubleMatrix((int)sf_file_info->frames, num_channels, mxREAL);
@@ -63,10 +63,17 @@ void mexFunction(int nlhs, mxArray *plhs[],
 
     /* read the entire file in one go */
     processed_frames = sf_readf_double(sf_input_file, data, num_frames);
+    if( processed_frames <= 0 )
+        mexErrMsgTxt("Error reading frames from input file: 0 frames read!");
 
-    /* transpose returned data */
-    for( i=0; i<num_frames; i+=num_channels )
-    {
+    /*
+     * transpose returned data
+     *
+     * TODO: maybe do an in-place transpose? Files already open almost twice as
+     * fast than with Matlab's built-in functions, so some additional time
+     * complexity probably won't hurt much.
+     */
+    for( i=0; i<num_frames; i+=num_channels ) {
         int j;
         for( j=0; j<num_channels; j++ )
             output[i+j*num_frames] = data[i*num_channels+j];
