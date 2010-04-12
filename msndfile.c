@@ -70,7 +70,7 @@ void mexFunction(int nlhs, mxArray *plhs[],
      * transpose returned data
      *
      * TODO: maybe do an in-place transpose? Files already open almost twice as
-     * fast than with Matlab's built-in functions, so some additional time
+     * fast compared to Matlab's built-in functions, so some additional time
      * complexity probably won't hurt much.
      */
     for( i=0; i<num_frames; i+=num_channels ) {
