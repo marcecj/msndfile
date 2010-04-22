@@ -24,7 +24,7 @@ if os.name == "posix":
             LINKFLAGS   = "-m32"
             )
 elif os.name == "nt":
-    sndfile_env.Append(LIBPATH="Win")
+    sndfile_env.Append(LIBPATH="Win", CPPPATH="Win")
 elif os.name == "mac":
     sndfile_env.Append(LIBPATH="Mac")
 else:
