@@ -1,62 +1,39 @@
+# TODO: test Mac and Windows
+
 import os
 
-# global TODO:
-# - add search functions to look for matlab (maybe a combination of os.walk and
-#   a glob pattern is enough, or use WhereIs()?)
+# Go ahead and define operating system independent options and dependencies; the
+# 'matlab' tool automatically sets various environment variables
+sndfile_env = Environment(tools=['default', 'matlab'])
+sndfile_env.Append(
+        CPPPATH = "include",
+        WINDOWS_INSERT_MANIFEST = True,
+        LIBS = ["m", "mex", "mx"])
 
-# TODO: test, maybe extend MexBuilder
-# env = Environment(tools=['default', 'mex'])
-# mex_ext = env['MEX_EXT']
-# env.MEX('mytabwrite'+'.'+mex_ext, 'mytabwrite.cc')
+Execute(Copy("mexversion.c", sndfile_env["MATLAB"]["SRC"] + os.sep + "mexversion.c"))
 
-matlab_mex_version = "mexversion.c"
-
-# Go ahead and define operating system independent options and dependencies
-env_sndfile = Environment(
-        SHLIBPREFIX = "",
-        LIBS        = ["m", "mex", "mx"],
-        CPPDEFINES  = "MATLAB_MEX_FILE"
-        )
-
-# do OS dependent stuff, Matlab path, etc.
-# TODO: finish Mac/Windows support
+# do OS dependent stuff, e.g., Matlab path
+# TODO: compare with env['MATLAB']['ARCH'] instead of os.name
 if os.name == "posix":
-    env_sndfile.Replace(
-            LIBPATH     = ["Linux", "/opt/matlab/bin/glnx86/"],
-            SHLIBSUFFIX = ".mexglx",
-            # enforce 32 bit compilation; add "exceptions" option, without which
-            # any mex function that raises an exception (e.g. mexErrMsgTxt())
-            # causes matlab to crash
+    # enforce 32 bit compilation; add "exceptions" option, without which
+    # any mex function that raises an exception (e.g. mexErrMsgTxt())
+    # causes matlab to crash
+    sndfile_env.Append(
+            LIBPATH     = "Linux",
             CCFLAGS     = "-m32 -fexceptions -std=c99 -pedantic -Wall -Wextra -Wpadded -dr",
             LINKFLAGS   = "-m32"
             )
-    matlab_include_path = "/opt/matlab/extern/include/"
-    matlab_src_path     = "/opt/matlab/extern/src"
 elif os.name == "nt":
-    env_sndfile.Replace(
-            LIBPATH     = ["Win", "/opt/matlab/bin/glnx86/"],
-            SHLIBSUFFIX = ".mexw32",
-            CCFLAGS     = "",
-            LINKFLAGS   = "",
-            )
-    matlab_include_path = ""
-    matlab_src_path     = ""
+    sndfile_env.Append(LIBPATH="Win")
 elif os.name == "mac":
-    env_sndfile.Replace(
-            LIBPATH     = ["Mac", "/opt/matlab/bin/glnx86/"],
-            SHLIBSUFFIX = ".mexmaci",
-            CCFLAGS     = "",
-            LINKFLAGS   = "",
-            )
-    matlab_include_path = ""
-    matlab_src_path     = ""
+    sndfile_env.Append(LIBPATH="Mac")
 else:
     exit("Oops, not a supported platform.")
 
-# TODO: fix mexversion.c inclusion
-# VariantDir(".", matlab_src_path)
-include_path = [".", matlab_include_path]
+# clone environment for mexversion from msndfile
+mexversion_env = sndfile_env.Clone()
+mexversion     = mexversion_env.SharedObject("mexversion.c")
 
 # add msndfile target
-env_sndfile.Append(LIBS = "sndfile", CPPPATH = include_path)
-env_sndfile.SharedLibrary("msndfile", ["msndfile.c", matlab_mex_version])
+sndfile_env.Append(LIBS = "sndfile")
+sndfile_env.SharedLibrary("msndfile", ["msndfile.c", mexversion])
