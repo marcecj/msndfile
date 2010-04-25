@@ -3,8 +3,8 @@
 import os
 
 # Go ahead and define operating system independent options and dependencies; the
-# 'matlab' tool automatically sets various environment variables
-sndfile_env = Environment(tools=['default', 'matlab'])
+# 'mex' tool automatically sets various environment variables
+sndfile_env = Environment(tools=['default', 'mex'])
 sndfile_env.Append(
         CPPPATH = "include",
         WINDOWS_INSERT_MANIFEST = True,
@@ -30,7 +30,7 @@ elif os.name == "mac":
 else:
     exit("Oops, not a supported platform.")
 
-# clone environment for mexversion from msndfile
+# clone environment from msndfile to mexversion
 mexversion_env = sndfile_env.Clone()
 mexversion     = mexversion_env.SharedObject("mexversion.c")
 
