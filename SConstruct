@@ -11,40 +11,49 @@ AddOption('--linux32', dest='linux32', action='store_true',
         help='Force 32 bit compilation ("-m32" GCC option) on Linux.')
 
 # the mex tool automatically sets various environment variables
-sndfile_env = Environment(tools=['default', ('matlab', {'mex': True})])
+sndfile = Environment(tools=['default', ('matlab', {'mex': True})])
+platform = sndfile['PLATFORM']
 
 # this tells SCons where to find mexversion.c
-Repository(sndfile_env["MATLAB"]["SRC"])
+Repository(sndfile["MATLAB"]["SRC"])
 
 # define operating system independent options and dependencies
-sndfile_env.Append(
+sndfile.Append(
         CPPPATH = "include",
+        LIBS    = ["mex", "mx"],
         WINDOWS_INSERT_MANIFEST = True,
-        LIBS = ["m", "mex", "mx"]
         )
+if os.name != 'nt':
+    sndfile.Append(LIBS="m")
 
-# OS dependent stuff
+# OS dependent stuff, we assume GCC on Unix like platforms
 if os.name == "posix":
     # add "exceptions" option, without which any mex function that raises an
     # exception (e.g., mexErrMsgTxt()) causes Matlab to crash
-    sndfile_env.Append(LIBPATH="Linux",
-            CCFLAGS = "-fexceptions -std=c99 -pedantic -Wall -Wextra -Wpadded -dr")
+    sndfile.Append(LIBPATH="Linux",
+        CCFLAGS = "-fexceptions -std=c99 -pedantic -Wall -Wextra -Wpadded -dr")
     if GetOption('linux32'):
-        sndfile_env.Append(CCFLAGS="-m32", LINKFLAGS="-m32")
+        sndfile.Append(CCFLAGS="-m32", LINKFLAGS="-m32")
+    sndfile_lib = "sndfile"
 elif os.name == "nt":
-    sndfile_env.Append(LIBPATH="Win", CPPPATH="Win")
+    sndfile.Append(LIBPATH="Win", CPPPATH="Win")
+    sndfile_lib = "libsndfile-1"
 elif os.name == "mac":
-    sndfile_env.Append(LIBPATH="Mac",
+    sndfile.Append(LIBPATH="Mac",
             CCFLAGS="-fexceptions -std=c99 -pedantic")
+    sndfile_lib = "sndfile"
 else:
     exit("Oops, not a supported platform.")
 
 # clone environment from msndfile to mexversion
-mexversion_env = sndfile_env.Clone()
+mexversion = sndfile.Clone()
 
 # do env dependent stuff
-sndfile_env.Append(LIBS = "sndfile")
+sndfile.Append(LIBS = sndfile_lib)
 
 # add targets
-mexversion = mexversion_env.SharedObject("mexversion.c")
-sndfile_env.SharedLibrary("msndfile", ["msndfile.c", mexversion])
+if os.name != 'nt':
+    mexversion_obj = mexversion.SharedObject("mexversion.c")
+    sndfile.SharedLibrary("msndfile", ["msndfile.c", mexversion_obj])
+else:
+    sndfile.SharedLibrary("msndfile", ["msndfile.c", "msndfile.def"])
