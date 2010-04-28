@@ -29,11 +29,13 @@ if os.name != 'nt':
 # OS dependent stuff, we assume GCC on Unix like platforms
 if os.name == "posix":
     # add "exceptions" option, without which any mex function that raises an
-    # exception (e.g., mexErrMsgTxt()) causes Matlab to crash
+    # exception (e.g., mexErrMsgTxt()) causes Matlab to crash; _FILE_OFFSET_BITS
+    # fixes libsndfile errors
     sndfile.Append(LIBPATH="Linux",
-        CCFLAGS = "-fexceptions -std=c99 -pedantic -Wall -Wextra -Wpadded -dr")
+            CCFLAGS = "-fexceptions -pthread -std=c99 -pedantic -Wall -Wextra -Wpadded -dr")
     if GetOption('linux32'):
-        sndfile.Append(CCFLAGS="-m32", LINKFLAGS="-m32")
+        sndfile.Append(CCFLAGS="-m32", LINKFLAGS="-m32",
+                CPPDEFINES="_FILE_OFFSET_BITS=64")
     sndfile_lib = "sndfile"
 elif os.name == "nt":
     sndfile.Append(LIBPATH="Win", CPPPATH="Win")

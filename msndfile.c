@@ -21,10 +21,10 @@ void mexFunction(int nlhs, mxArray *plhs[],
                  int nrhs, const mxArray *prhs[])
 {
     int         i; // counter in for-loops
-    int         sndfile_error;
-    int         num_channels; // temporary hack for Gentoo
-    const int   str_size = mxGetN(prhs[0])+1;
-    char        *sf_input_fname;
+    int         sndfile_error; // libsndfile error status
+    int         num_channels;
+    const int   str_size = mxGetN(prhs[0])+1; // length of the input file name
+    char        *sf_input_fname; // input file name
     sf_count_t  num_frames, processed_frames;
     double      *data, *output, *fs;
     SF_INFO     *sf_file_info;
@@ -54,11 +54,11 @@ void mexFunction(int nlhs, mxArray *plhs[],
 
     num_frames = sf_file_info->frames;
 
-    /* set channels to 2 due to a bug in Gentoo's 32 bit libsndfile */
-    /* num_channels = 2; */
+    /* initialise Matlab output array */
     num_channels = sf_file_info->channels;
     plhs[0]      = mxCreateDoubleMatrix((int)sf_file_info->frames, num_channels, mxREAL);
     output       = mxGetPr(plhs[0]);
+    /* data read via libsndfile */
     data         = (double*)mxCalloc((int)sf_file_info->frames*num_channels,sizeof(double));
 
     /* read the entire file in one go */
