@@ -20,7 +20,7 @@ Repository(sndfile["MATLAB"]["SRC"])
 # define operating system independent options and dependencies
 sndfile.Append(
         CPPPATH = "include",
-        LIBS    = ["mex", "mx"],
+        LIBS    = (["libmex", "libmx"] if platform == "win32" else ["mex", "mx"]),
         WINDOWS_INSERT_MANIFEST = True,
         )
 if os.name != 'nt':
