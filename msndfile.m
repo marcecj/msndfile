@@ -1,14 +1,14 @@
-function [OutData,fs] = msndfile(fname)
-% function to change duration of Audiodata without changing the pitch
-% by using the dirac library
-% Usage: OutData = TimeStretchDirac(InData,fs,TimeStretchFaktor, Mode)
+function [OutData,fs] = msndfile(file_name)
+% A function to read audio files by using the libsndfile C library.
+% Usage: [OutData, fs] = msndfile(file_name)
 % InParamter:   
-%      fname:      a string describing an audio file
+%      file_name: a string describing an audio file
 % OutParam:
-%      OutData:     The new data vector (Len x Chns)
-%      fs:     The sampling rate of the output
+%      OutData:   the new data vector (Len x Chns)
+%      fs:        the sampling rate of the audio file
 
-% (c) Author, Jade-Hochschule, Institut für Hoertechnik und Audiologie,
-%             www.hoertechnik-audiologie.de
-% Datum, Versions-History
-% Licence:  see end of file (MIT licence)
+% (c) Marc Joliet, Jade-Hochschule, Institut für Hoertechnik und Audiologie,
+% www.hoertechnik-audiologie.de
+% 28th April, 2010
+% History: 1.0 - first properly working version
+% Licence: see file 'LICENCE'
