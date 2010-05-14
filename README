@@ -59,7 +59,7 @@ version of OS X, use a package management system like fink or (better, in the
 opinion of the author) macports.
 
 Using the compile_msndfile.m script (all platforms)
-~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 In Matlab, type 'compile_msndfile'.  This will compile both Mex extensions
 and run a test script.
@@ -146,9 +146,8 @@ Windows according to your own preferences.
 Copyrights
 ----------
 
-The source code to msndfile is made available under the MIT license (see the
-file ``LICENSE'' in the source directory).
+For the copyrights to msndfile, see the file LICENSE.
 
 libsndfile is written primarily by Erik de Castro Lopo <erikd@mega-nerd.com> and
-is licensed under the LGPL 2.1 (included in the source directory, see the file
+is licensed under the LGPLv2.1 (included in the source directory, see the file
 ``LGPL-2.1'').
