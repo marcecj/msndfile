@@ -8,7 +8,9 @@ import os
 # Add an option to enforce 32 bit compilation for students using 32 bit Matlab
 # on 64 bit platforms.
 AddOption('--linux32', dest='linux32', action='store_true',
-        help='Force 32 bit compilation ("-m32" GCC option) on Linux.')
+          help='Force 32 bit compilation ("-m32" GCC option) on Linux.')
+AddOption('--make-msvc', dest='msvc', action='store_true',
+          help='Create a MSVC project file.')
 
 # the mex tool automatically sets various environment variables
 sndfile = Environment(tools=['default', ('matlab', {'mex': True})])
@@ -19,10 +21,10 @@ Repository(sndfile["MATLAB"]["SRC"])
 
 # define operating system independent options and dependencies
 sndfile.Append(
-        CPPPATH = "include",
-        LIBS    = (["libmex", "libmx"] if platform == "win32" else ["mex", "mx"]),
-        WINDOWS_INSERT_MANIFEST = True,
-        )
+    CPPPATH = "include",
+    LIBS    = (["libmex", "libmx"] if platform == "win32" else ["mex", "mx"]),
+    WINDOWS_INSERT_MANIFEST = True,
+)
 if os.name != 'nt':
     sndfile.Append(LIBS="m")
 
@@ -32,17 +34,17 @@ if os.name == "posix":
     # exception (e.g., mexErrMsgTxt()) causes Matlab to crash; _FILE_OFFSET_BITS
     # fixes libsndfile errors
     sndfile.Append(LIBPATH="Linux",
-            CCFLAGS = "-fexceptions -pthread -std=c99 -pedantic -Wall -Wextra -Wpadded -dr")
+                   CCFLAGS = "-fexceptions -pthread -std=c99 -pedantic -Wall -Wextra -Wpadded -dr")
     if GetOption('linux32'):
         sndfile.Append(CCFLAGS="-m32", LINKFLAGS="-m32",
-                CPPDEFINES="_FILE_OFFSET_BITS=64")
+                       CPPDEFINES="_FILE_OFFSET_BITS=64")
     sndfile_lib = "sndfile"
 elif os.name == "nt":
     sndfile.Append(LIBPATH="Win", CPPPATH="Win")
     sndfile_lib = "libsndfile-1"
 elif os.name == "mac":
     sndfile.Append(LIBPATH="Mac",
-            CCFLAGS="-fexceptions -std=c99 -pedantic")
+                   CCFLAGS="-fexceptions -std=c99 -pedantic")
     sndfile_lib = "sndfile"
 else:
     exit("Oops, not a supported platform.")
