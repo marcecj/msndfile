@@ -4,43 +4,23 @@
 #include <sndfile.h>
 
 /* sizes of the lookup tables */
-const int major_formats_size = 21;
-const int sub_formats_size  = 22;
-const int endianness_types_size =  4;
-
+/*
+ * const int major_formats_size = 21;
+ * const int sub_formats_size  = 22;
+ * const int endianness_types_size =  4;
+ */
 /* a simple lookup table */
 typedef struct {
     char* name;
     int number;
-} lookup_table;
-
-/* major formats */
-lookup_table major_formats[] = {
-    { "WAV"   , SF_FORMAT_WAV, },
-    { "AIFF"  , SF_FORMAT_AIFF, },
-    { "AU"    , SF_FORMAT_AU, },
-    { "RAW"   , SF_FORMAT_RAW, },
-    { "PAF"   , SF_FORMAT_PAF, },
-    { "SVX"   , SF_FORMAT_SVX, },
-    { "NIST"  , SF_FORMAT_NIST, },
-    { "VOC"   , SF_FORMAT_VOC, },
-    { "IRCAM" , SF_FORMAT_IRCAM, },
-    { "W64"   , SF_FORMAT_W64, },
-    { "MAT4"  , SF_FORMAT_MAT4, },
-    { "MAT5"  , SF_FORMAT_MAT5, },
-    { "PVF"   , SF_FORMAT_PVF, },
-    { "XI"    , SF_FORMAT_XI, },
-    { "HTK"   , SF_FORMAT_HTK, },
-    { "SDS"   , SF_FORMAT_SDS, },
-    { "AVR"   , SF_FORMAT_AVR, },
-    { "WAVEX" , SF_FORMAT_WAVEX, },
-    { "SD2"   , SF_FORMAT_SD2, },
-    { "FLAC"  , SF_FORMAT_FLAC, },
-    { "CAF"   , SF_FORMAT_CAF, },
-};
+} const KEY_VAL;
+typedef struct {
+    KEY_VAL *table;
+    int size;
+} const LOOKUP_TABLE;
 
 /* sample formats */
-lookup_table sub_formats[] = {
+KEY_VAL const sub_formats_names[] = {
     { "PCM_S8", SF_FORMAT_PCM_S8, },
     { "PCM_16", SF_FORMAT_PCM_16, },
     { "PCM_24", SF_FORMAT_PCM_24, },
@@ -64,16 +44,18 @@ lookup_table sub_formats[] = {
     { "DPCM_8", SF_FORMAT_DPCM_8, },
     { "DPCM_16", SF_FORMAT_DPCM_16, },
 };
+const LOOKUP_TABLE const sub_formats = {sub_formats_names, 22};
 
 /* endianness options. */
-lookup_table endianness_types[] = {
+KEY_VAL const endianness_types_names[] = {
     { "FILE", SF_ENDIAN_FILE, },
     { "LITTLE", SF_ENDIAN_LITTLE, },
     { "BIG", SF_ENDIAN_BIG, },
     { "CPU", SF_ENDIAN_CPU, },
 };
+const LOOKUP_TABLE const endianness_types = {endianness_types_names, 4};
 
 /* function to get a value from a look-up table */
-int get_val(const lookup_table *array, const int array_size, const char *name);
+int get_val(const LOOKUP_TABLE *array, const char *name);
 
 #endif /* __MSNDFILE_H__ */

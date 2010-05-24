@@ -19,12 +19,12 @@ void clear_memory(void)
 }
 
 /* function to get a value from a look-up table */
-int get_val(const lookup_table *array, const int array_size, const char *name)
+int get_val(const LOOKUP_TABLE *array, const char *name)
 {
 	int i;
-    for(i = 0; i < array_size; i++) {
-        if( strcmp(name, array[i].name) == 0 )
-            return array[i].number;
+    for(i = 0; i < array->size; i++) {
+        if( strcmp(name, array->table[i].name) == 0 )
+            return array->table[i].number;
     }
 
 	return 0;
@@ -42,7 +42,7 @@ void mexFunction(int nlhs, mxArray *plhs[],
     double      *data, *output, *fs;
     SF_INFO     *sf_file_info;
     // the three OR-ed components of the "format" field in sf_file_info
-    char        *major_format_name, *sub_format_name, *endianness_name;
+    char        *sub_format_name, *endianness_name;
 
     mexAtExit(&clear_memory);
 
@@ -56,14 +56,10 @@ void mexFunction(int nlhs, mxArray *plhs[],
     mxGetString(prhs[0], sf_input_fname, str_size);
 
     /*
-     * allocate the strings corresponding to the names of the major formats,
-     * format subtypes and the endianness as per the libsndfile documentation
+     * allocate the strings corresponding to the names of the format subtypes
+     * and the endianness as per the libsndfile documentation
      */
     
-    major_format_name = (char*)mxCalloc(20, sizeof(char));
-    if( !major_format_name )
-        mexErrMsgTxt("mxCalloc error!");
-
     sub_format_name = (char*)mxCalloc(20, sizeof(char));
     if( !sub_format_name )
         mexErrMsgTxt("mxCalloc error!");
@@ -108,12 +104,6 @@ void mexFunction(int nlhs, mxArray *plhs[],
              * get the format information
              */
 
-            tmp_ptr = mxGetField(prhs[1], 0, "format" );
-            if( tmp_ptr != NULL )
-                mxGetString(tmp_ptr, major_format_name, mxGetN(tmp_ptr)+1);
-            else
-                mexErrMsgTxt("Field 'format' not set.");
-
             tmp_ptr = mxGetField(prhs[1], 0, "sampleformat" );
             if( tmp_ptr != NULL )
                 mxGetString(tmp_ptr, sub_format_name, mxGetN(tmp_ptr)+1);
@@ -127,9 +117,9 @@ void mexFunction(int nlhs, mxArray *plhs[],
             else
                 endianness_name = "FILE";
 
-            sf_file_info->format = get_val(major_formats, major_formats_size, major_format_name) | \
-                                   get_val(sub_formats, sub_formats_size, sub_format_name) | \
-                                   get_val(endianness_types, endianness_types_size, endianness_name);
+            sf_file_info->format = SF_FORMAT_RAW | \
+                                   get_val(&sub_formats, sub_format_name) | \
+                                   get_val(&endianness_types, endianness_name);
         }
         else
             mexErrMsgTxt("The second argument has to be a struct! (see help text)");
