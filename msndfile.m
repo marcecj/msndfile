@@ -14,11 +14,38 @@ function [OutData,fs] = msndfile(file_name, file_info)
 %     sampleformat: the sample format (format "subtype")
 %
 % The file_info struct may optionally contain the following fields:
+%     format:       the file format ("major format"), currenty ignored
 %     endianness:   the sample endian-ness (defaults to "FILE")
 %    
-% Following is a list of valid values for the format specifiers "sampleformat"
-% and "endianness".  The descriptions are taken from the official libsndfile API
-% documentation (see http://www.mega-nerd.com/libsndfile).
+% Following is a list of valid values for the format specifiers "format",
+% "sampleformat" and "endianness".  The descriptions are taken from the official
+% libsndfile API documentation (see http://www.mega-nerd.com/libsndfile).  Note
+% that the "format" field is (as mentioned above) currently ignored.  It is
+% intended to be utilised for future write support.
+%
+%     Valid values for "format" are:
+%
+%           WAV          Microsoft WAV format (little endian).
+%           AIFF         Apple/SGI AIFF format (big endian).
+%           AU           Sun/NeXT AU format (big endian).
+%           RAW          RAW PCM data.
+%           PAF          Ensoniq PARIS file format.
+%           SVX          Amiga IFF / SVX8 / SV16 format.
+%           NIST         Sphere NIST format.
+%           VOC          VOC files.
+%           IRCAM        Berkeley/IRCAM/CARL
+%           W64          Sonic Foundry's 64 bit RIFF/WAV
+%           MAT4         Matlab (tm) V4.2 / GNU Octave 2.0
+%           MAT5         Matlab (tm) V5.0 / GNU Octave 2.1
+%           PVF          Portable Voice Format
+%           XI           Fasttracker 2 Extended Instrument
+%           HTK          HMM Tool Kit format
+%           SDS          Midi Sample Dump Standard
+%           AVR          Audio Visual Research
+%           WAVEX        MS WAVE with WAVEFORMATEX
+%           SD2          Sound Designer 2
+%           FLAC         FLAC lossless file format
+%           CAF          Core Audio File format%
 %
 %     Valid values for "sampleformat" are:
 %

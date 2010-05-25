@@ -19,6 +19,32 @@ typedef struct {
     int size;
 } const LOOKUP_TABLE;
 
+/* major formats */
+KEY_VAL major_formats_names[] = {
+    { "WAV"   , SF_FORMAT_WAV, },
+    { "AIFF"  , SF_FORMAT_AIFF, },
+    { "AU"    , SF_FORMAT_AU, },
+    { "RAW"   , SF_FORMAT_RAW, },
+    { "PAF"   , SF_FORMAT_PAF, },
+    { "SVX"   , SF_FORMAT_SVX, },
+    { "NIST"  , SF_FORMAT_NIST, },
+    { "VOC"   , SF_FORMAT_VOC, },
+    { "IRCAM" , SF_FORMAT_IRCAM, },
+    { "W64"   , SF_FORMAT_W64, },
+    { "MAT4"  , SF_FORMAT_MAT4, },
+    { "MAT5"  , SF_FORMAT_MAT5, },
+    { "PVF"   , SF_FORMAT_PVF, },
+    { "XI"    , SF_FORMAT_XI, },
+    { "HTK"   , SF_FORMAT_HTK, },
+    { "SDS"   , SF_FORMAT_SDS, },
+    { "AVR"   , SF_FORMAT_AVR, },
+    { "WAVEX" , SF_FORMAT_WAVEX, },
+    { "SD2"   , SF_FORMAT_SD2, },
+    { "FLAC"  , SF_FORMAT_FLAC, },
+    { "CAF"   , SF_FORMAT_CAF, },
+};
+const LOOKUP_TABLE const major_formats = {major_formats_names, 21};
+
 /* sample formats */
 KEY_VAL const sub_formats_names[] = {
     { "PCM_S8", SF_FORMAT_PCM_S8, },

@@ -11,10 +11,10 @@
 
 SNDFILE* sf_input_file;
 
-/* function for clearing memory after this program ends */
+/* function for clearing memory after Matlab ends */
 void clear_memory(void)
 {
-    if( !sf_input_file )
+    if( sf_input_file != NULL )
         sf_close(sf_input_file);
 }
 
@@ -33,6 +33,8 @@ int get_val(const LOOKUP_TABLE *array, const char *name)
 void mexFunction(int nlhs, mxArray *plhs[],
                  int nrhs, const mxArray *prhs[])
 {
+    sf_input_file = NULL; // sf_close() doesn't set the pointer to NULL!
+
     int         i; // counter in for-loops
     int         sndfile_error; // libsndfile error status
     int         num_channels;
@@ -42,7 +44,7 @@ void mexFunction(int nlhs, mxArray *plhs[],
     double      *data, *output, *fs;
     SF_INFO     *sf_file_info;
     // the three OR-ed components of the "format" field in sf_file_info
-    char        *sub_format_name, *endianness_name;
+    char        *major_format_name, *sub_format_name, *endianness_name;
 
     mexAtExit(&clear_memory);
 
@@ -56,10 +58,14 @@ void mexFunction(int nlhs, mxArray *plhs[],
     mxGetString(prhs[0], sf_input_fname, str_size);
 
     /*
-     * allocate the strings corresponding to the names of the format subtypes
-     * and the endianness as per the libsndfile documentation
+     * allocate the strings corresponding to the names of the major formats,
+     * format subtypes and the endianness as per the libsndfile documentation
      */
-    
+
+    major_format_name = (char*)mxCalloc(20, sizeof(char));
+    if( !major_format_name )
+        mexErrMsgTxt("mxCalloc error!"); 
+
     sub_format_name = (char*)mxCalloc(20, sizeof(char));
     if( !sub_format_name )
         mexErrMsgTxt("mxCalloc error!");
@@ -103,6 +109,12 @@ void mexFunction(int nlhs, mxArray *plhs[],
             /*
              * get the format information
              */
+            /* format name should be set to RAW when reading RAW files */
+            tmp_ptr = mxGetField(prhs[1], 0, "format" );
+            if( tmp_ptr != NULL )
+                mxGetString(tmp_ptr, major_format_name, mxGetN(tmp_ptr)+1);
+            else
+                major_format_name = "RAW";
 
             tmp_ptr = mxGetField(prhs[1], 0, "sampleformat" );
             if( tmp_ptr != NULL )
@@ -117,6 +129,7 @@ void mexFunction(int nlhs, mxArray *plhs[],
             else
                 endianness_name = "FILE";
 
+            /* sf_file_info->format = get_val(&major_formats, major_format_name) | \ */
             sf_file_info->format = SF_FORMAT_RAW | \
                                    get_val(&sub_formats, sub_format_name) | \
                                    get_val(&endianness_types, endianness_name);
@@ -133,7 +146,7 @@ void mexFunction(int nlhs, mxArray *plhs[],
     else 
         sf_input_file = sf_open(sf_input_fname, SFM_READ, sf_file_info);
 
-    if( !sf_input_file )
+    if( sf_input_file == NULL )
         mexErrMsgTxt("Could not open audio file.");
 
     num_frames = sf_file_info->frames;
@@ -176,4 +189,7 @@ void mexFunction(int nlhs, mxArray *plhs[],
         fs      = mxGetPr(plhs[1]);
         *fs     = (double)sf_file_info->samplerate;
     }
+
+    if( sf_input_file != NULL )
+        sf_close(sf_input_file);
 }

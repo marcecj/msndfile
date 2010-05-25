@@ -1,5 +1,5 @@
-Compiling the msndfile Mex extension
-====================================
+The msndfile Mex extension
+==========================
 Marc Joliet <marc.joliet@stud.fh-oldenburg.de>
 
 Introduction
@@ -10,21 +10,20 @@ This document explains how to compile msndfile.
 msndfile is a mex wrapper for the libsndfile C library for reading audio files.
 It returns the audio files as MxN arrays, M being the number of samples per
 channel and N being the number of channels, as returned by, e.g., 'wavread()'.
-It is not quite complete yet, as it does not do the work nor provide the
-interface necessary for reading raw audio files, though adding it shouldn't be
-too hard.
+The only thing it doesn't do is write audio files, which should be relatively
+simple, though.
 
 Compiling
 ---------
 
-There are 2 ways to compile msndfile.  The easy way is to call the
-m-file 'compile_msndfile.m' from Matlab.  There is also a more flexible build
-system based on SCons available, though it is perhaps overblown for a project of
-this size.  It has, however, proven that a proper and robust cross-platform
-build system for Mex extensions is possible.  There is also an obsolete CMake
-based build system, which is probably broken, as fixes to compilation errors
-were incorporated in the SConstruct file but not in the CMakeLists.txt file.
-For details to all methods, see their relevant subsections.
+There are 2 ways to compile msndfile.  The easy way is to call the m-file
+'compile_msndfile.m' from Matlab.  There is also a more flexible build system
+based on SCons available, though it is perhaps overblown for a project of this
+size.  It has, however, proven that a proper and robust cross-platform build
+system for Mex extensions is possible.  There is also an obsolete CMake based
+build system, which is probably broken, as fixes to compilation errors were
+incorporated in the SConstruct file but not in the CMakeLists.txt file.  For
+details to all methods, see their relevant subsections.
 
 A problem of all methods of compilation is that at least two things are not
 implemented.  For one thing: installing.  It is expected that you copy the
@@ -87,15 +86,15 @@ Just open a terminal and type
     $ scons
 -----------------
 
-while in the source directory.  Users with 32 bit Matlab on 64 bit systems want
-to pass the --linux32 option to enforce 32 bit compilation.
+while in the source directory.  Users with 32 bit Matlab on 64 bit systems
+should pass the --linux32 option to enforce 32 bit compilation.
 
 Windows
 ^^^^^^^
 
 If SCons is in your PATH, you can open a console and follow the steps under
-Linux.  It is planned for later to support creating a Visual Studio project
-(SCons already provides the necessary facilities).  For other IDEs, see
+Linux.  The '--make-msvs' option creates a MS VisualStudio Solution file with
+mmsndfile as a project.  For other IDEs, see
 http://www.scons.org/wiki/IDEIntegration[].
 
 Mac OS X
@@ -146,12 +145,14 @@ Windows according to your own preferences.
 Copyrights
 ----------
 
+NOTE: if this is ever distributed publicly, the source code to libsndfile must
+also be distributed.
 For the copyrights to msndfile, see the file LICENSE.
 
 The test file test.raw is an excerpt of "Glass Cafe" by Jon7 and is licensed
 under the "Attribution-NonCommercial-ShareAlike 2.5 Generic (CC BY-NC-SA 2.5)"
 license (see http://creativecommons.org/licenses/by-nc-sa/2.5/[]).
 
-libsndfile is written primarily by Erik de Castro Lopo <erikd@mega-nerd.com> and
-is licensed under the LGPLv2.1 (included in the source directory, see the file
+libsndfile is maintained by Erik de Castro Lopo <erikd@mega-nerd.com> and is
+licensed under the LGPLv2.1 (included in the source directory, see the file
 ``LGPL-2.1'').
