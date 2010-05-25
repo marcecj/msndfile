@@ -145,8 +145,10 @@ Windows according to your own preferences.
 Copyrights
 ----------
 
+//////////////////////////////////////////////////////////////////////////////
 NOTE: if this is ever distributed publicly, the source code to libsndfile must
 also be distributed.
+//////////////////////////////////////////////////////////////////////////////
 For the copyrights to msndfile, see the file LICENSE.
 
 The test file test.raw is an excerpt of "Glass Cafe" by Jon7 and is licensed
