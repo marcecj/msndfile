@@ -7,9 +7,12 @@ AddOption('--linux32', dest='linux32', action='store_true',
           help='Force 32 bit compilation ("-m32" GCC option) on Linux.')
 AddOption('--make-msvc', dest='msvc', action='store_true',
           help='Create a MSVS solution file on Windows.')
+AddOption('--debug-syms', dest='debug', action='store_true',
+          help='Add debugging symbols')
 
 matlab_is_32_bits = GetOption('linux32')
 make_msvc         = GetOption('msvc')
+
 
 # the mex tool automatically sets various environment variables
 sndfile  = Environment(tools = ['default', ('matlab', {'mex': True})])
@@ -62,6 +65,9 @@ if not GetOption('clean'):
     sndfile = conf.Finish()
 
 sndfile.Append(LIBS = common_libs)
+
+if GetOption('debug'):
+    sndfile.MergeFlags(["-g", "-O0"])
 
 # add compile targets
 if platform != 'win32':
