@@ -7,15 +7,15 @@
 typedef struct {
     char* name;
     int number;
-} const KEY_VAL;
+} KEY_VAL;
 
 typedef struct {
-    KEY_VAL *table;
+    const KEY_VAL *table;
     int size;
-} const LOOKUP_TABLE;
+} LOOKUP_TABLE;
 
 /* major formats */
-KEY_VAL maj_fmts_names[] = {
+const KEY_VAL maj_fmts_names[] = {
     { "WAV"   , SF_FORMAT_WAV, },
     { "AIFF"  , SF_FORMAT_AIFF, },
     { "AU"    , SF_FORMAT_AU, },
@@ -38,10 +38,10 @@ KEY_VAL maj_fmts_names[] = {
     { "FLAC"  , SF_FORMAT_FLAC, },
     { "CAF"   , SF_FORMAT_CAF, },
 };
-const LOOKUP_TABLE const maj_fmts = {maj_fmts_names, 21};
+const LOOKUP_TABLE maj_fmts = {maj_fmts_names, 21};
 
 /* sample formats */
-KEY_VAL const sub_fmts_names[] = {
+const KEY_VAL sub_fmts_names[] = {
     { "PCM_S8", SF_FORMAT_PCM_S8, },
     { "PCM_16", SF_FORMAT_PCM_16, },
     { "PCM_24", SF_FORMAT_PCM_24, },
@@ -65,16 +65,16 @@ KEY_VAL const sub_fmts_names[] = {
     { "DPCM_8", SF_FORMAT_DPCM_8, },
     { "DPCM_16", SF_FORMAT_DPCM_16, },
 };
-const LOOKUP_TABLE const sub_fmts = {sub_fmts_names, 22};
+const LOOKUP_TABLE sub_fmts = {sub_fmts_names, 22};
 
 /* endianness options. */
-KEY_VAL const endianness_types_names[] = {
+const KEY_VAL endianness_types_names[] = {
     { "FILE", SF_ENDIAN_FILE, },
     { "LITTLE", SF_ENDIAN_LITTLE, },
     { "BIG", SF_ENDIAN_BIG, },
     { "CPU", SF_ENDIAN_CPU, },
 };
-const LOOKUP_TABLE const endianness_types = {endianness_types_names, 4};
+const LOOKUP_TABLE endianness_types = {endianness_types_names, 4};
 
 /* function to get a value from a look-up table */
 int lookup_val(const LOOKUP_TABLE *array, const char *name);
