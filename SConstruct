@@ -13,10 +13,10 @@ AddOption('--debug-syms', dest='debug', action='store_true',
 matlab_is_32_bits = GetOption('linux32')
 make_msvc         = GetOption('msvc')
 
-
 # the mex tool automatically sets various environment variables
-sndfile  = Environment(tools = ['default', ('matlab', {'mex': True})])
-platform = sndfile['PLATFORM']
+sndfile      = Environment(tools = ['default', ('matlab', {'mex': True})])
+platform     = sndfile['PLATFORM']
+msvs_variant = "Release"
 
 if platform == "win32":
     # Matlab doesn't follow the Windows standard and adds a 'lib' prefix anyway
@@ -68,6 +68,7 @@ sndfile.Append(LIBS = common_libs)
 
 if GetOption('debug'):
     sndfile.MergeFlags(["-g", "-O0"])
+    msvs_variant = "Debug"
 
 # add compile targets
 if platform != 'win32':
@@ -78,6 +79,6 @@ else:
     if make_msvc:
         sndfile_vs = sndfile.MSVSProject("msndfile"+sndfile['MSVSPROJECTSUFFIX'],
                                          ["msndfile.c", "msndfile.def"])
-        MSVSSolution(target="msndfile", projects=[sndfile_vs])
+        MSVSSolution("msndfile", [sndfile_vs], msvs_variant)
     else:
         sndfile.SharedLibrary("msndfile", ["msndfile.c", "msndfile.def"])
