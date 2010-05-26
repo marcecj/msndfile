@@ -3,24 +3,19 @@
 
 #include <sndfile.h>
 
-/* sizes of the lookup tables */
-/*
- * const int major_formats_size = 21;
- * const int sub_formats_size  = 22;
- * const int endianness_types_size =  4;
- */
 /* a simple lookup table */
 typedef struct {
     char* name;
     int number;
 } const KEY_VAL;
+
 typedef struct {
     KEY_VAL *table;
     int size;
 } const LOOKUP_TABLE;
 
 /* major formats */
-KEY_VAL major_formats_names[] = {
+KEY_VAL maj_fmts_names[] = {
     { "WAV"   , SF_FORMAT_WAV, },
     { "AIFF"  , SF_FORMAT_AIFF, },
     { "AU"    , SF_FORMAT_AU, },
@@ -43,10 +38,10 @@ KEY_VAL major_formats_names[] = {
     { "FLAC"  , SF_FORMAT_FLAC, },
     { "CAF"   , SF_FORMAT_CAF, },
 };
-const LOOKUP_TABLE const major_formats = {major_formats_names, 21};
+const LOOKUP_TABLE const maj_fmts = {maj_fmts_names, 21};
 
 /* sample formats */
-KEY_VAL const sub_formats_names[] = {
+KEY_VAL const sub_fmts_names[] = {
     { "PCM_S8", SF_FORMAT_PCM_S8, },
     { "PCM_16", SF_FORMAT_PCM_16, },
     { "PCM_24", SF_FORMAT_PCM_24, },
@@ -70,7 +65,7 @@ KEY_VAL const sub_formats_names[] = {
     { "DPCM_8", SF_FORMAT_DPCM_8, },
     { "DPCM_16", SF_FORMAT_DPCM_16, },
 };
-const LOOKUP_TABLE const sub_formats = {sub_formats_names, 22};
+const LOOKUP_TABLE const sub_fmts = {sub_fmts_names, 22};
 
 /* endianness options. */
 KEY_VAL const endianness_types_names[] = {
@@ -82,6 +77,6 @@ KEY_VAL const endianness_types_names[] = {
 const LOOKUP_TABLE const endianness_types = {endianness_types_names, 4};
 
 /* function to get a value from a look-up table */
-int get_val(const LOOKUP_TABLE *array, const char *name);
+int lookup_val(const LOOKUP_TABLE *array, const char *name);
 
 #endif /* __MSNDFILE_H__ */

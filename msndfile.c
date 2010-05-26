@@ -19,9 +19,9 @@ void clear_memory(void)
 }
 
 /* function to get a value from a look-up table */
-int get_val(const LOOKUP_TABLE *array, const char *name)
+int lookup_val(const LOOKUP_TABLE *array, const char *name)
 {
-	int i;
+    int i;
     for(i = 0; i < array->size; i++) {
         if( strcmp(name, array->table[i].name) == 0 )
             return array->table[i].number;
@@ -36,15 +36,15 @@ void mexFunction(int nlhs, mxArray *plhs[],
     sf_input_file = NULL; // sf_close() doesn't set the pointer to NULL!
 
     int         i; // counter in for-loops
-    int         sndfile_error; // libsndfile error status
-    int         num_channels;
+    int         sndfile_err; // libsndfile error status
+    int         num_chns;
     const int   str_size = mxGetN(prhs[0])+1; // length of the input file name
-    char        *sf_input_fname; // input file name
+    char        *sf_in_fname; // input file name
     sf_count_t  num_frames, processed_frames=0;
     double      *data, *output, *fs;
     SF_INFO     *sf_file_info;
     // the three OR-ed components of the "format" field in sf_file_info
-    char        *major_format_name, *sub_format_name, *endianness_name;
+    char        *maj_fmt_name, *sub_fmt_name, *endianness_name;
 
     mexAtExit(&clear_memory);
 
@@ -52,31 +52,28 @@ void mexFunction(int nlhs, mxArray *plhs[],
         mexErrMsgTxt("Missing argument: you need to pass a file name.");
 
     /* get input filename */
-    sf_input_fname = (char*)mxCalloc(str_size, sizeof(char));
-    if( !sf_input_fname )
+    sf_in_fname = (char*)mxCalloc(str_size, sizeof(char));
+    if( sf_in_fname == NULL )
         mexErrMsgTxt("mxCalloc error!");
-    mxGetString(prhs[0], sf_input_fname, str_size);
+    mxGetString(prhs[0], sf_in_fname, str_size);
 
     /*
      * allocate the strings corresponding to the names of the major formats,
      * format subtypes and the endianness as per the libsndfile documentation
      */
 
-    major_format_name = (char*)mxCalloc(20, sizeof(char));
-    if( !major_format_name )
-        mexErrMsgTxt("mxCalloc error!"); 
-
-    sub_format_name = (char*)mxCalloc(20, sizeof(char));
-    if( !sub_format_name )
-        mexErrMsgTxt("mxCalloc error!");
-
+    maj_fmt_name    = (char*)mxCalloc(20, sizeof(char));
+    sub_fmt_name    = (char*)mxCalloc(20, sizeof(char));
     endianness_name = (char*)mxCalloc(20, sizeof(char));
-    if( !endianness_name )
-        mexErrMsgTxt("mxCalloc error!");
+
+    if( maj_fmt_name == NULL ||
+            sub_fmt_name == NULL ||
+            endianness_name == NULL )
+        mexErrMsgTxt("mxCalloc error!"); 
 
     /* initialize sf_file_info struct pointer */
     sf_file_info = (SF_INFO*)mxMalloc(sizeof(SF_INFO));
-    if( !sf_file_info )
+    if( sf_file_info == NULL )
         mexErrMsgTxt("Could not allocate SF_INFO* instance");
 
     if( nrhs < 2 )
@@ -109,16 +106,17 @@ void mexFunction(int nlhs, mxArray *plhs[],
             /*
              * get the format information
              */
+
             /* format name should be set to RAW when reading RAW files */
             tmp_ptr = mxGetField(prhs[1], 0, "format" );
             if( tmp_ptr != NULL )
-                mxGetString(tmp_ptr, major_format_name, mxGetN(tmp_ptr)+1);
+                mxGetString(tmp_ptr, maj_fmt_name, mxGetN(tmp_ptr)+1);
             else
-                major_format_name = "RAW";
+                maj_fmt_name = "RAW";
 
             tmp_ptr = mxGetField(prhs[1], 0, "sampleformat" );
             if( tmp_ptr != NULL )
-                mxGetString(tmp_ptr, sub_format_name, mxGetN(tmp_ptr)+1);
+                mxGetString(tmp_ptr, sub_fmt_name, mxGetN(tmp_ptr)+1);
             else
                 mexErrMsgTxt("Field 'sampleformat' not set.");
 
@@ -129,10 +127,10 @@ void mexFunction(int nlhs, mxArray *plhs[],
             else
                 endianness_name = "FILE";
 
-            /* sf_file_info->format = get_val(&major_formats, major_format_name) | \ */
+            /* sf_file_info->format = lookup_val(&maj_fmts, maj_fmt_name) | \ */
             sf_file_info->format = SF_FORMAT_RAW | \
-                                   get_val(&sub_formats, sub_format_name) | \
-                                   get_val(&endianness_types, endianness_name);
+                                   lookup_val(&sub_fmts, sub_fmt_name) | \
+                                   lookup_val(&endianness_types, endianness_name);
         }
         else
             mexErrMsgTxt("The second argument has to be a struct! (see help text)");
@@ -144,7 +142,7 @@ void mexFunction(int nlhs, mxArray *plhs[],
         mexErrMsgTxt("Invalid format specified.");
     }
     else 
-        sf_input_file = sf_open(sf_input_fname, SFM_READ, sf_file_info);
+        sf_input_file = sf_open(sf_in_fname, SFM_READ, sf_file_info);
 
     if( sf_input_file == NULL )
         mexErrMsgTxt("Could not open audio file.");
@@ -152,11 +150,11 @@ void mexFunction(int nlhs, mxArray *plhs[],
     num_frames = sf_file_info->frames;
 
     /* initialise Matlab output array */
-    num_channels = sf_file_info->channels;
-    plhs[0]      = mxCreateDoubleMatrix((int)sf_file_info->frames, num_channels, mxREAL);
+    num_chns = sf_file_info->channels;
+    plhs[0]      = mxCreateDoubleMatrix((int)sf_file_info->frames, num_chns, mxREAL);
     output       = mxGetPr(plhs[0]);
     /* data read via libsndfile */
-    data         = (double*)mxCalloc((int)sf_file_info->frames*num_channels,sizeof(double));
+    data         = (double*)mxCalloc((int)sf_file_info->frames*num_chns,sizeof(double));
 
     /* read the entire file in one go */
     processed_frames = sf_readf_double(sf_input_file, data, num_frames);
@@ -166,21 +164,21 @@ void mexFunction(int nlhs, mxArray *plhs[],
     /*
      * transpose returned data
      *
-     * TODO: maybe do an in-place transpose? Files already open almost twice as
-     * fast compared to Matlab's built-in functions, so some additional time
-     * complexity probably won't hurt much.
+     * TODO: maybe do an in-place transpose? Files already open in about 2/3 of
+     * the time of Matlab's wavread(), so some additional time complexity
+     * probably won't hurt much.
      */
-    for( i=0; i<num_frames; i+=num_channels ) {
+    for( i=0; i<num_frames; i+=num_chns ) {
         int j;
-        for( j=0; j<num_channels; j++ )
-            output[i+j*num_frames] = data[i*num_channels+j];
+        for( j=0; j<num_chns; j++ )
+            output[i+j*num_frames] = data[i*num_chns+j];
     }
 
     /* rudimentary way of dealing with libsndfile errors */
-    sndfile_error = sf_error(sf_input_file);
-    if( sndfile_error != SF_ERR_NO_ERROR ) {
+    sndfile_err = sf_error(sf_input_file);
+    if( sndfile_err != SF_ERR_NO_ERROR ) {
         mexWarnMsgTxt("libsndfile error!");
-        mexErrMsgTxt(sf_error_number(sndfile_error));
+        mexErrMsgTxt(sf_error_number(sndfile_err));
     }
 
     /* return sampling rate if requested */
