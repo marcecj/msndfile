@@ -33,8 +33,6 @@ int lookup_val(const LOOKUP_TABLE *array, const char *name)
 void mexFunction(int nlhs, mxArray *plhs[],
                  int nrhs, const mxArray *prhs[])
 {
-    sf_input_file = NULL; // sf_close() doesn't set the pointer to NULL!
-
     int         i; // counter in for-loops
     int         sndfile_err; // libsndfile error status
     int         num_chns;
@@ -188,6 +186,14 @@ void mexFunction(int nlhs, mxArray *plhs[],
         *fs     = (double)sf_file_info->samplerate;
     }
 
-    if( sf_input_file != NULL )
-        sf_close(sf_input_file);
+    if( sf_input_file != NULL ) {
+        if( !sf_close(sf_input_file) )
+            /* sf_close() doesn't set the pointer to NULL, and Matlab doesn't
+             * like that (it prints "too many files open" errors), even though
+             * this pointer is overwritten every call anyway */
+            sf_input_file = NULL;
+        else
+            mexWarnMsgTxt("libsndfile could not close the file!");
+    }
+
 }
