@@ -58,7 +58,7 @@ mexversion = sndfile.Clone()
 
 # look for libraries and corresponding headers and exit if they aren't found
 # (autoconf-like behaviour)
-if not GetOption('clean'):
+if not (GetOption('clean') or GetOption('help')):
     conf = sndfile.Configure()
     if not conf.CheckLibWithHeader(sndfile_lib, 'sndfile.h', 'c'):
         exit("You need to install libsndfile(-dev)!")
