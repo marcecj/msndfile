@@ -32,7 +32,7 @@ if platform == "posix":
     # add "exceptions" option, without which any mex function that raises an
     # exception (e.g., mexErrMsgTxt()) causes Matlab to crash
     sndfile.Append(LIBPATH="Linux",
-                   CCFLAGS = "-O2 -fexceptions -std=c99 -pedantic -pthread -Wall -Wextra -Wpadded -dr",
+                   CCFLAGS = "-O2 -fexceptions -std=c99 -pedantic -pthread -Wall -Wextra -Wpadded -fdump-rtl-expand",
                    LINKFLAGS="--as-needed")
     if matlab_is_32_bits:
         sndfile.Append(CCFLAGS="-m32", LINKFLAGS="-m32",
