@@ -71,8 +71,11 @@ if GetOption('debug'):
 
 # add compile targets
 if platform != 'win32':
-    mexversion_obj = mexversion.SharedObject("mexversion.c")
-    sndfile.SharedLibrary("msndfile", ["msndfile.c", mexversion_obj])
+    if mexversion['MATLAB']['RELEASE'] < "R2009a":
+        mexversion_obj = mexversion.SharedObject("mexversion.c")
+        sndfile.SharedLibrary("msndfile", ["msndfile.c", mexversion_obj])
+    else:
+        sndfile.SharedLibrary("msndfile", ["msndfile.c"])
 else:
     # optionally create MS VS project, otherwise just compile
     if make_msvs:
