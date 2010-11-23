@@ -67,7 +67,7 @@ void mexFunction(int nlhs, mxArray *plhs[],
     if( maj_fmt_name == NULL ||
             sub_fmt_name == NULL ||
             endianness_name == NULL )
-        mexErrMsgTxt("mxCalloc error!"); 
+        mexErrMsgTxt("mxCalloc error!");
 
     /* initialize sf_file_info struct pointer */
     sf_file_info = (SF_INFO*)mxMalloc(sizeof(SF_INFO));
@@ -85,7 +85,7 @@ void mexFunction(int nlhs, mxArray *plhs[],
         {
             mxArray *tmp_ptr; /* a temporary array */
 
-            /* 
+            /*
              * get the sample rate and the number of channels
              */
 
@@ -139,7 +139,7 @@ void mexFunction(int nlhs, mxArray *plhs[],
         mexPrintf("Format '%x' invalid.\n", sf_file_info->format);
         mexErrMsgTxt("Invalid format specified.");
     }
-    else 
+    else
     {
         /* If a file was not closed properly last run, attempt to close it
          * again.  If it still fails, abort. */
