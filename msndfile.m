@@ -1,7 +1,7 @@
-function [OutData,fs] = msndfile(file_name, file_info)
+function [OutData,fs] = msndfile(file_name, idx_range, file_info)
 % A function to read audio files by using the libsndfile C library.
 % Usage: [OutData, fs] = msndfile(file_name)
-% InParameter:   
+% InParameter:
 %      file_name:   a string describing an audio file
 %      file_info:   (RAW files only) a struct containing file information
 % OutParam:
@@ -16,7 +16,7 @@ function [OutData,fs] = msndfile(file_name, file_info)
 % The file_info struct may optionally contain the following fields:
 %     format:       the file format ("major format"), currenty ignored
 %     endianness:   the sample endian-ness (defaults to "FILE")
-%    
+%
 % Following is a list of valid values for the format specifiers "format",
 % "sampleformat" and "endianness".  The descriptions are taken from the official
 % libsndfile API documentation (see http://www.mega-nerd.com/libsndfile).  Note
@@ -80,7 +80,7 @@ function [OutData,fs] = msndfile(file_name, file_info)
 %           DPCM_16      16 bit differential PCM (XI only)
 %
 %     Valid values for "endianness" are:
-%    
+%
 %           FILE         Default file endian-ness.
 %           LITTLE       Force little endian-ness.
 %           BIG          Force big endian-ness.

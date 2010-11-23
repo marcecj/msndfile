@@ -36,10 +36,12 @@ void mexFunction(int nlhs, mxArray *plhs[],
     int         i; // counter in for-loops
     int         sndfile_err; // libsndfile error status
     int         num_chns;
+    int         range_size;
     const int   str_size = mxGetN(prhs[0])+1; // length of the input file name
     char        *sf_in_fname; // input file name
     sf_count_t  num_frames, processed_frames=0;
     double      *data, *output, *fs;
+    double      *start_end_idx;
     SF_INFO     *sf_file_info;
     // the three OR-ed components of the "format" field in sf_file_info
     char        *maj_fmt_name, *sub_fmt_name, *endianness_name;
@@ -74,14 +76,14 @@ void mexFunction(int nlhs, mxArray *plhs[],
     if( sf_file_info == NULL )
         mexErrMsgTxt("Could not allocate SF_INFO* instance");
 
-    if( nrhs < 2 )
+    if( nrhs < 3 )
         /* "format" needs to be set to 0 before a file is opened for reading,
          * unless the file is a RAW file */
         sf_file_info->format = 0;
     else
     {
         /* handle RAW files */
-        if( mxIsStruct(prhs[1]) )
+        if( mxIsStruct(prhs[2]) )
         {
             mxArray *tmp_ptr; /* a temporary array */
 
@@ -89,13 +91,13 @@ void mexFunction(int nlhs, mxArray *plhs[],
              * get the sample rate and the number of channels
              */
 
-            tmp_ptr = mxGetField(prhs[1], 0, "samplerate" );
+            tmp_ptr = mxGetField(prhs[2], 0, "samplerate" );
             if( tmp_ptr != NULL )
                 sf_file_info->samplerate = (int)*mxGetPr(tmp_ptr);
             else
                 mexErrMsgTxt("Field 'samplerate' not set.");
 
-            tmp_ptr = mxGetField(prhs[1], 0, "channels" );
+            tmp_ptr = mxGetField(prhs[2], 0, "channels" );
             if( tmp_ptr != NULL )
                 sf_file_info->channels = (int)*mxGetPr(tmp_ptr);
             else
@@ -106,20 +108,20 @@ void mexFunction(int nlhs, mxArray *plhs[],
              */
 
             /* format name should be set to RAW when reading RAW files */
-            tmp_ptr = mxGetField(prhs[1], 0, "format" );
+            tmp_ptr = mxGetField(prhs[2], 0, "format" );
             if( tmp_ptr != NULL )
                 mxGetString(tmp_ptr, maj_fmt_name, mxGetN(tmp_ptr)+1);
             else
                 maj_fmt_name = "RAW";
 
-            tmp_ptr = mxGetField(prhs[1], 0, "sampleformat" );
+            tmp_ptr = mxGetField(prhs[2], 0, "sampleformat" );
             if( tmp_ptr != NULL )
                 mxGetString(tmp_ptr, sub_fmt_name, mxGetN(tmp_ptr)+1);
             else
                 mexErrMsgTxt("Field 'sampleformat' not set.");
 
             /* endianness_name does not need to be set */
-            tmp_ptr = mxGetField(prhs[1], 0, "endianness" );
+            tmp_ptr = mxGetField(prhs[2], 0, "endianness" );
             if( tmp_ptr != NULL )
                 mxGetString(tmp_ptr, endianness_name, mxGetN(tmp_ptr)+1);
             else
@@ -135,7 +137,7 @@ void mexFunction(int nlhs, mxArray *plhs[],
     }
 
     /* open sound file */
-    if( nrhs > 1 && !sf_format_check(sf_file_info) ) {
+    if( nrhs > 2 && !sf_format_check(sf_file_info) ) {
         mexPrintf("Format '%x' invalid.\n", sf_file_info->format);
         mexErrMsgTxt("Invalid format specified.");
     }
@@ -155,14 +157,33 @@ void mexFunction(int nlhs, mxArray *plhs[],
     if( sf_input_file == NULL )
         mexErrMsgTxt("Could not open audio file.");
 
-    num_frames = sf_file_info->frames;
+    if( nrhs > 1
+            && !mxIsEmpty(prhs[1])
+            && mxIsDouble(prhs[1]))
+    {
+        start_end_idx = mxGetPr(prhs[1]);
+        range_size    = mxGetN(prhs[1]);
+
+        if( range_size == 2 ) {
+            num_frames = (sf_count_t)(start_end_idx[1] - start_end_idx[0] + 1);
+
+            if( sf_seek(sf_input_file, start_end_idx[0]-1, SEEK_SET) < 0 )
+                mexErrMsgTxt("Invalid range!");
+        }
+        else if( range_size == 1 )
+            num_frames = (sf_count_t)(start_end_idx[0]);
+        else
+            mexErrMsgTxt("Range can be a row vector with 1 or 2 elements.");
+    }
+    else
+        num_frames = sf_file_info->frames;
 
     /* initialise Matlab output array */
     num_chns = sf_file_info->channels;
-    plhs[0]      = mxCreateDoubleMatrix((int)sf_file_info->frames, num_chns, mxREAL);
+    plhs[0]      = mxCreateDoubleMatrix((int)num_frames, num_chns, mxREAL);
     output       = mxGetPr(plhs[0]);
     /* data read via libsndfile */
-    data         = (double*)mxCalloc((int)sf_file_info->frames*num_chns,sizeof(double));
+    data         = (double*)mxCalloc((int)num_frames*num_chns,sizeof(double));
 
     /* read the entire file in one go */
     processed_frames = sf_readf_double(sf_input_file, data, num_frames);
@@ -176,7 +197,7 @@ void mexFunction(int nlhs, mxArray *plhs[],
      * the time of Matlab's wavread(), so some additional time complexity
      * probably won't hurt much.
      */
-    for( i=0; i<num_frames; i+=num_chns ) {
+    for( i=0; i<num_frames; i++ ) {
         int j;
         for( j=0; j<num_chns; j++ )
             output[i+j*num_frames] = data[i*num_chns+j];
@@ -205,5 +226,4 @@ void mexFunction(int nlhs, mxArray *plhs[],
         else
             mexWarnMsgTxt("libsndfile could not close the file!");
     }
-
 }
