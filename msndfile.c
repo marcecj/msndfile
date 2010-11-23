@@ -64,9 +64,9 @@ void mexFunction(int nlhs, mxArray *plhs[],
     sub_fmt_name    = (char*)mxCalloc(20, sizeof(char));
     endianness_name = (char*)mxCalloc(20, sizeof(char));
 
-    if( maj_fmt_name == NULL ||
-            sub_fmt_name == NULL ||
-            endianness_name == NULL )
+    if( maj_fmt_name == NULL
+            || sub_fmt_name == NULL
+            || endianness_name == NULL )
         mexErrMsgTxt("mxCalloc error!");
 
     /* initialize sf_file_info struct pointer */
