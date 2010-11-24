@@ -39,8 +39,10 @@ void mexFunction(int nlhs, mxArray *plhs[],
     int         range_size;
     const int   str_size = mxGetN(prhs[0])+1; // length of the input file name
     char        *sf_in_fname; // input file name
+    char        *cmd_str; // command string ("size")
     sf_count_t  num_frames, processed_frames=0;
     double      *data, *output, *fs;
+    double      *dims;  // dimensions vector (returned with "size")
     double      *start_end_idx;
     SF_INFO     *sf_file_info;
     // the three OR-ed components of the "format" field in sf_file_info
@@ -157,6 +159,35 @@ void mexFunction(int nlhs, mxArray *plhs[],
     if( sf_input_file == NULL )
         mexErrMsgTxt("Could not open audio file.");
 
+    /*
+     * If the second argument is 'size', then only return the dimensions of the
+     * signal.
+     */
+    if( nrhs > 1
+            && !mxIsEmpty(prhs[1])
+            && mxIsChar(prhs[1]))
+    {
+        cmd_str = (char*)mxMalloc(4*sizeof(char));
+        if( cmd_str == NULL )
+            mexErrMsgTxt("mxMalloc error!");
+
+        if( mxGetString(prhs[1], cmd_str, mxGetN(prhs[1])+1) == 1 )
+            mexErrMsgTxt("Error getting command string.");
+
+        if( strcmp(cmd_str, "size") == 0 ) {
+            plhs[0] = mxCreateDoubleMatrix(1, 2, mxREAL);
+
+            dims    = mxGetPr(plhs[0]);
+            dims[0] = (double)(sf_file_info->frames);
+            dims[1] = (double)(sf_file_info->channels);
+        }
+        else
+            mexErrMsgTxt("Unknown command.");
+
+        // Skip everything else and close the SF_INFO file
+        goto close_file;
+    }
+
     if( nrhs > 1
             && !mxIsEmpty(prhs[1])
             && mxIsDouble(prhs[1]))
@@ -209,6 +240,8 @@ void mexFunction(int nlhs, mxArray *plhs[],
         mexWarnMsgTxt("libsndfile error!");
         mexErrMsgTxt(sf_error_number(sndfile_err));
     }
+
+close_file:
 
     /* return sampling rate if requested */
     if( nlhs > 1 ) {
