@@ -45,7 +45,7 @@ void mexFunction(int nlhs, mxArray *plhs[],
     double      *dims;  // dimensions vector (returned with "size")
     double      *start_end_idx;
     SF_INFO     *sf_file_info;
-    // the three OR-ed components of the "format" field in sf_file_info
+    /* the three OR-ed components of the "format" field in sf_file_info */
     char        *maj_fmt_name, *sub_fmt_name, *endianness_name;
 
     mexAtExit(&clear_memory);
@@ -184,7 +184,7 @@ void mexFunction(int nlhs, mxArray *plhs[],
         else
             mexErrMsgTxt("Unknown command.");
 
-        // Skip everything else and close the SF_INFO file
+        /* Skip everything else and close the SF_INFO file */
         goto close_file;
     }
 
