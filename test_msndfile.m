@@ -7,7 +7,7 @@ close all;
 [in_wav, fs] = wavread('test.wav');
 
 %
-%% Test 2: importing RAW files
+%% Test 1: importing RAW files
 %
 
 % [input, fs] = msndfile('test.aif');
@@ -50,6 +50,10 @@ num_unequal = sum(in_raw_blockwise - in_wav(1:num_samples,:));
 fprintf('\n');
 disp('Comparing RAW (msndfile, blockwise) and WAV (wavread)');
 disp(['There are ' num2str(num_unequal) ' incorrect samples']);
+
+%
+%% Test 3: performance comparisons
+%
 
 fprintf('\n');
 disp('Conducting performance comparison (1000 reads, first 1024 samples)');
