@@ -211,10 +211,10 @@ void mexFunction(int nlhs, mxArray *plhs[],
 
     /* initialise Matlab output array */
     num_chns = sf_file_info->channels;
-    plhs[0]      = mxCreateDoubleMatrix((int)num_frames, num_chns, mxREAL);
-    output       = mxGetPr(plhs[0]);
+    plhs[0]  = mxCreateDoubleMatrix((int)num_frames, num_chns, mxREAL);
+    output   = mxGetPr(plhs[0]);
     /* data read via libsndfile */
-    data         = (double*)mxCalloc((int)num_frames*num_chns,sizeof(double));
+    data     = (double*)mxCalloc((int)num_frames*num_chns,sizeof(double));
 
     /* read the entire file in one go */
     processed_frames = sf_readf_double(sf_input_file, data, num_frames);
