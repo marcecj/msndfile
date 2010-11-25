@@ -36,14 +36,10 @@ void mexFunction(int nlhs, mxArray *plhs[],
     int         i; // counter in for-loops
     int         sndfile_err; // libsndfile error status
     int         num_chns;
-    int         range_size;
     const int   str_size = mxGetN(prhs[0])+1; // length of the input file name
     char        *sf_in_fname; // input file name
-    char        *cmd_str; // command string ("size")
     sf_count_t  num_frames, processed_frames=0;
-    double      *data, *output, *fs; //, *nbits;
-    double      *dims;  // dimensions vector (returned with "size")
-    double      *start_end_idx;
+    double      *data, *output;
     SF_INFO     *sf_file_info;
     /* the three OR-ed components of the "format" field in sf_file_info */
     char        *maj_fmt_name, *sub_fmt_name, *endianness_name;
@@ -167,7 +163,7 @@ void mexFunction(int nlhs, mxArray *plhs[],
             && !mxIsEmpty(prhs[1])
             && mxIsChar(prhs[1]))
     {
-        cmd_str = (char*)mxMalloc(4*sizeof(char));
+        char *cmd_str = (char*)mxMalloc(4*sizeof(char));
         if( cmd_str == NULL )
             mexErrMsgTxt("mxMalloc error!");
 
@@ -175,9 +171,11 @@ void mexFunction(int nlhs, mxArray *plhs[],
             mexErrMsgTxt("Error getting command string.");
 
         if( strcmp(cmd_str, "size") == 0 ) {
-            plhs[0] = mxCreateDoubleMatrix(1, 2, mxREAL);
+            double *dims;
 
+            plhs[0] = mxCreateDoubleMatrix(1, 2, mxREAL);
             dims    = mxGetPr(plhs[0]);
+
             dims[0] = (double)(sf_file_info->frames);
             dims[1] = (double)(sf_file_info->channels);
         }
@@ -192,8 +190,8 @@ void mexFunction(int nlhs, mxArray *plhs[],
             && !mxIsEmpty(prhs[1])
             && mxIsDouble(prhs[1]))
     {
-        start_end_idx = mxGetPr(prhs[1]);
-        range_size    = mxGetN(prhs[1]);
+        double *start_end_idx = mxGetPr(prhs[1]);
+        int    range_size     = mxGetN(prhs[1]);
 
         if( range_size == 2 ) {
             num_frames = (sf_count_t)(start_end_idx[1] - start_end_idx[0] + 1);
@@ -245,16 +243,19 @@ close_file:
 
     /* return sampling rate if requested */
     if( nlhs > 1 ) {
+        double *fs;
+
         plhs[1] = mxCreateDoubleMatrix(1, 1, mxREAL);
         fs      = mxGetPr(plhs[1]);
-        *fs     = (double)sf_file_info->samplerate;
+
+        *fs = (double)sf_file_info->samplerate;
     }
 
     /* TODO: return the number of bits (requires checking the SF_INFO ->format field) */
     /*
      * if( nlhs > 2 ) {
      *     plhs[2] = mxCreateDoubleMatrix(1, 1, mxREAL);
-     *     nbits   = mxGetPr(plhs[2]);
+     *     double *nbits   = mxGetPr(plhs[2]);
      *     *nbits  = 0;
      * }
      */
