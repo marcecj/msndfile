@@ -52,7 +52,23 @@ disp('Comparing RAW (msndfile, blockwise) and WAV (wavread)');
 disp(['There are ' num2str(num_unequal) ' incorrect samples']);
 
 %
-%% Test 3: performance comparisons
+%% Test 3: test 'size' command
+%
+
+[file_size, fs] = wavread('test.wav', 'size');
+disp(sprintf('wavread   (WAV):\tLength = %i,\tNChns = %i,\tFS = %i', file_size, fs));
+
+[file_size, fs] = msndfile('test.wav', 'size');
+disp(sprintf('msndfile  (WAV):\tLength = %i,\tNChns = %i,\tFS = %i', file_size, fs));
+
+[file_size, fs] = msndfile('test.raw', 'size', file_info);
+disp(sprintf('msndfile  (RAW):\tLength = %i,\tNChns = %i,\tFS = %i', file_size, fs));
+
+[file_size, fs] = msndfile('test.flac', 'size');
+disp(sprintf('msndfile (FLAC):\tLength = %i,\tNChns = %i,\tFS = %i', file_size, fs));
+
+%
+%% Test 4: performance comparisons
 %
 
 fprintf('\n');
