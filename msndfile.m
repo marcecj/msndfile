@@ -1,10 +1,28 @@
 function [OutData,fs] = msndfile(file_name, idx_range, file_info)
-% A function to read audio files by using the libsndfile C library.
-% Usage: [OutData, fs] = msndfile(file_name)
-% InParameter:
-%      file_name:   a string describing an audio file
+%MSNDFILE reads audio files using the libsndfile C library.
+% OUTDATA = MSNDFILE(FILE_NAME) will read the file specified by FILE_NAME and
+% returns the Signal OUTDATA.
+%
+% OUTDATA = MSNDFILE(FILE_NAME, N) returns the first N samples.
+% OUTDATA = MSNDFILE(FILE_NAME, [START END]) will read the samples in the range
+% START...END.
+%
+% If FILE_NAME is a RAW audio file, then a third input argument, FILE_INFO, must
+% be specified (see below).
+%
+% SIZE = MSNDFILE(FILE_NAME, 'size') returns a two-element row vector SIZE
+% containing the number of samples per channel and the number of channels.
+%
+% [..., FS] = MSNDFILE(...) returns the sampling rate FS.
+%
+% input parameters:
+%      file_name:   the audio file name (a string)
+%      idx_range:   a row vector defining the range of samples to be read. If it
+%                   only has one element, it will read from the beginning up to
+%                   the specified index.
 %      file_info:   (RAW files only) a struct containing file information
-% OutParam:
+%
+% output parameters:
 %      OutData:   the new data vector (Len x Chns)
 %      fs:        the sampling rate of the audio file
 %
@@ -14,7 +32,7 @@ function [OutData,fs] = msndfile(file_name, idx_range, file_info)
 %     sampleformat: the sample format (format "subtype")
 %
 % The file_info struct may optionally contain the following fields:
-%     format:       the file format ("major format"), currenty ignored
+%     format:       the file format ("major format"), currently ignored
 %     endianness:   the sample endian-ness (defaults to "FILE")
 %
 % Following is a list of valid values for the format specifiers "format",
@@ -88,7 +106,12 @@ function [OutData,fs] = msndfile(file_name, idx_range, file_info)
 
 % (c) Marc Joliet, Jade-Hochschule, Institut für Hoertechnik und Audiologie,
 % www.hoertechnik-audiologie.de
-% 24th May, 2010
+%
+% Licence: see file 'LICENCE'
+%
+% Last modified: 24th November, 2010
+%
 % History: 1.0 - first properly working version
 % History: 1.1 - added support for RAW files
-% Licence: see file 'LICENCE'
+% History: 1.2 - added support for reading a range of samples and for obtaining
+%                the size of the audio data. Also fixed a stupid bug.
