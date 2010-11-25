@@ -41,7 +41,7 @@ void mexFunction(int nlhs, mxArray *plhs[],
     char        *sf_in_fname; // input file name
     char        *cmd_str; // command string ("size")
     sf_count_t  num_frames, processed_frames=0;
-    double      *data, *output, *fs;
+    double      *data, *output, *fs; //, *nbits;
     double      *dims;  // dimensions vector (returned with "size")
     double      *start_end_idx;
     SF_INFO     *sf_file_info;
@@ -249,6 +249,15 @@ close_file:
         fs      = mxGetPr(plhs[1]);
         *fs     = (double)sf_file_info->samplerate;
     }
+
+    /* TODO: return the number of bits (requires checking the SF_INFO ->format field) */
+    /*
+     * if( nlhs > 2 ) {
+     *     plhs[2] = mxCreateDoubleMatrix(1, 1, mxREAL);
+     *     nbits   = mxGetPr(plhs[2]);
+     *     *nbits  = 0;
+     * }
+     */
 
     if( sf_input_file != NULL ) {
         if( !sf_close(sf_input_file) )
