@@ -126,9 +126,9 @@ void mexFunction(int nlhs, mxArray *plhs[],
                 endianness_name = "FILE";
 
             /* sf_file_info->format = lookup_val(&maj_fmts, maj_fmt_name) | \ */
-            sf_file_info->format = SF_FORMAT_RAW | \
-                                   lookup_val(&sub_fmts, sub_fmt_name) | \
-                                   lookup_val(&endianness_types, endianness_name);
+            sf_file_info->format = SF_FORMAT_RAW
+                                    | lookup_val(&sub_fmts, sub_fmt_name)
+                                    | lookup_val(&endianness_types, endianness_name);
         }
         else
             mexErrMsgTxt("The second argument has to be a struct! (see help text)");
