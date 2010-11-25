@@ -183,7 +183,7 @@ void mexFunction(int nlhs, mxArray *plhs[],
             mexErrMsgTxt("Unknown command.");
 
         /* Skip everything else and close the SF_INFO file */
-        goto close_file;
+        goto return_to_matlab;
     }
 
     if( nrhs > 1
@@ -239,7 +239,7 @@ void mexFunction(int nlhs, mxArray *plhs[],
         mexErrMsgTxt(sf_error_number(sndfile_err));
     }
 
-close_file:
+return_to_matlab:
 
     /* return sampling rate if requested */
     if( nlhs > 1 ) {
