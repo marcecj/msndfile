@@ -89,7 +89,7 @@ disp(['mean time taken by msndfile (WAV): ' num2str(mean(t_e))]);
 disp(['(standard deviation: ' num2str(std(t_e)) ')']);
 
 for kk=1:1000
-    tic, wavread('test', 1024);
+    tic, wavread('test.wav', 1024);
     t_e(kk) = toc;
 end
 disp(['mean time taken by wavread: ' num2str(mean(t_e))]);
@@ -106,7 +106,7 @@ disp(['mean time taken by msndfile: ' num2str(mean(t_e))]);
 disp(['(standard deviation: ' num2str(std(t_e)) ')']);
 
 for kk=1:1000
-    tic, wavread('test');
+    tic, wavread('test.wav');
     t_e(kk) = toc;
 end
 disp(['mean time taken by wavread: ' num2str(mean(t_e))]);
