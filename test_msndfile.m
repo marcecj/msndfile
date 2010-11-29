@@ -6,6 +6,9 @@ close all;
 % the reference: the entire file imported by wavread
 [in_wav, fs] = wavread('test.wav');
 
+disp('Testing msndfile...')
+disp('Test file used in all tests: test.wav (also as RAW and FLAC)')
+
 %
 %% Test 1: importing RAW files
 %
@@ -78,22 +81,19 @@ for kk=1:1000
     tic, msndfile('test.flac', 1024);
     t_e(kk) = toc;
 end
-disp(['mean time taken by msndfile (FLAC): ' num2str(mean(t_e))]);
-disp(['(standard deviation: ' num2str(std(t_e)) ')']);
+disp(sprintf('mean time taken by msndfile (FLAC):\t%.6f +- %.6f', mean(t_e), std(t_e)));
 
 for kk=1:1000
     tic, msndfile('test.wav', 1024);
     t_e(kk) = toc;
 end
-disp(['mean time taken by msndfile (WAV): ' num2str(mean(t_e))]);
-disp(['(standard deviation: ' num2str(std(t_e)) ')']);
+disp(sprintf('mean time taken by msndfile (WAV):\t%.6f +- %.6f', mean(t_e), std(t_e)));
 
 for kk=1:1000
     tic, wavread('test.wav', 1024);
     t_e(kk) = toc;
 end
-disp(['mean time taken by wavread: ' num2str(mean(t_e))]);
-disp(['(standard deviation: ' num2str(std(t_e)) ')']);
+disp(sprintf('mean time taken by wavread:\t%.6f +- %.6f', mean(t_e), std(t_e)));
 
 fprintf('\n');
 disp('Conducting performance comparison (WAV vs. WAV, 1000 reads, whole file)');
@@ -102,12 +102,10 @@ for kk=1:1000
     tic, msndfile('test.wav');
     t_e(kk) = toc;
 end
-disp(['mean time taken by msndfile: ' num2str(mean(t_e))]);
-disp(['(standard deviation: ' num2str(std(t_e)) ')']);
+disp(sprintf('mean time taken by msndfile:\t%.6f +- %.6f', mean(t_e), std(t_e)));
 
 for kk=1:1000
     tic, wavread('test.wav');
     t_e(kk) = toc;
 end
-disp(['mean time taken by wavread: ' num2str(mean(t_e))]);
-disp(['(standard deviation: ' num2str(std(t_e)) ')']);
+disp(sprintf('mean time taken by wavread:\t%.6f +- %.6f', mean(t_e), std(t_e)));
