@@ -99,14 +99,14 @@ fprintf('\n');
 disp('Conducting performance comparison (WAV vs. WAV, 1000 reads, whole file)');
 
 for kk=1:1000
-    tic, msndfile('test.wav', 1024);
+    tic, msndfile('test.wav');
     t_e(kk) = toc;
 end
 disp(['mean time taken by msndfile: ' num2str(mean(t_e))]);
 disp(['(standard deviation: ' num2str(std(t_e)) ')']);
 
 for kk=1:1000
-    tic, wavread('test', 1024);
+    tic, wavread('test');
     t_e(kk) = toc;
 end
 disp(['mean time taken by wavread: ' num2str(mean(t_e))]);
