@@ -41,8 +41,6 @@ void mexFunction(int nlhs, mxArray *plhs[],
     sf_count_t  num_frames, processed_frames=0;
     double      *data, *output;
     SF_INFO     *sf_file_info;
-    /* the three OR-ed components of the "format" field in sf_file_info */
-    char        *maj_fmt_name, *sub_fmt_name, *endianness_name;
 
     mexAtExit(&clear_memory);
 
@@ -60,15 +58,6 @@ void mexFunction(int nlhs, mxArray *plhs[],
      * format subtypes and the endianness as per the libsndfile documentation
      */
 
-    maj_fmt_name    = (char*)mxCalloc(20, sizeof(char));
-    sub_fmt_name    = (char*)mxCalloc(20, sizeof(char));
-    endianness_name = (char*)mxCalloc(20, sizeof(char));
-
-    if( maj_fmt_name == NULL
-            || sub_fmt_name == NULL
-            || endianness_name == NULL )
-        mexErrMsgTxt("mxCalloc error!");
-
     /* initialize sf_file_info struct pointer */
     sf_file_info = (SF_INFO*)mxMalloc(sizeof(SF_INFO));
     if( sf_file_info == NULL )
@@ -83,7 +72,18 @@ void mexFunction(int nlhs, mxArray *plhs[],
         /* handle RAW files */
         if( mxIsStruct(prhs[2]) )
         {
-            mxArray *tmp_ptr; /* a temporary array */
+            /* a temporary array */
+            mxArray *tmp_ptr;
+            /* the three OR-ed components of the "format" field in sf_file_info */
+            char* maj_fmt_name    = (char*)mxCalloc(20, sizeof(char));
+            char* sub_fmt_name    = (char*)mxCalloc(20, sizeof(char));
+            char* endianness_name = (char*)mxCalloc(20, sizeof(char));
+
+            if( maj_fmt_name == NULL
+                    || sub_fmt_name == NULL
+                    || endianness_name == NULL )
+                mexErrMsgTxt("mxCalloc error!");
+
 
             /*
              * get the sample rate and the number of channels
