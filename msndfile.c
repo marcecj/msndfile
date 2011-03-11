@@ -111,7 +111,7 @@ void mexFunction(int nlhs, mxArray *plhs[],
             if( tmp_ptr != NULL )
                 mxGetString(tmp_ptr, maj_fmt_name, mxGetN(tmp_ptr)+1);
             else
-                maj_fmt_name = "RAW";
+                maj_fmt_name = strcpy(maj_fmt_name, "RAW");
 
             tmp_ptr = mxGetField(prhs[2], 0, "sampleformat" );
             if( tmp_ptr != NULL )
@@ -124,7 +124,7 @@ void mexFunction(int nlhs, mxArray *plhs[],
             if( tmp_ptr != NULL )
                 mxGetString(tmp_ptr, endianness_name, mxGetN(tmp_ptr)+1);
             else
-                endianness_name = "FILE";
+                endianness_name = strcpy(endianness_name, "FILE");
 
             /* sf_file_info->format = lookup_val(&maj_fmts, maj_fmt_name) | \ */
             sf_file_info->format = SF_FORMAT_RAW
