@@ -87,6 +87,7 @@ void mexFunction(int nlhs, mxArray *plhs[],
 
             /*
              * get the sample rate and the number of channels
+             * TODO: test for empty fields!
              */
 
             tmp_ptr = mxGetField(prhs[2], 0, "samplerate" );
