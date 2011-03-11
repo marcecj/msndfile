@@ -48,9 +48,11 @@ void mexFunction(int nlhs, mxArray *plhs[],
         mexErrMsgTxt("Missing argument: you need to pass a file name.");
 
     /* get input filename */
-    sf_in_fname = (char*)mxCalloc(str_size, sizeof(char));
-    if( sf_in_fname == NULL )
-        mexErrMsgTxt("mxCalloc error!");
+    sf_in_fname = (char*)calloc(str_size, sizeof(char));
+    if( sf_in_fname == NULL ) {
+        free(sf_in_fname);
+        mexErrMsgTxt("calloc error!");
+    }
     mxGetString(prhs[0], sf_in_fname, str_size);
 
     /*
@@ -59,9 +61,11 @@ void mexFunction(int nlhs, mxArray *plhs[],
      */
 
     /* initialize sf_file_info struct pointer */
-    sf_file_info = (SF_INFO*)mxMalloc(sizeof(SF_INFO));
-    if( sf_file_info == NULL )
+    sf_file_info = (SF_INFO*)malloc(sizeof(SF_INFO));
+    if( sf_file_info == NULL ) {
+        free(sf_in_fname);
         mexErrMsgTxt("Could not allocate SF_INFO* instance");
+    }
 
     if( nrhs < 3 )
         /* "format" needs to be set to 0 before a file is opened for reading,
@@ -75,14 +79,20 @@ void mexFunction(int nlhs, mxArray *plhs[],
             /* a temporary array */
             mxArray *tmp_ptr;
             /* the three OR-ed components of the "format" field in sf_file_info */
-            char* maj_fmt_name    = (char*)mxCalloc(20, sizeof(char));
-            char* sub_fmt_name    = (char*)mxCalloc(20, sizeof(char));
-            char* endianness_name = (char*)mxCalloc(20, sizeof(char));
+            char* maj_fmt_name    = (char*)calloc(20, sizeof(char));
+            char* sub_fmt_name    = (char*)calloc(20, sizeof(char));
+            char* endianness_name = (char*)calloc(20, sizeof(char));
 
             if( maj_fmt_name == NULL
                     || sub_fmt_name == NULL
                     || endianness_name == NULL )
-                mexErrMsgTxt("mxCalloc error!");
+            {
+                free(maj_fmt_name);
+                free(sub_fmt_name);
+                free(endianness_name);
+                free(sf_in_fname);
+                mexErrMsgTxt("calloc error!");
+            }
 
 
             /*
@@ -93,14 +103,26 @@ void mexFunction(int nlhs, mxArray *plhs[],
             tmp_ptr = mxGetField(prhs[2], 0, "samplerate" );
             if( tmp_ptr != NULL )
                 sf_file_info->samplerate = (int)*mxGetPr(tmp_ptr);
-            else
+            else {
+                free(maj_fmt_name);
+                free(sub_fmt_name);
+                free(endianness_name);
+                free(sf_in_fname);
+                free(sf_file_info);
                 mexErrMsgTxt("Field 'samplerate' not set.");
+            }
 
             tmp_ptr = mxGetField(prhs[2], 0, "channels" );
             if( tmp_ptr != NULL )
                 sf_file_info->channels = (int)*mxGetPr(tmp_ptr);
-            else
+            else {
+                free(maj_fmt_name);
+                free(sub_fmt_name);
+                free(endianness_name);
+                free(sf_in_fname);
+                free(sf_file_info);
                 mexErrMsgTxt("Field 'channels' not set.");
+            }
 
             /*
              * get the format information
@@ -116,8 +138,14 @@ void mexFunction(int nlhs, mxArray *plhs[],
             tmp_ptr = mxGetField(prhs[2], 0, "sampleformat" );
             if( tmp_ptr != NULL )
                 mxGetString(tmp_ptr, sub_fmt_name, mxGetN(tmp_ptr)+1);
-            else
+            else {
+                free(maj_fmt_name);
+                free(sub_fmt_name);
+                free(endianness_name);
+                free(sf_in_fname);
+                free(sf_file_info);
                 mexErrMsgTxt("Field 'sampleformat' not set.");
+            }
 
             /* endianness_name does not need to be set */
             tmp_ptr = mxGetField(prhs[2], 0, "endianness" );
@@ -130,14 +158,23 @@ void mexFunction(int nlhs, mxArray *plhs[],
             sf_file_info->format = SF_FORMAT_RAW
                                     | lookup_val(&sub_fmts, sub_fmt_name)
                                     | lookup_val(&endianness_types, endianness_name);
+
+            free(maj_fmt_name);
+            free(sub_fmt_name);
+            free(endianness_name);
         }
-        else
+        else {
+            free(sf_in_fname);
+            free(sf_file_info);
             mexErrMsgTxt("The second argument has to be a struct! (see help text)");
+        }
     }
 
     /* open sound file */
     if( nrhs > 2 && !sf_format_check(sf_file_info) ) {
         mexPrintf("Format '%x' invalid.\n", sf_file_info->format);
+        free(sf_in_fname);
+        free(sf_file_info);
         mexErrMsgTxt("Invalid format specified.");
     }
     else
@@ -147,14 +184,19 @@ void mexFunction(int nlhs, mxArray *plhs[],
         if( sf_input_file != NULL ) {
             if( !sf_close(sf_input_file) )
                 sf_input_file = NULL;
-            else
+            else {
+                free(sf_in_fname);
                 mexErrMsgTxt("There was still a file open that could not be closed!");
+            }
         }
         sf_input_file = sf_open(sf_in_fname, SFM_READ, sf_file_info);
+        free(sf_in_fname);
     }
 
-    if( sf_input_file == NULL )
+    if( sf_input_file == NULL ) {
+        free(sf_file_info);
         mexErrMsgTxt("Could not open audio file.");
+    }
 
     /*
      * If the second argument is 'size', then only return the dimensions of the
@@ -164,12 +206,14 @@ void mexFunction(int nlhs, mxArray *plhs[],
             && !mxIsEmpty(prhs[1])
             && mxIsChar(prhs[1]))
     {
-        char *cmd_str = (char*)mxMalloc(4*sizeof(char));
+        char *cmd_str = (char*)malloc(4*sizeof(char));
         if( cmd_str == NULL )
-            mexErrMsgTxt("mxMalloc error!");
+            mexErrMsgTxt("malloc error!");
 
-        if( mxGetString(prhs[1], cmd_str, mxGetN(prhs[1])+1) == 1 )
+        if( mxGetString(prhs[1], cmd_str, mxGetN(prhs[1])+1) == 1 ) {
+            free(cmd_str);
             mexErrMsgTxt("Error getting command string.");
+        }
 
         if( strcmp(cmd_str, "size") == 0 ) {
             double *dims;
@@ -180,10 +224,13 @@ void mexFunction(int nlhs, mxArray *plhs[],
             dims[0] = (double)(sf_file_info->frames);
             dims[1] = (double)(sf_file_info->channels);
         }
-        else
+        else {
+            free(cmd_str);
             mexErrMsgTxt("Unknown command.");
+        }
 
         /* Skip everything else and close the SF_INFO file */
+        free(cmd_str);
         goto return_to_matlab;
     }
 
@@ -213,12 +260,15 @@ void mexFunction(int nlhs, mxArray *plhs[],
     plhs[0]  = mxCreateDoubleMatrix((int)num_frames, num_chns, mxREAL);
     output   = mxGetPr(plhs[0]);
     /* data read via libsndfile */
-    data     = (double*)mxCalloc((int)num_frames*num_chns,sizeof(double));
+    data     = (double*)calloc((int)num_frames*num_chns,sizeof(double));
 
     /* read the entire file in one go */
     processed_frames = sf_readf_double(sf_input_file, data, num_frames);
-    if( processed_frames <= 0 )
+    if( processed_frames <= 0 ) {
+        free(data);
+        free(sf_file_info);
         mexErrMsgTxt("Error reading frames from input file: 0 frames read!");
+    }
 
     /*
      * transpose returned data
@@ -232,10 +282,12 @@ void mexFunction(int nlhs, mxArray *plhs[],
         for( j=0; j<num_chns; j++ )
             output[i+j*num_frames] = data[i*num_chns+j];
     }
+    free(data);
 
     /* rudimentary way of dealing with libsndfile errors */
     sndfile_err = sf_error(sf_input_file);
     if( sndfile_err != SF_ERR_NO_ERROR ) {
+        free(sf_file_info);
         mexWarnMsgTxt("libsndfile error!");
         mexErrMsgTxt(sf_error_number(sndfile_err));
     }
@@ -270,4 +322,7 @@ return_to_matlab:
         else
             mexWarnMsgTxt("libsndfile could not close the file!");
     }
+
+    /* free memory */
+    free(sf_file_info);
 }
