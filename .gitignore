@@ -1,0 +1,17 @@
+*~
+*.os
+
+# vim files
+*.swp
+
+# scons files
+.matlab_vars_cache
+.sconf_temp/*
+.sconsign.dblite
+config.log
+
+msndfile-0.1*
+
+# misc files
+*.expand
+*.mex*
