@@ -14,7 +14,7 @@ matlab_is_32_bits = GetOption('32bits')
 make_msvs         = GetOption('msvs')
 
 # the mex_builder tool automatically sets various environment variables
-sndfile      = Environment(tools = ['default', 'packaging', ('mex_builder', {'mex': True})])
+sndfile      = Environment(tools = ['default', 'packaging', 'matlab'])
 
 # print sndfile['CC']
 # sndfile.Replace(CC="clang")
@@ -60,10 +60,10 @@ if GetOption('debug'):
 
 # add compile targets
 if platform != 'win32':
-    msndfile = sndfile.MexExtension("msndfile", ["msndfile.c"])
+    msndfile = sndfile.Mex("msndfile", ["msndfile.c"])
 else:
     # optionally create MS VS project, otherwise just compile
-    sndfile.MexExtension("msndfile", ["msndfile.c", "msndfile.def"],
+    sndfile.Mex("msndfile", ["msndfile.c", "msndfile.def"],
                          only_deps=make_msvs)
     if make_msvs:
         sndfile_vs = sndfile.MSVSProject("msndfile"+sndfile['MSVSPROJECTSUFFIX'],
