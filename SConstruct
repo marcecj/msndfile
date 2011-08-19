@@ -1,3 +1,4 @@
+# vim:ft=python
 # TODO: Test Mac.
 
 # some options, help text says all
