@@ -20,10 +20,18 @@ the following build targets:
 
 matlab_is_32_bits = GetOption('32bits')
 
-# the mex_builder tool automatically sets various environment variables
-sndfile = Environment(tools = ['default', 'packaging', 'matlab'])
+env_vars = Variables()
+env_vars.Add('CC', 'The C compiler')
 
-# sndfile.Replace(CC="clang")
+# the mex_builder tool automatically sets various environment variables
+sndfile = Environment(tools = ['default', 'packaging', 'matlab'],
+                      variables = env_vars)
+
+# help on environment overrides
+Help("""
+The following environment variables can be overridden by passing them *after*
+the call to scons, i.e. "scons CC=gcc":""")
+Help(env_vars.GenerateHelpText(sndfile))
 
 platform     = sndfile['PLATFORM']
 
