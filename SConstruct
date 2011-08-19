@@ -4,14 +4,10 @@
 AddOption('--with-32bits', dest='32bits', action='store_true',
           help='Force 32 bit compilation ("-m32" GCC option) on Unix.')
 
-AddOption('--with-msvs', dest='msvs', action='store_true',
-          help='Create a MSVS solution file under Windows.')
-
 AddOption('--with-debug', dest='debug', action='store_true',
           help='Add debugging symbols')
 
 matlab_is_32_bits = GetOption('32bits')
-make_msvs         = GetOption('msvs')
 
 # the mex_builder tool automatically sets various environment variables
 sndfile      = Environment(tools = ['default', 'packaging', 'matlab'])
@@ -58,22 +54,25 @@ if GetOption('debug'):
     sndfile.MergeFlags(["-g", "-O0"])
     msvs_variant = "Debug"
 
-# add compile targets
-if platform != 'win32':
-    msndfile = sndfile.Mex("msndfile", ["msndfile.c"])
-else:
-    # optionally create MS VS project, otherwise just compile
-    sndfile.Mex("msndfile", ["msndfile.c", "msndfile.def"],
-                         only_deps=make_msvs)
-    if make_msvs:
-        sndfile_vs = sndfile.MSVSProject("msndfile"+sndfile['MSVSPROJECTSUFFIX'],
-                                         ["msndfile.c", "msndfile.def"])
-        MSVSSolution("msndfile", [sndfile_vs], msvs_variant)
+msndfile = sndfile.Mex("msndfile", ["msndfile.c"])
+
+if platform == 'win32':
+    sndfile_vs = sndfile.MSVSProject(target = "msndfile" + sndfile['MSVSPROJECTSUFFIX'],
+                                     srcs = ["msndfile.c"],
+                                     variant = msvs_variant)
+    Alias("vsproj", sndfile_vs)
 
 # package the software
-sndfile.Package(
+sndfile_pkg = sndfile.Package(
     source      = [msndfile, "msndfile.m"],
     NAME        = "msndfile",
     VERSION     = "0.1",
     PACKAGETYPE = "zip"
 )
+
+# some useful aliases
+Alias("makezip", sndfile_pkg)
+Alias("msndfile", msndfile)
+Alias("all", [msndfile, sndfile_pkg])
+
+Default(msndfile)
