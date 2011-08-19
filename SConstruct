@@ -16,7 +16,6 @@ sndfile = Environment(tools = ['default', 'packaging', 'matlab'])
 # sndfile.Replace(CC="clang")
 
 platform     = sndfile['PLATFORM']
-msvs_variant = "Release"
 
 # OS dependent stuff, we assume GCC on Unix like platforms
 if platform == "posix":
@@ -66,14 +65,23 @@ if not (GetOption('clean') or GetOption('help')):
 
 if GetOption('debug'):
     sndfile.MergeFlags(["-g", "-O0"])
-    msvs_variant = "Debug"
 
 msndfile = sndfile.Mex("msndfile", ["msndfile.c"])
 
 if platform == 'win32':
-    sndfile_vs = sndfile.MSVSProject(target = "msndfile" + sndfile['MSVSPROJECTSUFFIX'],
-                                     srcs = ["msndfile.c"],
-                                     variant = msvs_variant)
+    # TODO: test debugging!
+    sndfile_debug = sndfile.Clone().MergeFlags(["-g", "-O0"])
+    msndfile_dbg  = sndfile_debug.Mex("msndfile", ["msndfile.c"])
+
+    sndfile_vs = sndfile.MSVSProject(
+        target      = "msndfile" + sndfile['MSVSPROJECTSUFFIX'],
+        buildtarget = [msndfile, msndfile_dbg],
+        runfile     = "matlab",
+        srcs        = ["msndfile.c"],
+        localincs   = ["msndfile.h"],
+        incs        = ["sndfile.h"],
+        variant     = ["Release", "Debug"]
+    )
     Alias("vsproj", sndfile_vs)
 
 # package the software
