@@ -8,6 +8,16 @@ AddOption('--with-32bits', dest='32bits', action='store_true',
 AddOption('--with-debug', dest='debug', action='store_true',
           help='Add debugging symbols')
 
+# general help
+Help(
+"""This build system compiles the msndfile Mex file.  To compile, use one of
+the following build targets:
+    msndfile  -> compile msndfile (default)
+    makezip   -> create a zip file (contains msndfile + libsndfile)
+    all       -> runs both msndfile and makezip
+"""
+)
+
 matlab_is_32_bits = GetOption('32bits')
 
 # the mex_builder tool automatically sets various environment variables
@@ -83,6 +93,10 @@ if platform == 'win32':
         variant     = ["Release", "Debug"]
     )
     Alias("vsproj", sndfile_vs)
+    Help(
+"""    vsproj    -> create a visual studio project file
+"""
+    )
 
 # package the software
 
@@ -101,5 +115,14 @@ sndfile_pkg = sndfile.Package(
 Alias("makezip", sndfile_pkg)
 Alias("msndfile", msndfile)
 Alias("all", [msndfile, sndfile_pkg])
+
+# options help
+Help(
+"""
+The following options are supported:
+    --with-32bits   -> Force 32 bit compilation ("-m32" GCC option) on Unix.
+    --with-debug    -> Add debugging symbols.
+"""
+)
 
 Default(msndfile)
