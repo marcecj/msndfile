@@ -11,7 +11,7 @@ AddOption('--with-debug', dest='debug', action='store_true',
 matlab_is_32_bits = GetOption('32bits')
 
 # the mex_builder tool automatically sets various environment variables
-sndfile      = Environment(tools = ['default', 'packaging', 'matlab'])
+sndfile = Environment(tools = ['default', 'packaging', 'matlab'])
 
 # sndfile.Replace(CC="clang")
 
@@ -20,22 +20,39 @@ msvs_variant = "Release"
 
 # OS dependent stuff, we assume GCC on Unix like platforms
 if platform == "posix":
-    sndfile.Append(LIBPATH="Linux",
-                   CCFLAGS="-std=c99 -O2 -pedantic -Wall -Wextra -fdump-rtl-expand",
-                   LIBS=["m"])
+
+    sndfile.Append(
+        LIBPATH = "Linux",
+        CCFLAGS = "-std=c99 -O2 -pedantic -Wall -Wextra -fdump-rtl-expand",
+        LIBS    = ["m"]
+    )
+
     if sndfile['CC'] == 'gcc':
         sndfile.Append(LINKFLAGS="-Wl,--as-needed")
+
     if matlab_is_32_bits:
-        sndfile.Append(CCFLAGS="-m32", LINKFLAGS="-m32",
-                       CPPDEFINES="_FILE_OFFSET_BITS=64")
+        sndfile.Append(
+            CCFLAGS    = "-m32",
+            LINKFLAGS  = "-m32",
+            CPPDEFINES = "_FILE_OFFSET_BITS=64"
+        )
+
     sndfile_lib = "sndfile"
+
 elif platform == "win32":
+
     sndfile.Append(LIBPATH="Win", CPPPATH="Win")
+
     sndfile_lib = "libsndfile-1"
+
 elif platform == "darwin":
-    sndfile.Append(LIBPATH="Mac",
-                   CCFLAGS="-std=c99 -O2 -pedantic -Wall -Wextra",
-                   LIBS=["m"])
+
+    sndfile.Append(
+        LIBPATH = "Mac",
+        CCFLAGS = "-std=c99 -O2 -pedantic -Wall -Wextra",
+        LIBS    = ["m"]
+    )
+
     sndfile_lib = "sndfile"
 else:
     exit("Oops, not a supported platform.")
@@ -60,6 +77,7 @@ if platform == 'win32':
     Alias("vsproj", sndfile_vs)
 
 # package the software
+
 pkg_src = [msndfile, "msndfile.m"]
 if platform == 'win32':
     pkg_src += [sndfile['SHLIBPREFIX'] + sndfile_lib + sndfile['SHLIBSUFFIX']]
