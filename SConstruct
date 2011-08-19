@@ -59,8 +59,12 @@ if platform == 'win32':
     Alias("vsproj", sndfile_vs)
 
 # package the software
+pkg_src = [msndfile, "msndfile.m"]
+if platform == 'win32':
+    pkg_src += [sndfile['SHLIBPREFIX'] + sndfile_lib + sndfile['SHLIBSUFFIX']]
+
 sndfile_pkg = sndfile.Package(
-    source      = [msndfile, "msndfile.m"],
+    source      = pkg_src,
     NAME        = "msndfile",
     VERSION     = "0.1",
     PACKAGETYPE = "zip"
