@@ -12,7 +12,6 @@ matlab_is_32_bits = GetOption('32bits')
 # the mex_builder tool automatically sets various environment variables
 sndfile      = Environment(tools = ['default', 'packaging', 'matlab'])
 
-# print sndfile['CC']
 # sndfile.Replace(CC="clang")
 
 platform     = sndfile['PLATFORM']
@@ -39,9 +38,6 @@ elif platform == "darwin":
     sndfile_lib = "sndfile"
 else:
     exit("Oops, not a supported platform.")
-
-# define operating system independent options and dependencies
-sndfile.Append(CPPPATH = "include")
 
 if not (GetOption('clean') or GetOption('help')):
     # look for libsndfile plus header and exit if either one isn't found
