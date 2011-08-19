@@ -1,4 +1,4 @@
-# TODO: Test Mac and Windows.
+# TODO: Test Mac.
 
 # some options, help text says all
 AddOption('--with-32bits', dest='32bits', action='store_true',
