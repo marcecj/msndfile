@@ -90,7 +90,7 @@ elseif(UNIX)
 
     # additional CFLAGS; "-dr" dumps GCCs internal code representation (for a
     # call graph utility)
-    set(EXTRA_CFLAGS "-std=c99 -Wall -Wextra -Wpadded -dr")
+    set(EXTRA_CFLAGS "-std=c99 -pedantic -Wall -Wextra -Wpadded -dr")
     # here we need to link to libm
     set(ADDITIONAL_LIBS "m")
 
