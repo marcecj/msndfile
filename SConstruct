@@ -59,6 +59,7 @@ if platform == "posix":
 elif platform == "win32":
 
     sndfile.Append(LIBPATH="Win", CPPPATH="Win")
+    sndfile.Replace(WINDOWS_INSERT_DEF = True)
 
     sndfile_lib = "libsndfile-1"
 
