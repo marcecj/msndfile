@@ -28,12 +28,14 @@ sndfile = Environment(tools = ['default', 'packaging', 'matlab'],
                       variables = env_vars)
 
 # help on environment overrides
-Help("""
+Help(
+"""
 The following environment variables can be overridden by passing them *after*
-the call to scons, i.e. "scons CC=gcc":""")
+the call to scons, i.e. "scons CC=gcc":"""
+)
 Help(env_vars.GenerateHelpText(sndfile))
 
-platform     = sndfile['PLATFORM']
+platform = sndfile['PLATFORM']
 
 # OS dependent stuff, we assume GCC on Unix like platforms
 if platform == "posix":
@@ -85,14 +87,14 @@ if not (GetOption('clean') or GetOption('help')):
 do_debug = False
 msndfile = sndfile.SConscript(os.sep.join(['src', 'SConstruct']),
                               variant_dir = "build",
-                              exports = ["sndfile", "do_debug"],
-                              duplicate = False)
+                              exports     = ["sndfile", "do_debug"],
+                              duplicate   = False)
 
 do_debug = True
 msndfile_dbg = sndfile.SConscript(os.sep.join(['src', 'SConstruct']),
                                   variant_dir = "debug",
-                                  exports = ["sndfile", "do_debug"],
-                                  duplicate = False)
+                                  exports     = ["sndfile", "do_debug"],
+                                  duplicate   = False)
 
 if platform == 'win32':
     build_targets = [os.sep.join([d, "msndfile"]) + sndfile['MATLAB']['MEX_EXT']
