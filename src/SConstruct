@@ -1,0 +1,12 @@
+Import(["sndfile", "do_debug"])
+
+if do_debug:
+    sndfile = sndfile.Clone()
+    if sndfile['PLATFORM'] == "win32":
+        sndfile['PDB'] = 'msndfile.pdb'
+    else:
+        sndfile.MergeFlags("-g -O0")
+
+msndfile = sndfile.Mex("msndfile", ["msndfile.c"])
+
+Return("msndfile")
