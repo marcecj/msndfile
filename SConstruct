@@ -85,12 +85,14 @@ if not (GetOption('clean') or GetOption('help')):
 do_debug = False
 msndfile = sndfile.SConscript(os.sep.join(['src', 'SConstruct']),
                               variant_dir = "build",
-                              exports = ["sndfile", "do_debug"])
+                              exports = ["sndfile", "do_debug"],
+                              duplicate = False)
 
 do_debug = True
 msndfile_dbg = sndfile.SConscript(os.sep.join(['src', 'SConstruct']),
                                   variant_dir = "debug",
-                                  exports = ["sndfile", "do_debug"])
+                                  exports = ["sndfile", "do_debug"],
+                                  duplicate = False)
 
 if platform == 'win32':
     build_targets = [os.sep.join([d, "msndfile"]) + sndfile['MATLAB']['MEX_EXT']
