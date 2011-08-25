@@ -60,7 +60,10 @@ if platform == "posix":
 
 elif platform == "win32":
 
-    sndfile.Append(LIBPATH="Win", CPPPATH="Win")
+    # enforce searching in the top-level Win directory
+    win_path = os.sep.join([os.path.abspath(os.path.curdir), 'Win'])
+
+    sndfile.Append(LIBPATH=win_path, CPPPATH=win_path)
     sndfile.Replace(WINDOWS_INSERT_DEF = True)
 
     sndfile_lib = "libsndfile-1"
@@ -119,7 +122,7 @@ if platform == 'win32':
 
 pkg_src = [msndfile, os.sep.join(["src", "msndfile.m"])]
 if platform == 'win32':
-    pkg_src += [sndfile['SHLIBPREFIX'] + sndfile_lib + sndfile['SHLIBSUFFIX']]
+    pkg_src += [os.sep.join(['Win', sndfile['SHLIBPREFIX'] + sndfile_lib + sndfile['SHLIBSUFFIX']])]
 
 sndfile.Install(".", pkg_src)
 sndfile_pkg = sndfile.Package(
