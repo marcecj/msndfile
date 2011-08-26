@@ -1,3 +1,4 @@
+# vim:ft=python
 Import(["sndfile", "do_debug"])
 
 if do_debug:
