@@ -55,7 +55,8 @@ few environment variables, though it slows compilation down the first time it is
 run because it starts a Matlab subprocess to obtain them.  If you need to work
 on the Code and plan to compile often, you can speed up the process in general
 by using the interactive mode by passing the `--interactive` option to SCons.
-You can also override certain environment variables (see the `scons --help`).
+You can also override certain environment variables.  For more information (such
+as available build targets and options), see the output of `scons --help`.
 
 In summary, the command line would look like this:
 
