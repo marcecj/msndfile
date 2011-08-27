@@ -104,10 +104,9 @@ function [OutData,fs] = msndfile(file_name, idx_range, file_info)
 %           BIG          Force big endian-ness.
 %           CPU          Force CPU endian-ness.
 
-% (c) Marc Joliet, Jade-Hochschule, Institut für Hoertechnik und Audiologie,
-% www.hoertechnik-audiologie.de
+% (c) Marc Joliet <marcec@gmx.de>
 %
-% Licence: see file 'LICENCE'
+% Licence: see file 'LICENSE'
 %
 % Last modified: 24th November, 2010
 %
