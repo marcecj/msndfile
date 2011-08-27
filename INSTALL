@@ -3,38 +3,42 @@ Installing msndfile
 
 There are 2 ways to compile msndfile.  The easy way is to call the m-file
 'compile_msndfile.m' from Matlab.  There is also a more flexible build system
-based on SCons available, though it is perhaps overblown for a project of this
-size.  It has, however, proven that a proper and robust cross-platform build
-system for Mex extensions is possible.  For details to both methods, see their
+based on SCons available, that can also generate IDE project files (though right
+now only for Microsoft Visual Studio).  For details to both methods, see their
 relevant subsections.
-
-A problem of all methods of compilation is that at least two things are not
-implemented.  For one thing: installing.  It is expected that you copy the
-resulting Mex binaries to wherever your Matlab installation looks for them.
 
 Prerequisites
 -------------
+
+If you are going to use the SCons based build system, you will need to install
+http://python.org[Python] and http://scons.org[SCons] first.  Under Windows,
+SCons benefits from the
+http://starship.python.net/crew/mhammond/win32/Downloads.html[Python Win32
+extensions].
 
 Linux
 ~~~~~
 
 You need to have the libsndfile development package installed (typically a
-package with a '-devel' suffix).  On systems like Gentoo, where runtime and
-development components are not separated, simply install the libsndfile package.
+package with a '-devel' suffix).
 
 Windows
 ~~~~~~~
 
-You don't need anything.  All needed libraries and Headers (except those
-belonging to Matlab) are bundled.
+You need to install libsndfile.  To do so, follow the instructions at
+http://www.mega-nerd.com/libsndfile[]).  After you have done that, copy the
+files `libsndfile-1.dll` and `libsndfile-1.lib` into the `Win` subdirectory
+(create it if it does not exist).
 
 Mac OS X
 ~~~~~~~~
 
-You need to install libsndfile.  To do so, follow the instructions at
-http://www.mega-nerd.com/libsndfile[]).  If there is no binary available for your
-version of OS X, use a package management system like fink or (better, in the
-opinion of the author) macports.
+NOTE: I have never compiled msndfile under Mac OS X, if anybody succeeds in
+doing so before I get around to it, I would like to know if it works.
+
+You need to install libsndfile.  To do so, either download the sources from
+http://www.mega-nerd.com/libsndfile[] and compile them yourself or use a package
+management system like fink or (better, in the opinion of the author) macports.
 
 Using the compile_msndfile.m script (all platforms)
 ---------------------------------------------------
@@ -46,13 +50,12 @@ Using the SCons based build system
 ----------------------------------
 
 The SCons based build system is in general more robust and flexibel than the
-calling Mex in compile_msndfile.m.  It comes with an extension that properly
-presets a few environment variables, though it slows compilation down the first
-time it is run because it starts a Matlab subprocess to obtain them.  If you
-need to work on the Code and plan to compile often, you can speed up the process
-in general by using the interactive mode by passing the `--interactive` option
-to SCons.  You can also override certain environment variables (see the `scons
---help`).
+calling Mex in compile_msndfile.m.  It uses an extension that properly presets a
+few environment variables, though it slows compilation down the first time it is
+run because it starts a Matlab subprocess to obtain them.  If you need to work
+on the Code and plan to compile often, you can speed up the process in general
+by using the interactive mode by passing the `--interactive` option to SCons.
+You can also override certain environment variables (see the `scons --help`).
 
 In summary, the command line would look like this:
 
@@ -70,12 +73,26 @@ Just open a terminal and type
 -----------------
 
 while in the source directory.  Users with 32 bit Matlab on 64 bit systems
-should pass the --linux32 option to enforce 32 bit compilation.
+should pass the option `--with-32bits` to enforce 32 bit compilation.
 
 Windows
 ~~~~~~~
 
-If SCons is in your PATH, you can open a console and follow the steps under
+You need to launch `cmd.exe`, navigate to msndfile's project directory and run
+SCons:
+
+-----------------
+    Drive:\Path\To\Python\Scripts\scons
+-----------------
+
+Replace 'Drive' and 'Path\To\Python' with the drive letter and full path to where
+Python is installed on your system.  For example:
+
+-----------------
+    C:\Python27\Scripts\scons
+-----------------
+
+If SCons is in your `PATH`, you can open a console and follow the steps under
 Linux.  The `vsproj` target creates a MS Visual Studio Solution file with
 msndfile as a project.  For other IDEs, see
 http://www.scons.org/wiki/IDEIntegration[].

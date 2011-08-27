@@ -5,11 +5,11 @@ Marc Joliet <marc.joliet@stud.fh-oldenburg.de>
 Introduction
 ------------
 
-msndfile is a mex wrapper for the libsndfile C library for reading audio files.
-It returns the audio files as MxN arrays, M being the number of samples per
-channel and N being the number of channels, as returned by, e.g., 'wavread()'.
-The only thing it doesn't do is write audio files, which should be relatively
-simple, though.
+msndfile is a Matlab Mex wrapper of the libsndfile C library for reading audio
+files.  It returns the audio files as MxN arrays, M being the number of samples
+per channel and N being the number of channels, as returned by, e.g.,
+'wavread()'.  The one major feature still missing is support for writing audio
+files, which should be relatively simple, though.
 
 Installation
 ------------
@@ -19,10 +19,6 @@ See the file `INSTALL`.
 Copyrights
 ----------
 
-//////////////////////////////////////////////////////////////////////////////
-NOTE: if this is ever distributed publicly, the source code to libsndfile must
-also be distributed.
-//////////////////////////////////////////////////////////////////////////////
 For the copyrights to msndfile, see the file LICENSE.
 
 The test files test.{raw,flac,wav} are an excerpt of "Glass Cafe" by Jon7 and
