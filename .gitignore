@@ -6,6 +6,7 @@
 
 # scons files
 .matlab_vars_cache
+.matlab_output
 .sconf_temp/*
 .sconsign.dblite
 config.log
@@ -15,3 +16,14 @@ msndfile-0.1*
 # misc files
 *.expand
 *.mex*
+
+# VS files
+msndfile.sln
+msndfile.vcproj*
+msndfile.suo
+msndfile.ncb
+_UpgradeReport_Files
+UpgradeLog.XML
+debug
+release
+Win
