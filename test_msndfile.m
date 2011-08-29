@@ -17,9 +17,39 @@ disp('Test file used in all tests: test.wav (also as RAW and FLAC)')
 
 % [input, fs] = msndfile('test.aif');
 
+% test error handling
+try
+    [in_raw, fs] = msndfile('test.raw', []);
+catch
+    disp('All in order...');
+end
+try
+    [in_raw, fs] = msndfile('test.raw', [], []);
+catch
+    disp('All in order...');
+end
+
 file_info.samplerate   = 44100;
+try
+    [in_raw, fs] = msndfile('test.raw', [], file_info);
+catch
+    disp('All in order...');
+end
+
 file_info.channels     = 2;
+try
+    [in_raw, fs] = msndfile('test.raw', [], file_info);
+catch
+    disp('All in order...');
+end
+
 file_info.format       = 'RAW';
+try
+    [in_raw, fs] = msndfile('test.raw', [], file_info);
+catch
+    disp('All in order...');
+end
+
 file_info.sampleformat = 'PCM_16';
 % file_info.endianness   = 'LITTLE'; % defaults to 'FILE'
 
