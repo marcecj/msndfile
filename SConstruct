@@ -1,20 +1,20 @@
 # vim:ft=python
 # TODO: Test Mac.
 
+import os
+
 # some options, help text says all
 AddOption('--with-32bits', dest='32bits', action='store_true',
           help='Force 32 bit compilation ("-m32" GCC option) on Unix.')
-
-AddOption('--with-debug', dest='debug', action='store_true',
-          help='Add debugging symbols')
 
 # general help
 Help(
 """This build system compiles the msndfile Mex file.  To compile, use one of
 the following build targets:
-    msndfile  -> compile msndfile (default)
-    makezip   -> create a zip file (contains msndfile + libsndfile)
-    all       -> runs both msndfile and makezip
+    msndfile     -> compile msndfile (default)
+    msndfile-dbg -> compile msndfile with debugging information
+    makezip      -> create a zip file (contains msndfile + libsndfile)
+    all          -> runs both msndfile and makezip
 """
 )
 
@@ -28,12 +28,14 @@ sndfile = Environment(tools = ['default', 'packaging', 'matlab'],
                       variables = env_vars)
 
 # help on environment overrides
-Help("""
+Help(
+"""
 The following environment variables can be overridden by passing them *after*
-the call to scons, i.e. "scons CC=gcc":""")
+the call to scons, i.e. "scons CC=gcc":"""
+)
 Help(env_vars.GenerateHelpText(sndfile))
 
-platform     = sndfile['PLATFORM']
+platform = sndfile['PLATFORM']
 
 # OS dependent stuff, we assume GCC on Unix like platforms
 if platform == "posix":
@@ -58,7 +60,10 @@ if platform == "posix":
 
 elif platform == "win32":
 
-    sndfile.Append(LIBPATH="Win", CPPPATH="Win")
+    # enforce searching in the top-level Win directory
+    win_path = os.sep.join([os.path.abspath(os.path.curdir), 'Win'])
+
+    sndfile.Append(LIBPATH=win_path, CPPPATH=win_path)
     sndfile.Replace(WINDOWS_INSERT_DEF = True)
 
     sndfile_lib = "libsndfile-1"
@@ -82,23 +87,29 @@ if not (GetOption('clean') or GetOption('help')):
         exit("You need to install libsndfile(-dev)!")
     sndfile = conf.Finish()
 
-if GetOption('debug'):
-    sndfile.MergeFlags(["-g", "-O0"])
+do_debug = False
+msndfile = sndfile.SConscript(os.sep.join(['src', 'SConstruct']),
+                              variant_dir = "build",
+                              exports     = ["sndfile", "do_debug"],
+                              duplicate   = False)
 
-msndfile = sndfile.Mex("msndfile", ["msndfile.c"])
+do_debug = True
+msndfile_dbg = sndfile.SConscript(os.sep.join(['src', 'SConstruct']),
+                                  variant_dir = "debug",
+                                  exports     = ["sndfile", "do_debug"],
+                                  duplicate   = False)
 
 if platform == 'win32':
-    # TODO: test debugging!
-    sndfile_debug = sndfile.Clone().MergeFlags(["-g", "-O0"])
-    msndfile_dbg  = sndfile_debug.Mex("msndfile", ["msndfile.c"])
+    build_targets = [os.sep.join([d, "msndfile"]) + sndfile['MATLAB']['MEX_EXT']
+                     for d in ["build", "debug"]]
 
-    sndfile_vs = sndfile.MSVSProject(
+    sndfile_vs = MSVSProject(
         target      = "msndfile" + sndfile['MSVSPROJECTSUFFIX'],
-        buildtarget = [msndfile, msndfile_dbg],
-        runfile     = "matlab",
-        srcs        = ["msndfile.c"],
-        localincs   = ["msndfile.h"],
-        incs        = ["sndfile.h"],
+        buildtarget = build_targets,
+        runfile     = os.sep.join([sndfile['MATLAB']['ROOT'], "bin", "matlab.exe"]),
+        srcs        = os.sep.join(["src", "msndfile.c"]),
+        localincs   = os.sep.join(["src", "msndfile.h"]),
+        incs        = os.sep.join(["Win", "sndfile.h"]),
         variant     = ["Release", "Debug"]
     )
     Alias("vsproj", sndfile_vs)
@@ -109,12 +120,12 @@ if platform == 'win32':
 
 # package the software
 
-pkg_src = [msndfile, "msndfile.m"]
+pkg_src = [msndfile, os.sep.join(["src", "msndfile.m"])]
 if platform == 'win32':
-    pkg_src += [sndfile['SHLIBPREFIX'] + sndfile_lib + sndfile['SHLIBSUFFIX']]
+    pkg_src += [os.sep.join(['Win', sndfile['SHLIBPREFIX'] + sndfile_lib + sndfile['SHLIBSUFFIX']])]
 
+sndfile.Install(".", pkg_src)
 sndfile_pkg = sndfile.Package(
-    source      = pkg_src,
     NAME        = "msndfile",
     VERSION     = "0.1",
     PACKAGETYPE = "zip"
@@ -123,6 +134,7 @@ sndfile_pkg = sndfile.Package(
 # some useful aliases
 Alias("makezip", sndfile_pkg)
 Alias("msndfile", msndfile)
+Alias("msndfile-dbg", msndfile_dbg)
 Alias("all", [msndfile, sndfile_pkg])
 
 # options help
@@ -130,7 +142,6 @@ Help(
 """
 The following options are supported:
     --with-32bits   -> Force 32 bit compilation ("-m32" GCC option) on Unix.
-    --with-debug    -> Add debugging symbols.
 """
 )
 

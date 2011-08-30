@@ -10,6 +10,8 @@
 .sconf_temp/*
 .sconsign.dblite
 config.log
+build/*
+debug/*
 
 msndfile-0.1*
 

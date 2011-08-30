@@ -3,6 +3,8 @@
 clear;
 close all;
 
+addpath('build');
+
 % the reference: the entire file imported by wavread
 [in_wav, fs] = wavread('test.wav');
 
