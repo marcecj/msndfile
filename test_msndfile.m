@@ -3,6 +3,8 @@
 clear;
 close all;
 
+do_perf_tests = false;
+
 addpath('build');
 
 % the reference: the entire file imported by wavread
@@ -111,6 +113,10 @@ disp(sprintf('msndfile (FLAC):\tLength = %i,\tNChns = %i,\tFS = %i', file_size, 
 %
 %% Test 4: performance comparisons
 %
+
+if ~do_perf_tests
+    break;
+end
 
 block_sizes = 2.^(8:16).';
 t_mf = zeros(length(block_sizes), 1);
