@@ -11,13 +11,18 @@ addpath('build');
 disp('Testing msndfile...')
 disp('Test file used in all tests: test.wav (also as RAW and FLAC)')
 
+% verify that msndfile raises an error when called without input arguments
+try
+    msndfile;
+catch
+    disp('All in order...');
+end
+
 %
 %% Test 1: importing RAW files
 %
 
-% [input, fs] = msndfile('test.aif');
-
-% test error handling
+% verify that msndfile raises an error when called with insufficient arguments
 try
     [in_raw, fs] = msndfile('test.raw', []);
 catch
@@ -29,6 +34,7 @@ catch
     disp('All in order...');
 end
 
+% verify that msndfile raises an error when file_info is incomplete
 file_info.samplerate   = 44100;
 try
     [in_raw, fs] = msndfile('test.raw', [], file_info);
@@ -106,7 +112,7 @@ disp(sprintf('msndfile (FLAC):\tLength = %i,\tNChns = %i,\tFS = %i', file_size, 
 %% Test 4: performance comparisons
 %
 
-block_sizes = 2.^[8:16].';
+block_sizes = 2.^(8:16).';
 t_mf = zeros(length(block_sizes), 1);
 t_mw = t_mf;
 t_ww = t_mf;
