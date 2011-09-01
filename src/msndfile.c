@@ -39,7 +39,7 @@ void mexFunction(int nlhs, mxArray *plhs[],
     int         i; // counter in for-loops
     int         sndfile_err; // libsndfile error status
     int         num_chns;
-    const int   str_size = mxGetN(prhs[0])+1; // length of the input file name
+    const int   str_size = (nrhs > 0 ? mxGetN(prhs[0])+1 : 0); // length of the input file name
     char        *sf_in_fname; // input file name
     sf_count_t  num_frames=0, processed_frames=0;
     double      *data, *output;
