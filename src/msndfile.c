@@ -2,6 +2,8 @@
 #include <mex.h>
 #include <sndfile.h>
 #include "msndfile.h"
+#include "utils.h"
+#include "format_tables.h"
 
 /*
  * This is a simple mex-File using libsndfile for reading in audio files
@@ -19,18 +21,6 @@ void clear_memory(void)
 {
     if( sf_input_file != NULL )
         sf_close(sf_input_file);
-}
-
-/* function to get a value from a look-up table */
-int lookup_val(const LOOKUP_TABLE *array, const char *name)
-{
-    int i;
-    for(i = 0; i < array->size; i++) {
-        if( strcmp(name, array->table[i].name) == 0 )
-            return array->table[i].number;
-    }
-
-	return 0;
 }
 
 void mexFunction(int nlhs, mxArray *plhs[],

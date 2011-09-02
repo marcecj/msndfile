@@ -8,6 +8,6 @@ if do_debug:
     else:
         sndfile.MergeFlags("-g -O0")
 
-msndfile = sndfile.Mex("msndfile", ["msndfile.c"])
+msndfile = sndfile.Mex("msndfile", ["msndfile.c", "utils.c"])
 
 Return("msndfile")
