@@ -9,12 +9,12 @@ AddOption('--with-32bits', dest='32bits', action='store_true',
 
 # general help
 Help(
-"""This build system compiles the msndfile Mex file.  To compile, use one of
+"""This build system compiles the msndread Mex file.  To compile, use one of
 the following build targets:
-    msndfile     -> compile msndfile (default)
-    msndfile-dbg -> compile msndfile with debugging information
-    makezip      -> create a zip file (contains msndfile + libsndfile)
-    all          -> runs both msndfile and makezip
+    msndread     -> compile msndread (default)
+    msndread-dbg -> compile msndread with debugging information
+    makezip      -> create a zip file (contains msndread + libsndfile)
+    all          -> runs both msndread and makezip
 """
 )
 
@@ -88,27 +88,27 @@ if not (GetOption('clean') or GetOption('help')):
     sndfile = conf.Finish()
 
 do_debug = False
-msndfile = sndfile.SConscript(os.sep.join(['src', 'SConstruct']),
+msndread = sndfile.SConscript(os.sep.join(['src', 'SConstruct']),
                               variant_dir = "build",
                               exports     = ["sndfile", "do_debug"],
                               duplicate   = False)
 
 do_debug = True
-msndfile_dbg = sndfile.SConscript(os.sep.join(['src', 'SConstruct']),
+msndread_dbg = sndfile.SConscript(os.sep.join(['src', 'SConstruct']),
                                   variant_dir = "debug",
                                   exports     = ["sndfile", "do_debug"],
                                   duplicate   = False)
 
 if platform == 'win32':
-    build_targets = [os.sep.join([d, "msndfile"]) + sndfile['MATLAB']['MEX_EXT']
+    build_targets = [os.sep.join([d, "msndread"]) + sndfile['MATLAB']['MEX_EXT']
                      for d in ["build", "debug"]]
 
     sndfile_vs = MSVSProject(
-        target      = "msndfile" + sndfile['MSVSPROJECTSUFFIX'],
+        target      = "msndread" + sndfile['MSVSPROJECTSUFFIX'],
         buildtarget = build_targets,
         runfile     = os.sep.join([sndfile['MATLAB']['ROOT'], "bin", "matlab.exe"]),
-        srcs        = os.sep.join(["src", "msndfile.c"]),
-        localincs   = os.sep.join(["src", "msndfile.h"]),
+        srcs        = os.sep.join(["src", "msndread.c"]),
+        localincs   = os.sep.join(["src", "msndread.h"]),
         incs        = os.sep.join(["Win", "sndfile.h"]),
         variant     = ["Release", "Debug"]
     )
@@ -120,7 +120,7 @@ if platform == 'win32':
 
 # package the software
 
-pkg_src = [msndfile, os.sep.join(["src", "msndfile.m"])]
+pkg_src = [msndread, os.sep.join(["src", "msndread.m"])]
 if platform == 'win32':
     pkg_src += [os.sep.join(['Win', sndfile['SHLIBPREFIX'] + sndfile_lib + sndfile['SHLIBSUFFIX']])]
 
@@ -133,9 +133,9 @@ sndfile_pkg = sndfile.Package(
 
 # some useful aliases
 Alias("makezip", sndfile_pkg)
-Alias("msndfile", msndfile)
-Alias("msndfile-dbg", msndfile_dbg)
-Alias("all", [msndfile, sndfile_pkg])
+Alias("msndread", msndread)
+Alias("msndread-dbg", msndread_dbg)
+Alias("all", [msndread, sndfile_pkg])
 
 # options help
 Help(
@@ -145,4 +145,4 @@ The following options are supported:
 """
 )
 
-Default(msndfile)
+Default(msndread)

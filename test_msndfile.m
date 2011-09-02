@@ -10,12 +10,12 @@ addpath('build');
 % the reference: the entire file imported by wavread
 [in_wav, fs] = wavread('test.wav');
 
-disp('Testing msndfile...')
+disp('Testing msndread...')
 disp('Test file used in all tests: test.wav (also as RAW and FLAC)')
 
-% verify that msndfile raises an error when called without input arguments
+% verify that msndread raises an error when called without input arguments
 try
-    msndfile;
+    msndread;
 catch
     disp('All in order...');
 end
@@ -24,36 +24,36 @@ end
 %% Test 1: importing RAW files
 %
 
-% verify that msndfile raises an error when called with insufficient arguments
+% verify that msndread raises an error when called with insufficient arguments
 try
-    [in_raw, fs] = msndfile('test.raw', []);
+    [in_raw, fs] = msndread('test.raw', []);
 catch
     disp('All in order...');
 end
 try
-    [in_raw, fs] = msndfile('test.raw', [], []);
+    [in_raw, fs] = msndread('test.raw', [], []);
 catch
     disp('All in order...');
 end
 
-% verify that msndfile raises an error when file_info is incomplete
+% verify that msndread raises an error when file_info is incomplete
 file_info.samplerate   = 44100;
 try
-    [in_raw, fs] = msndfile('test.raw', [], file_info);
+    [in_raw, fs] = msndread('test.raw', [], file_info);
 catch
     disp('All in order...');
 end
 
 file_info.channels     = 2;
 try
-    [in_raw, fs] = msndfile('test.raw', [], file_info);
+    [in_raw, fs] = msndread('test.raw', [], file_info);
 catch
     disp('All in order...');
 end
 
 file_info.format       = 'RAW';
 try
-    [in_raw, fs] = msndfile('test.raw', [], file_info);
+    [in_raw, fs] = msndread('test.raw', [], file_info);
 catch
     disp('All in order...');
 end
@@ -62,12 +62,12 @@ file_info.sampleformat = 'PCM_16';
 % file_info.endianness   = 'LITTLE'; % defaults to 'FILE'
 
 % test the raw file import
-[in_raw, fs] = msndfile('test.raw', [], file_info);
+[in_raw, fs] = msndread('test.raw', [], file_info);
 
 num_unequal = sum(abs(in_wav - in_raw) > 0);
 
 fprintf('\n');
-disp('Comparing RAW (msndfile) and WAV (wavread)');
+disp('Comparing RAW (msndread) and WAV (wavread)');
 disp(['There are ' num2str(num_unequal) ' incorrect samples']);
 
 %
@@ -78,20 +78,20 @@ num_samples  = 16384;
 in_blockwise     = zeros(num_samples, 2);
 in_raw_blockwise = zeros(num_samples, 2);
 for kk = 1:1024:16384
-    in_blockwise(kk:kk+1023, :)     = msndfile('test.wav', [kk kk+1023]);
-    in_raw_blockwise(kk:kk+1023, :) = msndfile('test.raw', [kk kk+1023], file_info);
+    in_blockwise(kk:kk+1023, :)     = msndread('test.wav', [kk kk+1023]);
+    in_raw_blockwise(kk:kk+1023, :) = msndread('test.raw', [kk kk+1023], file_info);
 end
 
 num_unequal = sum(in_blockwise - in_wav(1:num_samples,:));
 
 fprintf('\n');
-disp('Comparing WAV (msndfile, blockwise) and WAV (wavread)');
+disp('Comparing WAV (msndread, blockwise) and WAV (wavread)');
 disp(['There are ' num2str(num_unequal) ' incorrect samples']);
 
 num_unequal = sum(in_raw_blockwise - in_wav(1:num_samples,:));
 
 fprintf('\n');
-disp('Comparing RAW (msndfile, blockwise) and WAV (wavread)');
+disp('Comparing RAW (msndread, blockwise) and WAV (wavread)');
 disp(['There are ' num2str(num_unequal) ' incorrect samples']);
 
 %
@@ -101,14 +101,14 @@ disp(['There are ' num2str(num_unequal) ' incorrect samples']);
 [file_size, fs] = wavread('test.wav', 'size');
 disp(sprintf('wavread   (WAV):\tLength = %i,\tNChns = %i,\tFS = %i', file_size, fs));
 
-[file_size, fs] = msndfile('test.wav', 'size');
-disp(sprintf('msndfile  (WAV):\tLength = %i,\tNChns = %i,\tFS = %i', file_size, fs));
+[file_size, fs] = msndread('test.wav', 'size');
+disp(sprintf('msndread  (WAV):\tLength = %i,\tNChns = %i,\tFS = %i', file_size, fs));
 
-[file_size, fs] = msndfile('test.raw', 'size', file_info);
-disp(sprintf('msndfile  (RAW):\tLength = %i,\tNChns = %i,\tFS = %i', file_size, fs));
+[file_size, fs] = msndread('test.raw', 'size', file_info);
+disp(sprintf('msndread  (RAW):\tLength = %i,\tNChns = %i,\tFS = %i', file_size, fs));
 
-[file_size, fs] = msndfile('test.flac', 'size');
-disp(sprintf('msndfile (FLAC):\tLength = %i,\tNChns = %i,\tFS = %i', file_size, fs));
+[file_size, fs] = msndread('test.flac', 'size');
+disp(sprintf('msndread (FLAC):\tLength = %i,\tNChns = %i,\tFS = %i', file_size, fs));
 
 %
 %% Test 4: performance comparisons
@@ -135,20 +135,20 @@ for aa=1:length(block_sizes)
     disp(['Conducting performance comparison (' num2str(num_run) ' reads, first ' num2str(b) ' samples)']);
 
     for kk=1:num_run
-        tic, msndfile('test.flac', b);
+        tic, msndread('test.flac', b);
         t_e(kk) = toc;
     end
     t_mf(aa) = mean(t_e);
     s_mf(aa) = std(t_e);
-    disp(sprintf('mean time taken by msndfile (FLAC):\t%.6f +- %.6f', mean(t_e), std(t_e)));
+    disp(sprintf('mean time taken by msndread (FLAC):\t%.6f +- %.6f', mean(t_e), std(t_e)));
 
     for kk=1:num_run
-        tic, msndfile('test.wav', b);
+        tic, msndread('test.wav', b);
         t_e(kk) = toc;
     end
     t_mw(aa) = mean(t_e);
     s_mw(aa) = std(t_e);
-    disp(sprintf('mean time taken by msndfile (WAV):\t%.6f +- %.6f', mean(t_e), std(t_e)));
+    disp(sprintf('mean time taken by msndread (WAV):\t%.6f +- %.6f', mean(t_e), std(t_e)));
 
     for kk=1:num_run
         tic, wavread('test.wav', b);
@@ -166,16 +166,16 @@ errorbar([block_sizes block_sizes block_sizes], ...
 set(gca, 'XScale', 'Log');
 xlabel('Block size [samples]');
 ylabel('Average read time +/- STD [ms]');
-legend({'msndfile (FLAC)', 'msndfile (WAV)', 'wavread'});
+legend({'msndread (FLAC)', 'msndread (WAV)', 'wavread'});
 
 fprintf('\n');
 disp(['Conducting performance comparison (WAV vs. WAV, ' num2str(num_run) ' reads, whole file)']);
 
 for kk=1:num_run
-    tic, msndfile('test.wav');
+    tic, msndread('test.wav');
     t_e(kk) = toc;
 end
-disp(sprintf('mean time taken by msndfile:\t%.6f +- %.6f', mean(t_e), std(t_e)));
+disp(sprintf('mean time taken by msndread:\t%.6f +- %.6f', mean(t_e), std(t_e)));
 
 for kk=1:1000
     tic, wavread('test.wav');

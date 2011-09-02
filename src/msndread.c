@@ -1,7 +1,7 @@
 #include <string.h>
 #include <mex.h>
 #include <sndfile.h>
-#include "msndfile.h"
+#include "msndread.h"
 #include "utils.h"
 #include "format_tables.h"
 

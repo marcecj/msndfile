@@ -18,6 +18,7 @@ msndfile-0.1*
 # misc files
 *.expand
 *.mex*
+*.zip
 
 # VS files
 msndfile.sln

@@ -1,19 +1,19 @@
-function [OutData,fs] = msndfile(file_name, idx_range, file_info)
-%MSNDFILE reads audio files using the libsndfile C library.
-% OUTDATA = MSNDFILE(FILE_NAME) will read the file specified by FILE_NAME and
+function [OutData,fs] = msndread(file_name, idx_range, file_info)
+%MSNDREAD reads audio files using the libsndfile C library.
+% OUTDATA = MSNDREAD(FILE_NAME) will read the file specified by FILE_NAME and
 % returns the Signal OUTDATA.
 %
-% OUTDATA = MSNDFILE(FILE_NAME, N) returns the first N samples.
-% OUTDATA = MSNDFILE(FILE_NAME, [START END]) will read the samples in the range
+% OUTDATA = MSNDREAD(FILE_NAME, N) returns the first N samples.
+% OUTDATA = MSNDREAD(FILE_NAME, [START END]) will read the samples in the range
 % START...END.
 %
 % If FILE_NAME is a RAW audio file, then a third input argument, FILE_INFO, must
 % be specified (see below).
 %
-% SIZE = MSNDFILE(FILE_NAME, 'size') returns a two-element row vector SIZE
+% SIZE = MSNDREAD(FILE_NAME, 'size') returns a two-element row vector SIZE
 % containing the number of samples per channel and the number of channels.
 %
-% [..., FS] = MSNDFILE(...) returns the sampling rate FS.
+% [..., FS] = MSNDREAD(...) returns the sampling rate FS.
 %
 % input parameters:
 %      file_name:   the audio file name (a string)
