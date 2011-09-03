@@ -49,18 +49,3 @@ set(gca, 'XScale', 'Log');
 xlabel('Block size [samples]');
 ylabel('Average read time +/- STD [ms]');
 legend({'msndblckread', 'msndread (WAV)', 'wavread'});
-
-fprintf('\n');
-disp(['Conducting performance comparison (WAV vs. WAV, ' num2str(num_run) ' reads, whole file)']);
-
-for kk=1:num_run
-    tic, msndread('test.wav');
-    t_e(kk) = toc;
-end
-disp(sprintf('mean time taken by msndread:\t%.6f +- %.6f', mean(t_e), std(t_e)));
-
-for kk=1:1000
-    tic, wavread('test.wav');
-    t_e(kk) = toc;
-end
-disp(sprintf('mean time taken by wavread:\t%.6f +- %.6f', mean(t_e), std(t_e)));
