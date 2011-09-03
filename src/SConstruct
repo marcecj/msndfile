@@ -8,6 +8,8 @@ if do_debug:
     else:
         sndfile.MergeFlags("-g -O0")
 
-msndread = sndfile.Mex("msndread", ["msndread.c", "utils.c"])
+utils_obj     = sndfile.SharedObject("utils.c")
+msndread      = sndfile.Mex("msndread", ["msndread.c", utils_obj])
+msndblockread = sndfile.Mex("msndblockread", ["msndblockread.c", utils_obj])
 
-Return("msndread")
+Return(["msndread", "msndblockread"])
