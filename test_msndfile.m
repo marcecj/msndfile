@@ -16,6 +16,7 @@ disp('Test file used in all tests: test.wav (also as RAW and FLAC)')
 % verify that msndread raises an error when called without input arguments
 try
     msndread;
+    warning('Error should be thrown!');
 catch
     disp('All in order...');
 end
@@ -27,11 +28,13 @@ end
 % verify that msndread raises an error when called with insufficient arguments
 try
     [in_raw, fs] = msndread('test.raw', []);
+    warning('Error should be thrown!');
 catch
     disp('All in order...');
 end
 try
     [in_raw, fs] = msndread('test.raw', [], []);
+    warning('Error should be thrown!');
 catch
     disp('All in order...');
 end
@@ -40,6 +43,7 @@ end
 file_info.samplerate   = 44100;
 try
     [in_raw, fs] = msndread('test.raw', [], file_info);
+    warning('Error should be thrown!');
 catch
     disp('All in order...');
 end
@@ -47,6 +51,7 @@ end
 file_info.channels     = 2;
 try
     [in_raw, fs] = msndread('test.raw', [], file_info);
+    warning('Error should be thrown!');
 catch
     disp('All in order...');
 end
@@ -54,6 +59,7 @@ end
 file_info.format       = 'RAW';
 try
     [in_raw, fs] = msndread('test.raw', [], file_info);
+    warning('Error should be thrown!');
 catch
     disp('All in order...');
 end
