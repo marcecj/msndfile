@@ -83,16 +83,22 @@ disp(['There are ' num2str(num_unequal) ' incorrect samples']);
 num_samples  = 16384;
 in_blockwise     = zeros(num_samples, 2);
 in_raw_blockwise = zeros(num_samples, 2);
+msndblockread('open', 'test.wav');
 for kk = 1:1024:16384
     in_blockwise(kk:kk+1023, :)     = msndread('test.wav', [kk kk+1023]);
+    in_blockwise2(kk:kk+1023, :)    = msndblockread('read', 'test.wav', [kk kk+1023]);
     in_raw_blockwise(kk:kk+1023, :) = msndread('test.raw', [kk kk+1023], file_info);
 end
+msndblockread('close', 'test.wav');
 
-num_unequal = sum(in_blockwise - in_wav(1:num_samples,:));
+num_unequal  = sum(in_blockwise  - in_wav(1:num_samples,:));
+num_unequal2 = sum(in_blockwise2 - in_wav(1:num_samples,:));
 
 fprintf('\n');
 disp('Comparing WAV (msndread, blockwise) and WAV (wavread)');
 disp(['There are ' num2str(num_unequal) ' incorrect samples']);
+disp('Comparing WAV (msndblockread) and WAV (wavread)');
+disp(['There are ' num2str(num_unequal2) ' incorrect samples']);
 
 num_unequal = sum(in_raw_blockwise - in_wav(1:num_samples,:));
 
@@ -122,4 +128,5 @@ disp(sprintf('msndread (FLAC):\tLength = %i,\tNChns = %i,\tFS = %i', file_size, 
 
 if do_perf_tests
     test_msndread_perf;
+    test_msndblockread_perf;
 end
