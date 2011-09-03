@@ -101,14 +101,6 @@ void mexFunction(int nlhs, mxArray *plhs[],
             get_raw_info(sf_file_info, sf_in_fname, prhs[2]);
         }
 
-        /* open sound file */
-        if( nrhs > 2 && !sf_format_check(sf_file_info) ) {
-            mexPrintf("Format '%x' invalid.\n", sf_file_info->format);
-            free(sf_in_fname);
-            free(sf_file_info);
-            mexErrMsgTxt("Invalid format specified.");
-        }
-
         sf_input_file = sf_open(sf_in_fname, SFM_READ, sf_file_info);
         free(sf_in_fname);
 

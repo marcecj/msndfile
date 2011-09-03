@@ -75,28 +75,18 @@ void mexFunction(int nlhs, mxArray *plhs[],
         get_raw_info(sf_file_info, sf_in_fname, prhs[2]);
     }
 
-    /* open sound file */
-    if( nrhs > 2 && !sf_format_check(sf_file_info) ) {
-        mexPrintf("Format '%x' invalid.\n", sf_file_info->format);
-        free(sf_in_fname);
-        free(sf_file_info);
-        mexErrMsgTxt("Invalid format specified.");
-    }
-    else
-    {
-        /* If a file was not closed properly last run, attempt to close it
-         * again.  If it still fails, abort. */
-        if( sf_input_file != NULL ) {
-            if( !sf_close(sf_input_file) )
-                sf_input_file = NULL;
-            else {
-                free(sf_in_fname);
-                mexErrMsgTxt("There was still a file open that could not be closed!");
-            }
+    /* If a file was not closed properly last run, attempt to close it
+     * again.  If it still fails, abort. */
+    if( sf_input_file != NULL ) {
+        if( !sf_close(sf_input_file) )
+            sf_input_file = NULL;
+        else {
+            free(sf_in_fname);
+            mexErrMsgTxt("There was still a file open that could not be closed!");
         }
-        sf_input_file = sf_open(sf_in_fname, SFM_READ, sf_file_info);
-        free(sf_in_fname);
     }
+    sf_input_file = sf_open(sf_in_fname, SFM_READ, sf_file_info);
+    free(sf_in_fname);
 
     if( sf_input_file == NULL ) {
         free(sf_file_info);

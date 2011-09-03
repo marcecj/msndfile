@@ -79,4 +79,12 @@ void get_raw_info(SF_INFO* sf_file_info, char* sf_in_fname, const mxArray const*
 	sf_file_info->format = SF_FORMAT_RAW
 		| lookup_val(&sub_fmts, sub_fmt_name)
 		| lookup_val(&endianness_types, endianness_name);
+
+	/* check format for validity */
+	if( !sf_format_check(sf_file_info) ) {
+		mexPrintf("Format '%x' invalid.\n", sf_file_info->format);
+		free(sf_in_fname);
+		free(sf_file_info);
+		mexErrMsgTxt("Invalid format specified.");
+	}
 }
