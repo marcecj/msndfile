@@ -72,7 +72,7 @@ void mexFunction(int nlhs, mxArray *plhs[],
             mexErrMsgTxt("The second argument has to be a struct! (see help text)");
         }
 
-        get_raw_info(sf_file_info, sf_in_fname, prhs[2]);
+        get_file_info(sf_file_info, sf_in_fname, prhs[2]);
     }
 
     /* If a file was not closed properly last run, attempt to close it
