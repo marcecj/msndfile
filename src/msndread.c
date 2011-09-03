@@ -111,11 +111,13 @@ void mexFunction(int nlhs, mxArray *plhs[],
             && !mxIsEmpty(prhs[1])
             && mxIsChar(prhs[1]))
     {
-        char *cmd_str = (char*)malloc(4*sizeof(char));
+        const short cmd_size = 5;
+
+        char *cmd_str = (char*)malloc(cmd_size*sizeof(char));
         if( cmd_str == NULL )
             mexErrMsgTxt("malloc error!");
 
-        if( mxGetString(prhs[1], cmd_str, mxGetN(prhs[1])+1) == 1 ) {
+        if( mxGetString(prhs[1], cmd_str, cmd_size) == 1 ) {
             free(cmd_str);
             mexErrMsgTxt("Error getting command string.");
         }
