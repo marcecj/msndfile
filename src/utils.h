@@ -17,4 +17,8 @@ typedef struct {
 /* function to get a value from a look-up table */
 int lookup_val(const LOOKUP_TABLE *array, const char *name);
 
+/* function to get the information on a RAW file from the args pointer and
+ * transfer it to the sf_file_info struct */
+void get_raw_info(SF_INFO* sf_file_info, char* sf_in_fname, const mxArray const* args);
+
 #endif /* __UTILS_H__ */

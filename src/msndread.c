@@ -3,7 +3,6 @@
 #include <sndfile.h>
 #include "msndread.h"
 #include "utils.h"
-#include "format_tables.h"
 
 /*
  * This is a simple mex-File using libsndfile for reading in audio files
@@ -12,9 +11,6 @@
  */
 
 SNDFILE* sf_input_file=NULL;
-
-/* the max length of a format string (9 for "IMA_ADPCM" & "VOX_ADPCM") + \0 */
-#define FMT_STR_SIZE 10
 
 /* function for clearing memory after Matlab ends */
 void clear_memory(void)
@@ -70,69 +66,13 @@ void mexFunction(int nlhs, mxArray *plhs[],
          * handle RAW files
          */
 
-        /* a temporary array */
-        mxArray *tmp_ptr = NULL;
-
-        /* the three OR-ed components of the "format" field in sf_file_info */
-        char maj_fmt_name[FMT_STR_SIZE] = "RAW";
-        char sub_fmt_name[FMT_STR_SIZE];
-        char endianness_name[FMT_STR_SIZE] = "FILE";
-
         if( !mxIsStruct(prhs[2]) ) {
             free(sf_in_fname);
             free(sf_file_info);
             mexErrMsgTxt("The second argument has to be a struct! (see help text)");
         }
 
-        /*
-         * get the sample rate and the number of channels
-         */
-
-        tmp_ptr = mxGetField(prhs[2], 0, "samplerate" );
-        if( tmp_ptr != NULL )
-            sf_file_info->samplerate = (int)*mxGetPr(tmp_ptr);
-        else {
-            free(sf_in_fname);
-            free(sf_file_info);
-            mexErrMsgTxt("Field 'samplerate' not set.");
-        }
-
-        tmp_ptr = mxGetField(prhs[2], 0, "channels" );
-        if( tmp_ptr != NULL )
-            sf_file_info->channels = (int)*mxGetPr(tmp_ptr);
-        else {
-            free(sf_in_fname);
-            free(sf_file_info);
-            mexErrMsgTxt("Field 'channels' not set.");
-        }
-
-        /*
-         * get the format information
-         */
-
-        /* format name should be set to RAW when reading RAW files */
-        tmp_ptr = mxGetField(prhs[2], 0, "format" );
-        if( tmp_ptr != NULL )
-            mxGetString(tmp_ptr, maj_fmt_name, FMT_STR_SIZE);
-
-        tmp_ptr = mxGetField(prhs[2], 0, "sampleformat" );
-        if( tmp_ptr != NULL )
-            mxGetString(tmp_ptr, sub_fmt_name, FMT_STR_SIZE);
-        else {
-            free(sf_in_fname);
-            free(sf_file_info);
-            mexErrMsgTxt("Field 'sampleformat' not set.");
-        }
-
-        /* endianness_name does not need to be set */
-        tmp_ptr = mxGetField(prhs[2], 0, "endianness" );
-        if( tmp_ptr != NULL )
-            mxGetString(tmp_ptr, endianness_name, mxGetN(tmp_ptr)+1);
-
-        /* sf_file_info->format = lookup_val(&maj_fmts, maj_fmt_name) | \ */
-        sf_file_info->format = SF_FORMAT_RAW
-                                | lookup_val(&sub_fmts, sub_fmt_name)
-                                | lookup_val(&endianness_types, endianness_name);
+        get_raw_info(sf_file_info, sf_in_fname, prhs[2]);
     }
 
     /* open sound file */
