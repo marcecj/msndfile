@@ -32,10 +32,10 @@ void mexFunction(int nlhs, mxArray *plhs[],
     sf_count_t  num_frames=0, processed_frames=0;
     double      *data, *output;
 
-    if( nrhs < 1 )
+    if( nrhs < 1 || !mxIsChar(prhs[0]))
         mexErrMsgTxt("Missing argument: you need to pass a command (either 'open', 'read', or 'close').");
 
-    if( nrhs < 2 )
+    if( nrhs < 2 || !mxIsChar(prhs[1]))
         mexErrMsgTxt("Missing argument: you need to pass a file name.");
 
     /* get input filename */
@@ -45,10 +45,6 @@ void mexFunction(int nlhs, mxArray *plhs[],
     }
     mxGetString(prhs[1], sf_in_fname, str_size);
 
-    /*
-     * If the second argument is 'size', then only return the dimensions of the
-     * signal.
-     */
     if( mxIsEmpty(prhs[0]) || !mxIsChar(prhs[0]))
         mexErrMsgTxt("Argument error: command may not be empty.");
 
@@ -67,11 +63,10 @@ void mexFunction(int nlhs, mxArray *plhs[],
         cmd_id = CMD_READ;
     else if( strcmp(cmd_str, "close") == 0 )
         cmd_id = CMD_CLOSE;
-    else {
-        free(cmd_str);
-        mexErrMsgTxt("Unknown command.");
-    }
     free(cmd_str);
+
+    if( cmd_id == -1 )
+        mexErrMsgTxt("Unknown command.");
 
     if( cmd_id == CMD_OPEN )
     {
@@ -79,10 +74,11 @@ void mexFunction(int nlhs, mxArray *plhs[],
         sf_file_info = (SF_INFO*)malloc(sizeof(SF_INFO));
         if( sf_file_info == NULL ) {
             free(sf_in_fname);
+            sf_in_fname = NULL;
             mexErrMsgTxt("Could not allocate SF_INFO* instance");
         }
 
-        if( nrhs < 4 )
+        if( nrhs < 3 )
             /* "format" needs to be set to 0 before a file is opened for reading,
              * unless the file is a RAW file */
             sf_file_info->format = 0;
@@ -95,6 +91,7 @@ void mexFunction(int nlhs, mxArray *plhs[],
             if( !mxIsStruct(prhs[2]) ) {
                 free(sf_in_fname);
                 free(sf_file_info);
+                sf_file_info = NULL;
                 mexErrMsgTxt("The second argument has to be a struct! (see help text)");
             }
 
@@ -103,9 +100,11 @@ void mexFunction(int nlhs, mxArray *plhs[],
 
         sf_input_file = sf_open(sf_in_fname, SFM_READ, sf_file_info);
         free(sf_in_fname);
+        sf_in_fname = NULL;
 
         if( sf_input_file == NULL ) {
             free(sf_file_info);
+            sf_file_info = NULL;
             mexErrMsgTxt("Could not open audio file.");
         }
     }
@@ -119,8 +118,10 @@ void mexFunction(int nlhs, mxArray *plhs[],
                 mexWarnMsgTxt("libsndfile could not close the file!");
         }
 
-        if( sf_file_info != NULL )
+        if( sf_file_info != NULL ) {
             free(sf_file_info);
+            sf_file_info = NULL;
+        }
     }
     else if( cmd_id == CMD_READ )
     {
@@ -130,6 +131,9 @@ void mexFunction(int nlhs, mxArray *plhs[],
          */
         if( sf_input_file == NULL )
             mexErrMsgTxt("No file open!");
+
+        if( nrhs < 3 )
+            mexErrMsgTxt("Missing argument: no range specified!");
 
         if( !mxIsEmpty(prhs[2]) && mxIsDouble(prhs[2]))
         {
@@ -183,8 +187,12 @@ void mexFunction(int nlhs, mxArray *plhs[],
         sndfile_err = sf_error(sf_input_file);
         if( sndfile_err != SF_ERR_NO_ERROR ) {
             free(sf_file_info);
+            sf_file_info = NULL;
             mexWarnMsgTxt("libsndfile error!");
             mexErrMsgTxt(sf_error_number(sndfile_err));
         }
     }
+
+    /* free memory */
+    free(sf_in_fname);
 }
