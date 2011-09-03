@@ -9,6 +9,11 @@
  * TODO: this needs more testing
  */
 
+enum {
+    CMD_OPEN=0,
+    CMD_READ,
+    CMD_CLOSE
+};
 
 void mexFunction(int nlhs, mxArray *plhs[],
                  int nrhs, const mxArray *prhs[])
@@ -21,6 +26,7 @@ void mexFunction(int nlhs, mxArray *plhs[],
     int         num_chns;
     const int   cmd_size = (nrhs > 0 ? mxGetN(prhs[0])+1 : 0); // length of the command
     const int   str_size = (nrhs > 1 ? mxGetN(prhs[1])+1 : 0); // length of the input file name
+    int         cmd_id = -1;
     char        *cmd_str;
     char        *sf_in_fname; // input file name
     sf_count_t  num_frames=0, processed_frames=0;
@@ -56,6 +62,18 @@ void mexFunction(int nlhs, mxArray *plhs[],
     }
 
     if( strcmp(cmd_str, "open") == 0 )
+        cmd_id = CMD_OPEN;
+    else if( strcmp(cmd_str, "read") == 0 )
+        cmd_id = CMD_READ;
+    else if( strcmp(cmd_str, "close") == 0 )
+        cmd_id = CMD_CLOSE;
+    else {
+        free(cmd_str);
+        mexErrMsgTxt("Unknown command.");
+    }
+    free(cmd_str);
+
+    if( cmd_id == CMD_OPEN )
     {
         /* initialize sf_file_info struct pointer */
         sf_file_info = (SF_INFO*)malloc(sizeof(SF_INFO));
@@ -99,7 +117,7 @@ void mexFunction(int nlhs, mxArray *plhs[],
             mexErrMsgTxt("Could not open audio file.");
         }
     }
-    else if( strcmp(cmd_str, "close") == 0 )
+    else if( cmd_id == CMD_CLOSE )
     {
         if( sf_input_file != NULL )
         {
@@ -112,7 +130,7 @@ void mexFunction(int nlhs, mxArray *plhs[],
         if( sf_file_info != NULL )
             free(sf_file_info);
     }
-    else if( strcmp(cmd_str, "read") == 0 )
+    else if( cmd_id == CMD_READ )
     {
         /*
          * allocate the strings corresponding to the names of the major formats,
@@ -177,11 +195,4 @@ void mexFunction(int nlhs, mxArray *plhs[],
             mexErrMsgTxt(sf_error_number(sndfile_err));
         }
     }
-    else {
-        free(cmd_str);
-        mexErrMsgTxt("Unknown command.");
-    }
-
-    /* free memory */
-    free(cmd_str);
 }
