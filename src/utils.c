@@ -7,7 +7,7 @@
 #define FMT_STR_SIZE 10
 
 /* function to get a value from a look-up table */
-int lookup_val(const LOOKUP_TABLE *array, const char *name)
+int lookup_val(const FMT_TABLE *array, const char *name)
 {
     int i;
     for(i = 0; i < array->size; i++) {

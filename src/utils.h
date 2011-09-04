@@ -12,10 +12,10 @@ typedef struct {
 typedef struct {
     const KEY_VAL *table;
     int size;
-} LOOKUP_TABLE;
+} FMT_TABLE;
 
 /* function to get a value from a look-up table */
-int lookup_val(const LOOKUP_TABLE *array, const char *name);
+int lookup_val(const FMT_TABLE *array, const char *name);
 
 /* function that gets the information on a file from the args pointer and
  * transfers it to the sf_file_info struct */
