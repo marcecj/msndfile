@@ -120,7 +120,7 @@ if platform == 'win32':
 
 # package the software
 
-pkg_src = [msndread, os.sep.join(["src", "msndread.m"])]
+pkg_src = [msndread, os.sep.join(["src", "msndread.m"]), os.sep.join(["src", "msndblockread.m"])]
 if platform == 'win32':
     pkg_src += [os.sep.join(['Win', sndfile['SHLIBPREFIX'] + sndfile_lib + sndfile['SHLIBSUFFIX']])]
 
