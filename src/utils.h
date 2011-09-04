@@ -3,7 +3,7 @@
 
 #include <sndfile.h>
 
-/* a simple lookup table */
+/* a simple lookup table that associates a format string with a format id */
 typedef struct {
     char* name;
     int number;
@@ -14,7 +14,8 @@ typedef struct {
     int size;
 } FMT_TABLE;
 
-/* a simple lookup table */
+/* a simple lookup table that associates the name of an open file with
+ * information about it stored in SF_INFO and its SNDFILE pointer */
 typedef struct {
     char* name;
     SF_INFO* info;
@@ -26,9 +27,16 @@ typedef struct {
     int num_files;
 } AUDIO_FILES;
 
+/*
+ * libsndfile format look-up functions
+ */
 
-/* function to get a value from a look-up table */
+/* get a value from a look-up table */
 int lookup_val(const FMT_TABLE *array, const char *name);
+
+/*
+ * audio file info look-up functions
+ */
 
 /* create an AUDIO_FILE_INFO struct */
 AUDIO_FILE_INFO* create_file_info(const char *name, SF_INFO* file_info, SNDFILE* file);
@@ -49,9 +57,12 @@ AUDIO_FILE_INFO* destroy_file_info(AUDIO_FILE_INFO* file_info);
 /* deallocate an AUDIO_FILES look-up table */
 void destroy_file_list(AUDIO_FILES* array);
 
+/*
+ * misc functions
+ */
 
-/* function that gets the information on a file from the args pointer and
- * transfers it to the sf_file_info struct */
+/* get information about a file from an args pointer and transfer it to an
+ * SF_INFO struct */
 void get_file_info(SF_INFO* sf_file_info, char* sf_in_fname, const mxArray const* args);
 
 #endif /* __UTILS_H__ */
