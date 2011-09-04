@@ -20,8 +20,8 @@ in_blockwise2 = zeros(num_samples, file_size(2));
 msndblockread('open', 'test.wav');
 msndblockread('open', 'test.flac');
 for kk = 1:block_size:num_samples
-    in_blockwise1(kk:kk+1023, :)    = msndblockread('read', 'test.wav', [kk kk+1023]);
-    in_blockwise2(kk:kk+1023, :)    = msndblockread('read', 'test.flac', [kk kk+1023]);
+    in_blockwise1(kk:kk+block_size-1, :)    = msndblockread('read', 'test.wav', [kk kk+block_size-1]);
+    in_blockwise2(kk:kk+block_size-1, :)    = msndblockread('read', 'test.flac', [kk kk+block_size-1]);
 end
 msndblockread('close', 'test.wav');
 
@@ -35,14 +35,14 @@ disp('Comparing FLAC (msndblockread) and WAV (wavread)');
 disp(['There are ' num2str(num_unequal) ' incorrect samples']);
 
 for kk = 1:block_size:num_samples
-    in_blockwise2(kk:kk+1023, :)    = msndblockread('read', 'test.flac', [kk kk+1023]);
+    in_blockwise2(kk:kk+block_size-1, :)    = msndblockread('read', 'test.flac', [kk kk+block_size-1]);
 end
 msndblockread('close', 'test.flac');
 
 in_blockwise = zeros(file_size);
 msndblockread('open', 'test.wav');
 for kk = 1:block_size:file_size(1)-block_size
-    in_blockwise(kk:kk+1023, :) = msndblockread('read', 'test.wav', [kk kk+1023]);
+    in_blockwise(kk:kk+block_size-1, :) = msndblockread('read', 'test.wav', [kk kk+block_size-1]);
 end
 in_blockwise(kk:end, :) = msndblockread('read', 'test.wav', [kk file_size(1)]);
 msndblockread('close', 'test.wav');
@@ -62,9 +62,9 @@ in_blockwise1 = zeros(file_size);
 in_blockwise2 = zeros(file_size);
 in_blockwise3 = zeros(file_size);
 for kk = 1:block_size:file_size(1)-block_size
-    in_blockwise1(kk:kk+1023, :) = msndblockread('read', 'test.wav', [kk kk+1023]);
-    in_blockwise2(kk:kk+1023, :) = msndblockread('read', 'test.flac', [kk kk+1023]);
-    in_blockwise3(kk:kk+1023, :) = msndblockread('read', 'test.raw', [kk kk+1023]);
+    in_blockwise1(kk:kk+block_size-1, :) = msndblockread('read', 'test.wav', [kk kk+block_size-1]);
+    in_blockwise2(kk:kk+block_size-1, :) = msndblockread('read', 'test.flac', [kk kk+block_size-1]);
+    in_blockwise3(kk:kk+block_size-1, :) = msndblockread('read', 'test.raw', [kk kk+block_size-1]);
 end
 in_blockwise1(kk:end, :) = msndblockread('read', 'test.wav', [kk file_size(1)]);
 in_blockwise2(kk:end, :) = msndblockread('read', 'test.flac', [kk file_size(1)]);
@@ -89,7 +89,7 @@ msndblockread('close', 'test.raw');
 
 fprintf('\n');
 try
-    msndblockread('read', 'test.raw', [kk kk+1023]);
+    msndblockread('read', 'test.raw', [kk kk+block_size-1]);
     warning('File not closed properly!');
 catch
     disp('Error correctly raised...');
@@ -98,8 +98,8 @@ end
 in_blockwise1 = zeros(file_size);
 in_blockwise2 = zeros(file_size);
 for kk = 1:block_size:file_size(1)-block_size
-    in_blockwise1(kk:kk+1023, :) = msndblockread('read', 'test.wav', [kk kk+1023]);
-    in_blockwise2(kk:kk+1023, :) = msndblockread('read', 'test.flac', [kk kk+1023]);
+    in_blockwise1(kk:kk+block_size-1, :) = msndblockread('read', 'test.wav', [kk kk+block_size-1]);
+    in_blockwise2(kk:kk+block_size-1, :) = msndblockread('read', 'test.flac', [kk kk+block_size-1]);
 end
 in_blockwise1(kk:end, :) = msndblockread('read', 'test.wav', [kk file_size(1)]);
 in_blockwise2(kk:end, :) = msndblockread('read', 'test.flac', [kk file_size(1)]);
@@ -118,20 +118,35 @@ msndblockread('closeall');
 
 fprintf('\n');
 try
-    msndblockread('read', 'test.wav', [kk kk+1023]);
+    msndblockread('read', 'test.wav', [kk kk+block_size-1]);
     warning('File not closed properly!');
 catch
     disp('Error correctly raised...');
 end
 try
-    msndblockread('read', 'test.flac', [kk kk+1023]);
+    msndblockread('read', 'test.flac', [kk kk+block_size-1]);
     warning('File not closed properly!');
 catch
     disp('Error correctly raised...');
 end
 try
-    msndblockread('read', 'test.raw', [kk kk+1023]);
+    msndblockread('read', 'test.raw', [kk kk+block_size-1]);
     warning('File not closed properly!');
 catch
     disp('Error correctly raised...');
 end
+
+msndblockread('open', 'test.wav');
+
+in_blockwise1 = zeros(file_size);
+for kk = 1:block_size:file_size(1)-block_size
+    in_blockwise1(kk:kk+block_size-1, :) = msndblockread('read', 'test.wav', block_size);
+end
+in_blockwise1(kk:end, :) = msndblockread('read', 'test.wav', [kk file_size(1)]);
+
+num_unequal = sum(in_blockwise1 - in_wav);
+fprintf('\n');
+disp('Comparing WAV (msndblockread) and WAV (wavread)');
+disp(['There are ' num2str(num_unequal) ' incorrect samples']);
+
+msndblockread('close', 'test.wav');

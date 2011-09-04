@@ -5,7 +5,7 @@ try
     msndread;
     warning('Error should be thrown!');
 catch
-    disp('All in order...');
+    disp('Error correctly raised...');
 end
 
 %
@@ -17,13 +17,13 @@ try
     [in_raw, fs] = msndread('test.raw', []);
     warning('Error should be thrown!');
 catch
-    disp('All in order...');
+    disp('Error correctly raised...');
 end
 try
     [in_raw, fs] = msndread('test.raw', [], []);
     warning('Error should be thrown!');
 catch
-    disp('All in order...');
+    disp('Error correctly raised...');
 end
 
 % verify that msndread raises an error when file_info is incomplete
@@ -32,7 +32,7 @@ try
     [in_raw, fs] = msndread('test.raw', [], file_info);
     warning('Error should be thrown!');
 catch
-    disp('All in order...');
+    disp('Error correctly raised...');
 end
 
 file_info.channels     = 2;
@@ -40,7 +40,7 @@ try
     [in_raw, fs] = msndread('test.raw', [], file_info);
     warning('Error should be thrown!');
 catch
-    disp('All in order...');
+    disp('Error correctly raised...');
 end
 
 file_info.format       = 'RAW';
@@ -48,7 +48,7 @@ try
     [in_raw, fs] = msndread('test.raw', [], file_info);
     warning('Error should be thrown!');
 catch
-    disp('All in order...');
+    disp('Error correctly raised...');
 end
 
 file_info.sampleformat = 'PCM_16';
@@ -102,5 +102,3 @@ disp(sprintf('msndread  (RAW):\tLength = %i,\tNChns = %i,\tFS = %i', file_size, 
 
 [file_size, fs] = msndread('test.flac', 'size');
 disp(sprintf('msndread (FLAC):\tLength = %i,\tNChns = %i,\tFS = %i', file_size, fs));
-
-
