@@ -12,14 +12,14 @@ addpath('build');
 
 disp('Test file used in all tests: test.wav (also as RAW and FLAC)')
 
-test_msndread;
-test_msndblockread;
+test.msndread;
+test.msndblockread;
 
 %
 %% Test 4: performance comparisons
 %
 
 if do_perf_tests
-    test_msndread_perf;
-    test_msndblockread_perf;
+    test.msndread_perf;
+    test.msndblockread_perf;
 end
