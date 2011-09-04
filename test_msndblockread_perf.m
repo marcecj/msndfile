@@ -48,4 +48,4 @@ errorbar([block_sizes block_sizes block_sizes], ...
 set(gca, 'XScale', 'Log');
 xlabel('Block size [samples]');
 ylabel('Average read time +/- STD [ms]');
-legend({'msndblckread', 'msndread (WAV)', 'wavread'});
+legend({'msndblockread', 'msndread (WAV)', 'wavread'});
