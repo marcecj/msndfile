@@ -67,7 +67,7 @@ for aa=1:length(block_sizes)
     disp(sprintf('mean time taken by wavReader:\t\t\t%.6f +- %.6f', mean(t_e), std(t_e)));
 end
 
-figure;
+f_h = figure;
 title('Time taken to read an entire 9.5 s audio file @44.1 kHz with varying block size.');
 errorbar([block_sizes block_sizes block_sizes], ...
          [t_mf t_mw t_ww].*1e3, [s_mf s_mw s_ww].*1e3, ...
@@ -127,7 +127,7 @@ for aa=1:length(block_sizes)
     disp(sprintf('mean time taken by wavReader:\t\t\t%.6f +- %.6f', mean(t_e), std(t_e)));
 end
 
-figure;
+f_h(2) = figure;
 title('Time taken to read an entire 9.5 s audio file @44.1 kHz with varying block size.');
 errorbar([block_sizes block_sizes block_sizes], ...
          [t_mf t_mw t_ww].*1e3, [s_mf s_mw s_ww].*1e3, ...
@@ -136,3 +136,9 @@ set(gca, 'XScale', 'Log');
 xlabel('Block size [samples]');
 ylabel('Average read time +/- STD [ms]');
 legend({'msndblockread (FLAC)', 'msndblockread (WAV)', 'wavReader'});
+
+% print figures
+fnames = {'perf_comp_whole', 'perf_comp_partial'};
+for k=1:length(f_h)
+    print(f_h(k), '-depsc2', ['graphics' filesep fnames{k}]);
+end
