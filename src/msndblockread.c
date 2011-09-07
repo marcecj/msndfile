@@ -139,6 +139,8 @@ void mexFunction(int nlhs, mxArray *plhs[],
     else if( cmd_id == CMD_READ )
     {
         mxArray     *temp;
+        bool        do_transpose=true;
+        double*     temp_array;
 
         /*
          * allocate the strings corresponding to the names of the major formats,
@@ -171,25 +173,37 @@ void mexFunction(int nlhs, mxArray *plhs[],
         else
             num_frames = file_info->info->frames;
 
+        if( nrhs == 4 && mxIsLogicalScalar(prhs[3]) ) {
+            do_transpose = *mxGetPr(prhs[3]);
+        }
+
         /* initialise Matlab output array */
         num_chns = file_info->info->channels;
 
-        plhs[0]  = mxCreateDoubleMatrix((int)num_frames, num_chns, mxREAL);
-
-        temp = mxCreateDoubleMatrix((int)num_chns, num_frames, mxREAL);
+        if( do_transpose ) {
+            plhs[0]    = mxCreateDoubleMatrix((int)num_frames, num_chns, mxREAL);
+            temp       = mxCreateDoubleMatrix(num_chns, (int)num_frames, mxREAL);
+            temp_array = mxGetPr(temp);
+        } else {
+            plhs[0]    = mxCreateDoubleMatrix(num_chns, (int)num_frames, mxREAL);
+            temp_array = mxGetPr(plhs[0]);
+        }
 
         /* read the entire file in one go */
-        processed_frames = sf_readf_double(file_info->file, mxGetPr(temp), num_frames);
+        processed_frames = sf_readf_double(file_info->file, temp_array, num_frames);
         if( processed_frames == 0 ) {
-            mxDestroyArray(temp);
+            if( do_transpose )
+                mxDestroyArray(temp);
             mexErrMsgTxt("Error reading frames from input file: 0 frames read!");
         }
 
         /*
          * transpose returned data using Matlab built-ins
          */
-        mexCallMATLAB(1, &plhs[0], 1, &temp, "transpose");
-        mxDestroyArray(temp);
+        if( do_transpose ) {
+            mexCallMATLAB(1, &plhs[0], 1, &temp, "transpose");
+            mxDestroyArray(temp);
+        }
 
         /* rudimentary way of dealing with libsndfile errors */
         sndfile_err = sf_error(file_info->file);
