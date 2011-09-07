@@ -42,11 +42,12 @@ if platform == "posix":
 
     sndfile.Append(
         LIBPATH = "Linux",
-        CCFLAGS = "-std=c99 -O2 -pedantic -Wall -Wextra -fdump-rtl-expand",
+        CCFLAGS = "-std=c99 -O2 -pedantic -Wall -Wextra",
         LIBS    = ["m"]
     )
 
     if sndfile['CC'] == 'gcc':
+        sndfile.Append(CCFLAGS="-fdump-rtl-expand")
         sndfile.Append(LINKFLAGS="-Wl,--as-needed")
 
     if matlab_is_32_bits:
