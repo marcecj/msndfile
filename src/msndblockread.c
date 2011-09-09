@@ -30,7 +30,6 @@ void mexFunction(int nlhs, mxArray *plhs[],
     SNDFILE*         sf_input_file = NULL;
     AUDIO_FILE_INFO* file_info     = NULL;
 
-    int         i; // counter in for-loops
     int         sndfile_err; // libsndfile error status
     int         num_chns;
     const int   cmd_size = (nrhs > 0 ? mxGetN(prhs[0])+1 : 0); // length of the command
@@ -39,7 +38,6 @@ void mexFunction(int nlhs, mxArray *plhs[],
     char        *cmd_str;
     char        *sf_in_fname=NULL; // input file name
     sf_count_t  num_frames=0, processed_frames=0;
-    double      *data, *output;
 
     mexAtExit(&clear_static_vars);
 
@@ -140,6 +138,9 @@ void mexFunction(int nlhs, mxArray *plhs[],
     }
     else if( cmd_id == CMD_READ )
     {
+        bool        do_transpose=true;
+        double*     temp_array;
+
         /*
          * allocate the strings corresponding to the names of the major formats,
          * format subtypes and the endianness as per the libsndfile documentation
@@ -154,8 +155,8 @@ void mexFunction(int nlhs, mxArray *plhs[],
 
         if( !mxIsEmpty(prhs[2]) && mxIsDouble(prhs[2]))
         {
-            double *start_end_idx = mxGetPr(prhs[2]);
-            int    range_size     = mxGetN(prhs[2]);
+            const double *start_end_idx = mxGetPr(prhs[2]);
+            const int    range_size     = mxGetN(prhs[2]);
 
             if( range_size == 2 ) {
                 num_frames = (sf_count_t)(start_end_idx[1] - start_end_idx[0] + 1);
@@ -171,33 +172,45 @@ void mexFunction(int nlhs, mxArray *plhs[],
         else
             num_frames = file_info->info->frames;
 
+        if( nrhs == 4 && mxIsLogicalScalar(prhs[3]) ) {
+            do_transpose = *mxGetPr(prhs[3]);
+        }
+
         /* initialise Matlab output array */
         num_chns = file_info->info->channels;
-        plhs[0]  = mxCreateDoubleMatrix((int)num_frames, num_chns, mxREAL);
-        output   = mxGetPr(plhs[0]);
-        /* data read via libsndfile */
-        data     = (double*)calloc((int)num_frames*num_chns,sizeof(double));
+
+        if( do_transpose ) {
+            plhs[0]    = mxCreateDoubleMatrix((int)num_frames, num_chns, mxREAL);
+            temp_array = (double*)malloc((int)num_frames*num_chns*sizeof(double));
+        } else {
+            plhs[0]    = mxCreateDoubleMatrix(num_chns, (int)num_frames, mxREAL);
+            temp_array = mxGetPr(plhs[0]);
+        }
 
         /* read the entire file in one go */
-        processed_frames = sf_readf_double(file_info->file, data, num_frames);
+        processed_frames = sf_readf_double(file_info->file, temp_array, num_frames);
         if( processed_frames == 0 ) {
-            free(data);
+            if( do_transpose )
+                free(temp_array);
             mexErrMsgTxt("Error reading frames from input file: 0 frames read!");
         }
 
         /*
          * transpose returned data
-         *
-         * TODO: maybe do an in-place transpose? Files already open in about 2/3 of
-         * the time of Matlab's wavread(), so some additional time complexity
-         * probably won't hurt much.
          */
-        for( i=0; i<num_frames; i++ ) {
-            int j;
-            for( j=0; j<num_chns; j++ )
-                output[i+j*num_frames] = data[i*num_chns+j];
+        if( do_transpose )
+        {
+            double* output = mxGetPr(plhs[0]);
+
+            int i;
+            for( i=0; i<num_frames; i++ ) {
+                int j;
+                for( j=0; j<num_chns; j++ )
+                    output[i+j*num_frames] = temp_array[i*num_chns+j];
+            }
+
+            free(temp_array);
         }
-        free(data);
 
         /* rudimentary way of dealing with libsndfile errors */
         sndfile_err = sf_error(file_info->file);

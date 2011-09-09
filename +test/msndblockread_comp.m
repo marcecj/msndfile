@@ -12,6 +12,8 @@ t_mw = t_mf;
 s_mw = t_mf;
 t_ww = t_mf;
 s_ww = t_mf;
+t_mwnt = t_mf;
+s_mwnt = t_mf;
 
 %
 %% First test: read an entire file block-wise with varying block length N.
@@ -53,6 +55,20 @@ for aa=1:length(block_sizes)
     disp(sprintf('mean time taken by msndblockread (WAV): \t%.6f +- %.6f', mean(t_e), std(t_e)));
 
     for kk=1:num_run
+        msndblockread('open', 'test.wav');
+        tic,
+        for ll=1:b:file_size(1)-b
+            msndblockread('read', 'test.wav', b, false);
+        end
+        msndblockread('read', 'test.wav', [ll file_size(1)], false);
+        t_e(kk) = toc;
+        msndblockread('close', 'test.wav');
+    end
+    t_mwnt(aa) = mean(t_e);
+    s_mwnt(aa) = std(t_e);
+    disp(sprintf('mean time taken by msndblockread (WAV): \t%.6f +- %.6f', mean(t_e), std(t_e)));
+
+    for kk=1:num_run
         file_h = wavReaderOpen('test.wav');
         tic,
         for ll=1:b:file_size(1)-b
@@ -69,13 +85,14 @@ end
 
 f_h = figure;
 title('Time taken to read an entire 9.5 s audio file @44.1 kHz with varying block size.');
-errorbar([block_sizes block_sizes block_sizes], ...
-         [t_mf t_mw t_ww].*1e3, [s_mf s_mw s_ww].*1e3, ...
+errorbar([block_sizes block_sizes block_sizes block_sizes], ...
+         [t_mf t_mw t_mwnt t_ww].*1e3, [s_mf s_mw s_mwnt s_ww].*1e3, ...
          '-o');
 set(gca, 'XScale', 'Log');
 xlabel('Block size [samples]');
 ylabel('Average read time +/- STD [ms]');
-legend({'msndblockread (FLAC)', 'msndblockread (WAV)', 'wavReader'});
+legend({'msndblockread (FLAC)', 'msndblockread (WAV)', ...
+        'msndblockread (WAV, no transposition)', 'wavReader'});
 
 %
 %% Second test: read the first N samples with varying N.
@@ -83,11 +100,13 @@ legend({'msndblockread (FLAC)', 'msndblockread (WAV)', 'wavReader'});
 
 % reinitialise to zero
 t_mf = zeros(length(block_sizes), 1);
-t_mw = t_mf;
-t_ww = t_mf;
 s_mf = t_mf;
+t_mw = t_mf;
 s_mw = t_mf;
+t_ww = t_mf;
 s_ww = t_mf;
+t_mwnt = t_mf;
+s_mwnt = t_mf;
 
 for aa=1:length(block_sizes)
     fprintf('\n');
@@ -116,6 +135,16 @@ for aa=1:length(block_sizes)
     s_mw(aa) = std(t_e);
     disp(sprintf('mean time taken by msndblockread (WAV): \t%.6f +- %.6f', mean(t_e), std(t_e)));
 
+	msndblockread('open', 'test.wav');
+    for kk=1:num_run
+        tic, msndblockread('read', 'test.wav', [1 b], false);
+        t_e(kk) = toc;
+    end
+	msndblockread('close', 'test.wav');
+    t_mwnt(aa) = mean(t_e);
+    s_mwnt(aa) = std(t_e);
+    disp(sprintf('mean time taken by msndblockread (WAV): \t%.6f +- %.6f', mean(t_e), std(t_e)));
+
 	file_h = wavReaderOpen('test.wav');
     for kk=1:num_run
         tic, wavReaderReadBlock(file_h, 1, b);
@@ -129,13 +158,14 @@ end
 
 f_h(2) = figure;
 title('Time taken to read an entire 9.5 s audio file @44.1 kHz with varying block size.');
-errorbar([block_sizes block_sizes block_sizes], ...
-         [t_mf t_mw t_ww].*1e3, [s_mf s_mw s_ww].*1e3, ...
+errorbar([block_sizes block_sizes block_sizes block_sizes], ...
+         [t_mf t_mw t_mwnt t_ww].*1e3, [s_mf s_mw s_mwnt s_ww].*1e3, ...
          '-o');
 set(gca, 'XScale', 'Log');
 xlabel('Block size [samples]');
 ylabel('Average read time +/- STD [ms]');
-legend({'msndblockread (FLAC)', 'msndblockread (WAV)', 'wavReader'});
+legend({'msndblockread (FLAC)', 'msndblockread (WAV)', ...
+        'msndblockread (WAV, no transposition)', 'wavReader'});
 
 % print figures
 fnames = {'perf_comp_whole', 'perf_comp_partial'};
