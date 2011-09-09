@@ -14,6 +14,7 @@ the following build targets:
     msndread     -> compile msndread (default)
     msndread-dbg -> compile msndread with debugging information
     makezip      -> create a zip file (contains msndread + libsndfile)
+    doc          -> compiles documentation to HTML
     all          -> runs both msndread and makezip
 """
 )
@@ -26,6 +27,12 @@ env_vars.Add('CC', 'The C compiler')
 # the mex_builder tool automatically sets various environment variables
 sndfile = Environment(tools = ['default', 'packaging', 'matlab'],
                       variables = env_vars)
+
+# define an asciidoc builder
+asciidoc = sndfile.Builder(action = ['asciidoc -o $TARGET ${SOURCE}'],
+                           suffix = '.html',
+                           single_source = True)
+sndfile['BUILDERS']['AsciiDoc'] = asciidoc
 
 # help on environment overrides
 Help(
@@ -135,10 +142,14 @@ sndfile_pkg = sndfile.Package(
     PACKAGETYPE = "zip"
 )
 
+# create an alias for building the documentation
+docs = sndfile.AsciiDoc(['README', 'INSTALL', 'LICENSE'])
+
 # some useful aliases
 Alias("makezip", sndfile_pkg)
 Alias("msndread", msndread)
 Alias("msndread-dbg", msndread_dbg)
+Alias('doc', docs)
 Alias("all", [msndread, sndfile_pkg])
 
 # options help
