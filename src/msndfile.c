@@ -235,7 +235,7 @@ void mexFunction(int nlhs, mxArray *plhs[],
     plhs[0]  = mxCreateDoubleMatrix((int)num_frames, num_chns, mxREAL);
     output   = mxGetPr(plhs[0]);
     /* data read via libsndfile */
-    data     = (double*)calloc((int)num_frames*num_chns,sizeof(double));
+    data     = (double*)malloc((int)num_frames*num_chns*sizeof(double));
 
     /* read the entire file in one go */
     processed_frames = sf_readf_double(sf_input_file, data, num_frames);
