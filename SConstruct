@@ -48,6 +48,9 @@ if platform == "posix":
 
     if sndfile['CC'] == 'gcc':
         sndfile.Append(CCFLAGS="-fdump-rtl-expand")
+        # TODO: Currently these options don't do anything.  Maybe newer GCC
+        # versions (with graphite) can vectorize the transposition for-loops?
+        # sndfile.Append(CCFLAGS=" -ftree-vectorize -ftree-vectorizer-verbose=2")
         sndfile.Append(LINKFLAGS="-Wl,--as-needed")
 
     if matlab_is_32_bits:
