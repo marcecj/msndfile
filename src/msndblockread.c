@@ -138,7 +138,6 @@ void mexFunction(int nlhs, mxArray *plhs[],
     }
     else if( cmd_id == CMD_READ )
     {
-        mxArray     *temp;
         bool        do_transpose=true;
         double*     temp_array;
 
@@ -182,8 +181,7 @@ void mexFunction(int nlhs, mxArray *plhs[],
 
         if( do_transpose ) {
             plhs[0]    = mxCreateDoubleMatrix((int)num_frames, num_chns, mxREAL);
-            temp       = mxCreateDoubleMatrix(num_chns, (int)num_frames, mxREAL);
-            temp_array = mxGetPr(temp);
+            temp_array = (double*)malloc((int)num_frames*num_chns*sizeof(double));
         } else {
             plhs[0]    = mxCreateDoubleMatrix(num_chns, (int)num_frames, mxREAL);
             temp_array = mxGetPr(plhs[0]);
@@ -193,16 +191,25 @@ void mexFunction(int nlhs, mxArray *plhs[],
         processed_frames = sf_readf_double(file_info->file, temp_array, num_frames);
         if( processed_frames == 0 ) {
             if( do_transpose )
-                mxDestroyArray(temp);
+                free(temp_array);
             mexErrMsgTxt("Error reading frames from input file: 0 frames read!");
         }
 
         /*
-         * transpose returned data using Matlab built-ins
+         * transpose returned data
          */
-        if( do_transpose ) {
-            mexCallMATLAB(1, &plhs[0], 1, &temp, "transpose");
-            mxDestroyArray(temp);
+        if( do_transpose )
+        {
+            double* output = mxGetPr(plhs[0]);
+
+            int i;
+            for( i=0; i<num_frames; i++ ) {
+                int j;
+                for( j=0; j<num_chns; j++ )
+                    output[i+j*num_frames] = temp_array[i*num_chns+j];
+            }
+
+            free(temp_array);
         }
 
         /* rudimentary way of dealing with libsndfile errors */
