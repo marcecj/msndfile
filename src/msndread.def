@@ -1,2 +1,2 @@
-LIBRARY msndfile.c
+LIBRARY msndread.c
 EXPORTS mexFunction

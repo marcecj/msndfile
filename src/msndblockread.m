@@ -1,30 +1,52 @@
-function [OutData,fs] = msndfile(file_name, idx_range, file_info)
-%MSNDFILE reads audio files using the libsndfile C library.
-% OUTDATA = MSNDFILE(FILE_NAME) will read the file specified by FILE_NAME and
-% returns the Signal OUTDATA.
+function OutData = msndblockread(cmd, file_name, idx_range, file_info)
+%MSNDBLOCKREAD Read audio files block-wise using the libsndfile C library.
 %
-% OUTDATA = MSNDFILE(FILE_NAME, N) returns the first N samples.
-% OUTDATA = MSNDFILE(FILE_NAME, [START END]) will read the samples in the range
-% START...END.
+% MSNDBLOCKREAD('open', FILE_NAME) will open the file specified by FILE_NAME for
+% reading.
 %
-% If FILE_NAME is a RAW audio file, then a third input argument, FILE_INFO, must
-% be specified (see below).
+% OUTDATA = MSNDREAD('read', FILE_NAME, [A B]) returns the samples in the range
+% A...B.  OUTDATA = MSNDREAD(FILE_NAME, N) will read the next N samples,
+% starting from wherever left off.  For example, if no samples have been read
+% yet, the first N samples are read.
 %
-% SIZE = MSNDFILE(FILE_NAME, 'size') returns a two-element row vector SIZE
-% containing the number of samples per channel and the number of channels.
+% If FILE_NAME is a RAW audio file, then a fourth input argument, FILE_INFO,
+% must be specified (see section "The file_info struct" below).
 %
-% [..., FS] = MSNDFILE(...) returns the sampling rate FS.
+% MSNDBLOCKREAD('close', FILE_NAME) will close an open file specified by
+% FILE_NAME. MSNDBLOCKREAD('closeall') closes all open files.
 %
-% input parameters:
-%      file_name:   the audio file name (a string)
-%      idx_range:   a row vector defining the range of samples to be read. If it
-%                   only has one element, it will read from the beginning up to
-%                   the specified index.
-%      file_info:   (RAW files only) a struct containing file information
+% Input parameters
+% ----------------
 %
-% output parameters:
-%      OutData:   the new data vector (Len x Chns)
-%      fs:        the sampling rate of the audio file
+%      cmd:         The command (a string). Must be one of "open", "read",
+%                   "close", or "closeall" (see section "Commands" below).
+%      file_name:   The audio file name (a string).
+%      idx_range:   A row vector defining the range of samples to be read. If it
+%                   only has one element, the file will read from the current
+%                   position up to the specified index.
+%      file_info:   (RAW files only) A struct containing the file information
+%                   (see section "The file_info struct" below).
+%
+% Output parameters
+% -----------------
+%
+%      OutData:   The new data vector (Len x Chns).
+%
+% Commands
+% --------
+%
+% The following are valid commands to MSNDBLOCKREAD:
+%
+%   open:       Opens the audio file. Several files may be opened at once,
+%               however each individual file may only be opened once.
+%   read:       Reads data from an open file.
+%   close:      Closes an open file.
+%   closeall:   Closes all currently open files.
+%
+% The file_info struct
+% --------------------
+%
+% The file_info struct must be passed if the file to be read is a RAW file.
 %
 % The file_info struct must contain the following fields:
 %     samplerate:   the sampling rate of the audio file

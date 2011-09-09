@@ -16,8 +16,10 @@ debug/*
 msndfile-0.1*
 
 # misc files
+graphics
 *.expand
 *.mex*
+*.zip
 
 # VS files
 msndfile.sln

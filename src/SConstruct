@@ -4,10 +4,12 @@ Import(["sndfile", "do_debug"])
 if do_debug:
     sndfile = sndfile.Clone()
     if sndfile['PLATFORM'] == "win32":
-        sndfile['PDB'] = 'msndfile.pdb'
+        sndfile['PDB'] = 'msndread.pdb'
     else:
         sndfile.MergeFlags("-g -O0")
 
-msndfile = sndfile.Mex("msndfile", ["msndfile.c"])
+utils_obj     = sndfile.SharedObject("utils.c")
+msndread      = sndfile.Mex("msndread", ["msndread.c", utils_obj])
+msndblockread = sndfile.Mex("msndblockread", ["msndblockread.c", utils_obj])
 
-Return("msndfile")
+Return(["msndread", "msndblockread"])

@@ -1,18 +1,5 @@
-#ifndef __MSNDFILE_H__
-#define __MSNDFILE_H__
-
-#include <sndfile.h>
-
-/* a simple lookup table */
-typedef struct {
-    char* name;
-    int number;
-} KEY_VAL;
-
-typedef struct {
-    const KEY_VAL *table;
-    int size;
-} LOOKUP_TABLE;
+#ifndef __FORMAT_TABLES_H__
+#define __FORMAT_TABLES_H__
 
 /* major formats */
 const KEY_VAL maj_fmts_names[] = {
@@ -38,7 +25,7 @@ const KEY_VAL maj_fmts_names[] = {
     { "FLAC"  , SF_FORMAT_FLAC, },
     { "CAF"   , SF_FORMAT_CAF, },
 };
-const LOOKUP_TABLE maj_fmts = {maj_fmts_names, 21};
+const FMT_TABLE maj_fmts = {maj_fmts_names, 21};
 
 /* sample formats */
 const KEY_VAL sub_fmts_names[] = {
@@ -65,7 +52,7 @@ const KEY_VAL sub_fmts_names[] = {
     { "DPCM_8", SF_FORMAT_DPCM_8, },
     { "DPCM_16", SF_FORMAT_DPCM_16, },
 };
-const LOOKUP_TABLE sub_fmts = {sub_fmts_names, 22};
+const FMT_TABLE sub_fmts = {sub_fmts_names, 22};
 
 /* endianness options. */
 const KEY_VAL endianness_types_names[] = {
@@ -74,9 +61,6 @@ const KEY_VAL endianness_types_names[] = {
     { "BIG", SF_ENDIAN_BIG, },
     { "CPU", SF_ENDIAN_CPU, },
 };
-const LOOKUP_TABLE endianness_types = {endianness_types_names, 4};
+const FMT_TABLE endianness_types = {endianness_types_names, 4};
 
-/* function to get a value from a look-up table */
-int lookup_val(const LOOKUP_TABLE *array, const char *name);
-
-#endif /* __MSNDFILE_H__ */
+#endif /* __FORMAT_TABLES_H__ */
