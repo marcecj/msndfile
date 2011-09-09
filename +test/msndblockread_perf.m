@@ -1,4 +1,6 @@
 block_sizes = 2.^(8:16).';
+num_run     = 1000;
+
 t_mf = zeros(length(block_sizes), 1);
 t_mw = t_mf;
 t_ww = t_mf;
@@ -12,7 +14,6 @@ for aa=1:length(block_sizes)
 
     b = block_sizes(aa);
 
-    num_run = 1000;
     disp(['Conducting performance comparison (' num2str(num_run) ' reads, first ' num2str(b) ' samples)']);
 
     for kk=1:num_run

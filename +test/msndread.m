@@ -1,13 +1,14 @@
-fprintf('\n*** Testing msndread ***\n\n');
+fprintf('\n*** Testing msndread ***\n');
 
 file_info = [];
 
 % verify that msndread raises an error when called without input arguments
 try
+    fprintf('\n* Calling without arguments...\n\n');
     msndread;
-    warning('Error should be thrown!');
+    warning('... error should be thrown!');
 catch
-    disp('Error correctly raised...');
+    disp('... error correctly raised.');
 end
 
 %
@@ -15,49 +16,62 @@ end
 %
 
 % verify that msndread raises an error when called with insufficient arguments
+
 try
+    fprintf('\n* Attemting to read test.raw with empty range...\n\n');
     [in_raw, fs] = msndread('test.raw', []);
-    warning('Error should be thrown!');
+    warning('... error should be thrown!');
 catch
-    disp('Error correctly raised...');
+    disp('... error correctly raised.');
 end
+
 try
+    fprintf('\n* Attemting to read test.raw with empty range and file_info struct...\n\n');
     [in_raw, fs] = msndread('test.raw', [], []);
-    warning('Error should be thrown!');
+    warning('... error should be thrown!');
 catch
-    disp('Error correctly raised...');
+    disp('... error correctly raised.');
 end
 
 % verify that msndread raises an error when file_info is incomplete
+
+fprintf('\n* Attemting to read test.raw with file_info struct...\n');
+
 file_info.samplerate   = 44100;
 try
+    fprintf('\nwith field ''samplerate''...\n');
     [in_raw, fs] = msndread('test.raw', [], file_info);
-    warning('Error should be thrown!');
+    warning('... error should be thrown!');
 catch
-    disp('Error correctly raised...');
+    disp('... error correctly raised.');
 end
 
 file_info.channels     = 2;
 try
+    fprintf('\nwith fields ''samplerate'' and ''channels''...\n');
     [in_raw, fs] = msndread('test.raw', [], file_info);
-    warning('Error should be thrown!');
+    warning('... error should be thrown!');
 catch
-    disp('Error correctly raised...');
+    disp('... error correctly raised.');
 end
 
 file_info.format       = 'RAW';
 try
+    fprintf('\nwith fields ''samplerate'', ''channels'' and ''format''...\n');
     [in_raw, fs] = msndread('test.raw', [], file_info);
-    warning('Error should be thrown!');
+    warning('... error should be thrown!');
 catch
-    disp('Error correctly raised...');
+    disp('... error correctly raised.');
 end
 
+fprintf('\n* Attemting to read test.raw with complete file_info struct...\n');
 file_info.sampleformat = 'PCM_16';
 % file_info.endianness   = 'LITTLE'; % defaults to 'FILE'
 
-% test the raw file import
+% test the RAW file import
+
 [in_raw, fs] = msndread('test.raw', [], file_info);
+fprintf('\n... it worked!\n');
 
 num_unequal = sum(abs(in_wav - in_raw) > 0);
 
@@ -92,6 +106,8 @@ disp(['There are ' num2str(num_unequal) ' incorrect samples']);
 %
 %% Test 3: test 'size' command
 %
+
+fprintf('\n* Comparing output of ''size'' command...\n\n');
 
 [file_size, fs] = wavread('test.wav', 'size');
 disp(sprintf('wavread   (WAV):\tLength = %i,\tNChns = %i,\tFS = %i', file_size, fs));

@@ -1,4 +1,6 @@
 block_sizes = 2.^(8:16).';
+num_run     = 1000;
+
 t_mf = zeros(length(block_sizes), 1);
 t_mw = t_mf;
 t_ww = t_mf;
@@ -11,7 +13,6 @@ for aa=1:length(block_sizes)
 
     b = block_sizes(aa);
 
-    num_run = 1000;
     disp(['Conducting performance comparison (' num2str(num_run) ' reads, first ' num2str(b) ' samples)']);
 
     for kk=1:num_run
@@ -57,7 +58,7 @@ for kk=1:num_run
 end
 disp(sprintf('mean time taken by msndread:\t%.6f +- %.6f', mean(t_e), std(t_e)));
 
-for kk=1:1000
+for kk=1:num_run
     tic, wavread('test.wav');
     t_e(kk) = toc;
 end
