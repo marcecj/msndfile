@@ -1,17 +1,17 @@
 Installing msndfile
 ===================
 
-There are 2 ways to compile msndfile.  The easy way is to call the m-file
-'compile_msndfile.m' from Matlab.  There is also a more flexible build system
+There are two ways to compile msndfile.  The easy way is to call the m-file
+`compile_msndfile.m` from Matlab.  There is also a more flexible build system
 based on SCons available, that can also generate IDE project files (though right
-now only for Microsoft Visual Studio).  For details to both methods, see their
+now only for Microsoft Visual Studio).  For details on both methods, see their
 relevant subsections.
 
 Prerequisites
 -------------
 
 If you are going to use the SCons based build system, you will need to install
-http://python.org[Python] and http://scons.org[SCons] first.  Under Windows,
+http://www.python.org[Python] and http://scons.org[SCons] first.  Under Windows,
 SCons benefits from the
 http://starship.python.net/crew/mhammond/win32/Downloads.html[Python Win32
 extensions].
@@ -34,7 +34,8 @@ Mac OS X
 ~~~~~~~~
 
 NOTE: I have never compiled msndfile under Mac OS X, if anybody succeeds in
-doing so before I get around to it, I would like to know if it works.
+doing so before I get around to it, I would like to know if it works.  I already
+test compile with clang, so there *should* be no issues.
 
 You need to install libsndfile.  To do so, either download the sources from
 http://www.mega-nerd.com/libsndfile[] and compile them yourself or use a package
@@ -43,8 +44,7 @@ management system like fink or (better, in the opinion of the author) macports.
 Using the compile_msndfile.m script (all platforms)
 ---------------------------------------------------
 
-In Matlab, type `compile_msndfile`.  This will compile both Mex extensions
-and run a test script.
+In Matlab, type `compile_msndfile` to compile all Mex extensions.
 
 Using the SCons based build system
 ----------------------------------
@@ -52,17 +52,39 @@ Using the SCons based build system
 The SCons based build system is in general more robust and flexibel than the
 calling Mex in compile_msndfile.m.  It uses an extension that properly presets a
 few environment variables, though it slows compilation down the first time it is
-run because it starts a Matlab subprocess to obtain them.  If you need to work
-on the Code and plan to compile often, you can speed up the process in general
-by using the interactive mode by passing the `--interactive` option to SCons.
-You can also override certain environment variables.  For more information (such
-as available build targets and options), see the output of `scons --help`.
+run because it starts a Matlab subprocess to obtain them.
 
-In summary, the command line would look like this:
+Anyway, to use SCons, call it from the command line like so:
 
 --------------------------------------
 scons [--interactive] [options] [target]
 --------------------------------------
+
+As to why I wrote a complicated SCons build system in the first place, well...
+Apart from the usual features of real build systems (proper dependency tracking,
+parallel builds, etc.) it can do the following things:
+
+- create a Visual Studio solution file with Release and Debug Variants
+- create a ZIP file for distribution
+- separates release from debug builds
+- *could* support cross-compiling to other architectures/operating systems to
+  provide binaries for them
+- builds the http://www.methods.co.nz/asciidoc/[AsciiDoc] documentation you are
+  currently reading
+- supports whatever compilers SCons supports (and whatever compilers are
+  supported by third party tools), and not just what The Mathworks supports,
+  which is incomplete and hopelessly outdated anyway if you use a compiler
+  released during the last 2 years footnote:[fun fact: the most recent minor
+  version of GCC officially supported by The Mathworks for Matlab 2011a (GCC
+  4.3) is not even supported by the _compiler vendor_ anymore, though this may
+  be deliberate].
+
+For more information (such as available build targets and options), see the
+output of `scons --help`.
+
+If you need to work on the Code and plan to compile often, you can speed up the
+process in general by using the interactive mode by passing the `--interactive`
+option to SCons.  You can also override certain environment variables.
 
 Linux
 ~~~~~
@@ -79,27 +101,25 @@ should pass the option `--with-32bits` to enforce 32 bit compilation.
 Windows
 ~~~~~~~
 
-You need to launch `cmd.exe`, navigate to msndfile's project directory and run
-SCons:
+You can launch the batch file `start_scons.bat`, which launches scons and
+defines an alias "scons" via doskey to simplify repeated compiling (i.e., just
+type `scons` instead of `Full:\Path\To\scons`).  If scons is installed somewhere
+else on your system, you need to alter the paths first.  Also, if SCons already
+resides in your path, remove the line containing `doskey`.
 
------------------
-    Drive:\Path\To\Python\Scripts\scons
------------------
-
-Replace 'Drive' and 'Path\To\Python' with the drive letter and full path to where
-Python is installed on your system.  For example:
-
------------------
-    C:\Python27\Scripts\scons
------------------
-
-If SCons is in your `PATH`, you can open a console and follow the steps under
-Linux.  The `vsproj` target creates a MS Visual Studio Solution file with
-msndfile as a project.  For other IDEs, see
-http://www.scons.org/wiki/IDEIntegration[].
+Under Windows, the build system has an additional `vsproj` target.  This creates
+a MS Visual Studio Solution file with msndfile as a project.  For other IDEs,
+see http://www.scons.org/wiki/IDEIntegration[].
 
 Mac OS X
 ~~~~~~~~
 
 Follow the same steps as under Linux, or look into integrating SCons into your
 IDE of choice (see http://www.scons.org/wiki/IDEIntegration[]).
+
+Testing
+-------
+
+To run the test scripts, call `test_msndfile.m` from MATLAB.  This will test
+`msndread` and `msndblockread`.  Performance tests are deactivated by default.
+To run them, too, change `do_perf_tests` to `true` in `test_msndfile.m`.
