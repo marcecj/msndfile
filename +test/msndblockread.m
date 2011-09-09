@@ -1,15 +1,12 @@
 fprintf('\n*** Testing msndblockread ***\n\n');
 
-if ~exist('in_wav', 'var')
-	[in_wav, fs] = wavread('test.wav');
-end
+[in_wav, fs] = wavread('test.wav');
 
-if ~exist('file_info', 'var')
-    file_info.samplerate   = 44100;
-    file_info.channels     = 2;
-    file_info.format       = 'RAW';
-    file_info.sampleformat = 'PCM_16';
-end
+file_info = [];
+file_info.samplerate   = 44100;
+file_info.channels     = 2;
+file_info.format       = 'RAW';
+file_info.sampleformat = 'PCM_16';
 
 file_size    = wavread('test.wav', 'size');
 block_size   = 1024;

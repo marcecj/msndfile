@@ -1,5 +1,7 @@
 fprintf('\n*** Testing msndread ***\n\n');
 
+file_info = [];
+
 % verify that msndread raises an error when called without input arguments
 try
     msndread;
