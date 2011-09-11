@@ -1,7 +1,6 @@
 #include <string.h>
 #include <mex.h>
 #include <sndfile.h>
-#include "msndread.h"
 #include "utils.h"
 
 /*
