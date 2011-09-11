@@ -10,49 +10,51 @@ relevant subsections.
 Prerequisites
 -------------
 
-If you are going to use the SCons based build system, you will need to install
-http://www.python.org[Python] and http://scons.org[SCons] first.  Under Windows,
-SCons benefits from the
-http://starship.python.net/crew/mhammond/win32/Downloads.html[Python Win32
-extensions].
+The basic dependencies of msndfile are:
 
-Linux
-~~~~~
+- Matlab (tested with 2008a and 2010a Student Edition)
+- http://www.mega-nerd.com/libsndfile[libsndfile]
 
-You need to have the libsndfile development package installed (typically a
-package with a '-devel' suffix).
+To obtain libsndfile, you may try the following steps:
 
-Windows
-~~~~~~~
+Linux::
+    Install the libsndfile development package via your distributions package
+    manager (typically a package with a '-devel' suffix).
+Windows::
+    Follow the instructions at http://www.mega-nerd.com/libsndfile[]).  After
+    you have done that, copy the files `libsndfile-1.dll` and `libsndfile-1.lib`
+    into the `Win` subdirectory (create it if it does not exist).
+Mac OS X::
+    Either download the sources from http://www.mega-nerd.com/libsndfile[] and
+    compile them yourself or use a package management system like fink or
+    macports or whatever system you already use.
 
-You need to install libsndfile.  To do so, follow the instructions at
-http://www.mega-nerd.com/libsndfile[]).  After you have done that, copy the
-files `libsndfile-1.dll` and `libsndfile-1.lib` into the `Win` subdirectory
-(create it if it does not exist).
+If you are going to use the SCons based build system, you will also need
 
-Mac OS X
-~~~~~~~~
+- http://www.python.org[Python] (whatever version SCons works with)
+- http://scons.org[SCons] (tested with SCons 2.0.x)
+- http://starship.python.net/crew/mhammond/win32/Downloads.html[Python Win32
+  extensions] (optional, but necessary for some SCons features on Windows)
+
+If you want to build the documentation, you need to install
+http://www.methods.co.nz/asciidoc/[AsciiDoc].
 
 NOTE: I have never compiled msndfile under Mac OS X, if anybody succeeds in
 doing so before I get around to it, I would like to know if it works.  I already
 test compile with clang, so there *should* be no issues.
 
-You need to install libsndfile.  To do so, either download the sources from
-http://www.mega-nerd.com/libsndfile[] and compile them yourself or use a package
-management system like fink or (better, in the opinion of the author) macports.
-
-Using the compile_msndfile.m script (all platforms)
----------------------------------------------------
+Using the compile_msndfile.m script
+-----------------------------------
 
 In Matlab, type `compile_msndfile` to compile all Mex extensions.
 
 Using the SCons based build system
 ----------------------------------
 
-The SCons based build system is in general more robust and flexibel than the
-calling Mex in compile_msndfile.m.  It uses an extension that properly presets a
-few environment variables, though it slows compilation down the first time it is
-run because it starts a Matlab subprocess to obtain them.
+The SCons based build system is in general more robust and flexibel than calling
+Mex in compile_msndfile.m.  It uses an extension that properly presets a few
+environment variables, though it slows compilation down the first time it is run
+because it starts a Matlab subprocess to obtain them.
 
 Anyway, to use SCons, call it from the command line like so:
 
@@ -71,13 +73,11 @@ parallel builds, etc.) it can do the following things:
   provide binaries for them
 - builds the http://www.methods.co.nz/asciidoc/[AsciiDoc] documentation you are
   currently reading
-- supports whatever compilers SCons supports (and whatever compilers are
-  supported by third party tools), and not just what The Mathworks supports,
-  which is incomplete and hopelessly outdated anyway if you use a compiler
-  released during the last 2 years footnote:[fun fact: the most recent minor
-  version of GCC officially supported by The Mathworks for Matlab 2011a (GCC
-  4.3) is not even supported by the _compiler vendor_ anymore, though this may
-  be deliberate].
+- supports whatever compilers SCons (or third party extensions) supports, and
+  not just what The Mathworks supports, which is incomplete and quite outdated
+  anyway footnote:[Fun fact: the most recent minor version of GCC officially
+  supported by The Mathworks for Matlab 2011a (GCC 4.3) is not even supported by
+  the _compiler vendor_ anymore, though I admit this may be deliberate.].
 
 For more information (such as available build targets and options), see the
 output of `scons --help`.
@@ -85,6 +85,10 @@ output of `scons --help`.
 If you need to work on the Code and plan to compile often, you can speed up the
 process in general by using the interactive mode by passing the `--interactive`
 option to SCons.  You can also override certain environment variables.
+
+NOTE: To debug from within Visual Studio, you need to configure the project to
+call MATLAB with the "-wait" argument.  I could not find a way to do this
+automatically with SCons.
 
 Linux
 ~~~~~

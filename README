@@ -49,10 +49,7 @@ not finished.  The missing functionality is:
 
 - the optional output argument "nbits"
 - the optional output argument "opts"
-- the optional input argument "fmt" (more difficult, libsndfile cannot return
-  uint8, so that case needs special handling)
-
-"nbits" and "fmt" both require checking the format subtype.
+- the optional input argument "fmt"
 
 Installation
 ------------
