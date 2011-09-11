@@ -25,14 +25,14 @@ env_vars = Variables()
 env_vars.Add('CC', 'The C compiler')
 
 # the mex_builder tool automatically sets various environment variables
-sndfile = Environment(tools = ['default', 'packaging', 'matlab'],
-                      variables = env_vars)
+env = Environment(tools = ['default', 'packaging', 'matlab'],
+                  variables = env_vars)
 
 # define an asciidoc builder
-asciidoc = sndfile.Builder(action = ['asciidoc -o $TARGET ${SOURCE}'],
-                           suffix = '.html',
-                           single_source = True)
-sndfile['BUILDERS']['AsciiDoc'] = asciidoc
+asciidoc = env.Builder(action = ['asciidoc -o $TARGET ${SOURCE}'],
+                       suffix = '.html',
+                       single_source = True)
+env['BUILDERS']['AsciiDoc'] = asciidoc
 
 # help on environment overrides
 Help(
@@ -40,28 +40,28 @@ Help(
 The following environment variables can be overridden by passing them *after*
 the call to scons, i.e. "scons CC=gcc":"""
 )
-Help(env_vars.GenerateHelpText(sndfile))
+Help(env_vars.GenerateHelpText(env))
 
-platform = sndfile['PLATFORM']
+platform = env['PLATFORM']
 
 # OS dependent stuff, we assume GCC on Unix like platforms
 if platform == "posix":
 
-    sndfile.Append(
+    env.Append(
         LIBPATH = "Linux",
         CCFLAGS = "-std=c99 -O2 -pedantic -Wall -Wextra",
         LIBS    = ["m"]
     )
 
-    if sndfile['CC'] == 'gcc':
-        sndfile.Append(CCFLAGS="-fdump-rtl-expand")
+    if env['CC'] == 'gcc':
+        env.Append(CCFLAGS="-fdump-rtl-expand")
         # TODO: Currently these options don't do anything.  Maybe newer GCC
         # versions (with graphite) can vectorize the transposition for-loops?
-        # sndfile.Append(CCFLAGS=" -ftree-vectorize -ftree-vectorizer-verbose=2")
-        sndfile.Append(LINKFLAGS="-Wl,--as-needed")
+        # env.Append(CCFLAGS=" -ftree-vectorize -ftree-vectorizer-verbose=2")
+        env.Append(LINKFLAGS="-Wl,--as-needed")
 
     if matlab_is_32_bits:
-        sndfile.Append(
+        env.Append(
             CCFLAGS    = "-m32",
             LINKFLAGS  = "-m32",
             CPPDEFINES = "_FILE_OFFSET_BITS=64"
@@ -74,14 +74,14 @@ elif platform == "win32":
     # enforce searching in the top-level Win directory
     win_path = os.sep.join([os.path.abspath(os.path.curdir), 'Win'])
 
-    sndfile.Append(LIBPATH=win_path, CPPPATH=win_path)
-    sndfile.Replace(WINDOWS_INSERT_DEF = True)
+    env.Append(LIBPATH=win_path, CPPPATH=win_path)
+    env.Replace(WINDOWS_INSERT_DEF = True)
 
     sndfile_lib = "libsndfile-1"
 
 elif platform == "darwin":
 
-    sndfile.Append(
+    env.Append(
         LIBPATH = "Mac",
         CCFLAGS = "-std=c99 -O2 -pedantic -Wall -Wextra",
         LIBS    = ["m"]
@@ -93,31 +93,31 @@ else:
 
 if not (GetOption('clean') or GetOption('help')):
     # look for libsndfile plus header and exit if either one isn't found
-    conf = sndfile.Configure()
+    conf = env.Configure()
     if not conf.CheckLibWithHeader(sndfile_lib, 'sndfile.h', 'c'):
         exit("You need to install libsndfile(-dev)!")
-    sndfile = conf.Finish()
+    env = conf.Finish()
 
 do_debug = False
-msndread = sndfile.SConscript(os.sep.join(['src', 'SConstruct']),
-                              variant_dir = "build",
-                              exports     = ["sndfile", "do_debug"],
-                              duplicate   = False)
+msndread = env.SConscript(os.sep.join(['src', 'SConstruct']),
+                          variant_dir = "build",
+                          exports     = ["env", "do_debug"],
+                          duplicate   = False)
 
 do_debug = True
-msndread_dbg = sndfile.SConscript(os.sep.join(['src', 'SConstruct']),
-                                  variant_dir = "debug",
-                                  exports     = ["sndfile", "do_debug"],
-                                  duplicate   = False)
+msndread_dbg = env.SConscript(os.sep.join(['src', 'SConstruct']),
+                              variant_dir = "debug",
+                              exports     = ["env", "do_debug"],
+                              duplicate   = False)
 
 if platform == 'win32':
-    build_targets = [os.sep.join([d, "msndread"]) + sndfile['MATLAB']['MEX_EXT']
+    build_targets = [os.sep.join([d, "msndread"]) + env['MATLAB']['MEX_EXT']
                      for d in ["build", "debug"]]
 
     sndfile_vs = MSVSProject(
-        target      = "msndread" + sndfile['MSVSPROJECTSUFFIX'],
+        target      = "msndread" + env['MSVSPROJECTSUFFIX'],
         buildtarget = build_targets,
-        runfile     = os.sep.join([sndfile['MATLAB']['ROOT'], "bin", "matlab.exe"]),
+        runfile     = os.sep.join([env['MATLAB']['ROOT'], "bin", "matlab.exe"]),
         srcs        = os.sep.join(["src", "msndread.c"]),
         localincs   = os.sep.join(["src", "msndread.h"]),
         incs        = os.sep.join(["Win", "sndfile.h"]),
@@ -133,17 +133,17 @@ if platform == 'win32':
 
 pkg_src = [msndread, os.sep.join(["src", "msndread.m"]), os.sep.join(["src", "msndblockread.m"])]
 if platform == 'win32':
-    pkg_src += [os.sep.join(['Win', sndfile['SHLIBPREFIX'] + sndfile_lib + sndfile['SHLIBSUFFIX']])]
+    pkg_src += [os.sep.join(['Win', env['SHLIBPREFIX'] + sndfile_lib + env['SHLIBSUFFIX']])]
 
-sndfile.Install(".", pkg_src)
-sndfile_pkg = sndfile.Package(
+env.Install(".", pkg_src)
+sndfile_pkg = env.Package(
     NAME        = "msndfile",
     VERSION     = "0.1",
     PACKAGETYPE = "zip"
 )
 
 # create an alias for building the documentation
-docs = sndfile.AsciiDoc(['README', 'INSTALL', 'LICENSE'])
+docs = env.AsciiDoc(['README', 'INSTALL', 'LICENSE'])
 
 # some useful aliases
 Alias("makezip", sndfile_pkg)

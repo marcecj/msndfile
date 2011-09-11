@@ -1,15 +1,15 @@
 # vim:ft=python
-Import(["sndfile", "do_debug"])
+Import(["env", "do_debug"])
 
 if do_debug:
-    sndfile = sndfile.Clone()
-    if sndfile['PLATFORM'] == "win32":
-        sndfile['PDB'] = 'msndread.pdb'
+    env = env.Clone()
+    if env['PLATFORM'] == "win32":
+        env['PDB'] = 'msndread.pdb'
     else:
-        sndfile.MergeFlags("-g -O0")
+        env.MergeFlags("-g -O0")
 
-utils_obj     = sndfile.SharedObject("utils.c")
-msndread      = sndfile.Mex("msndread", ["msndread.c", utils_obj])
-msndblockread = sndfile.Mex("msndblockread", ["msndblockread.c", utils_obj])
+utils_obj     = env.SharedObject("utils.c")
+msndread      = env.Mex("msndread", ["msndread.c", utils_obj])
+msndblockread = env.Mex("msndblockread", ["msndblockread.c", utils_obj])
 
 Return(["msndread", "msndblockread"])
