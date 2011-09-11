@@ -7,24 +7,11 @@ import os
 AddOption('--with-32bits', dest='32bits', action='store_true',
           help='Force 32 bit compilation ("-m32" GCC option) on Unix.')
 
-# general help
-Help(
-"""This build system compiles the msndfile Mex file.  To compile, use one of
-the following build targets:
-    msndfile     -> compile msndfile (default)
-    msndfile-dbg -> compile msndfile with debugging information
-    makezip      -> create a zip file (contains msndfile + libsndfile)
-    doc          -> compiles documentation to HTML
-    all          -> runs both msndfile and makezip
-"""
-)
-
-matlab_is_32_bits = GetOption('32bits')
-
+# modifiable environment variables
 env_vars = Variables()
 env_vars.Add('CC', 'The C compiler')
 
-# the mex_builder tool automatically sets various environment variables
+# the matlab tool automatically sets various environment variables
 env = Environment(tools = ['default', 'packaging', 'matlab'],
                   variables = env_vars)
 
@@ -33,14 +20,6 @@ asciidoc = env.Builder(action = ['asciidoc -o $TARGET ${SOURCE}'],
                        suffix = '.html',
                        single_source = True)
 env['BUILDERS']['AsciiDoc'] = asciidoc
-
-# help on environment overrides
-Help(
-"""
-The following environment variables can be overridden by passing them *after*
-the call to scons, i.e. "scons CC=gcc":"""
-)
-Help(env_vars.GenerateHelpText(env))
 
 platform = env['PLATFORM']
 
@@ -60,7 +39,7 @@ if platform == "posix":
         # env.Append(CCFLAGS=" -ftree-vectorize -ftree-vectorizer-verbose=2")
         env.Append(LINKFLAGS="-Wl,--as-needed")
 
-    if matlab_is_32_bits:
+    if GetOption('32bits'):
         env.Append(
             CCFLAGS    = "-m32",
             LINKFLAGS  = "-m32",
@@ -73,8 +52,8 @@ elif platform == "win32":
 
     # enforce searching in the top-level Win directory
     win_path = os.sep.join([os.path.abspath(os.path.curdir), 'Win'])
-
     env.Append(LIBPATH=win_path, CPPPATH=win_path)
+
     env.Replace(WINDOWS_INSERT_DEF = True)
 
     sndfile_lib = "libsndfile-1"
@@ -82,13 +61,14 @@ elif platform == "win32":
 elif platform == "darwin":
 
     env.Append(
-        LIBPATH = "Mac",
         CCFLAGS = "-std=c99 -O2 -pedantic -Wall -Wextra",
         LIBS    = ["m"]
     )
 
     sndfile_lib = "sndfile"
+
 else:
+
     exit("Oops, not a supported platform.")
 
 if not (GetOption('clean') or GetOption('help')):
@@ -110,30 +90,30 @@ msndfile_dbg = env.SConscript(os.sep.join(['src', 'SConstruct']),
                               exports     = ["env", "do_debug"],
                               duplicate   = False)
 
+win_help_text = ""
 if platform == 'win32':
-    build_targets = [os.sep.join([d, "msndread"]) + env['MATLAB']['MEX_EXT']
-                     for d in ["build", "debug"]]
+    build_targets = [d + os.sep + t + env['MATLAB']['MEX_EXT']
+                     for d in ("build", "debug")
+                     for t in ("msndread", "msndblockread")]
 
     sndfile_vs = MSVSProject(
         target      = "msndfile" + env['MSVSPROJECTSUFFIX'],
         buildtarget = build_targets,
         runfile     = os.sep.join([env['MATLAB']['ROOT'], "bin", "matlab.exe"]),
-        srcs        = os.sep.join(["src", "msndread.c"]),
-        localincs   = os.sep.join(["src", "msndread.h"]),
+        srcs        = Glob(os.sep.join(["src", "*.c"])),
+        localincs   = Glob(os.sep.join(["src", "*.h"])),
         incs        = os.sep.join(["Win", "sndfile.h"]),
         variant     = ["Release", "Debug"]
     )
     Alias("vsproj", sndfile_vs)
-    Help(
-"""    vsproj    -> create a visual studio project file
-"""
-    )
+
+    win_help_text = """    vsproj    -> create a visual studio project file"""
 
 # package the software
 
-pkg_src = [msndfile, os.sep.join(["src", "msndread.m"]), os.sep.join(["src", "msndblockread.m"])]
+pkg_src = [msndfile, Glob(os.sep.join(['src', '*.m']))]
 if platform == 'win32':
-    pkg_src += [os.sep.join(['Win', env['SHLIBPREFIX'] + sndfile_lib + env['SHLIBSUFFIX']])]
+    pkg_src += ['Win' + os.sep + env['SHLIBPREFIX'] + sndfile_lib + env['SHLIBSUFFIX']]
 
 env.Install(".", pkg_src)
 sndfile_pkg = env.Package(
@@ -152,12 +132,25 @@ Alias("msndfile-dbg", msndfile_dbg)
 Alias('doc', docs)
 Alias("all", [msndfile, sndfile_pkg])
 
-# options help
+Default(msndfile)
+
+# generate the help text
 Help(
+"""This build system compiles the msndfile Mex files.  To compile, use one of
+the following build targets:
+    msndfile     -> compile msndfile (default)
+    msndfile-dbg -> compile msndfile with debugging information
+    makezip      -> create a zip file (contains msndfile + libsndfile)
+    doc          -> compiles documentation to HTML
+    all          -> runs both msndfile and makezip
+"""
++ win_help_text +
+"""
+The following environment variables can be overridden by passing them *after*
+the call to scons, i.e. "scons CC=gcc":"""
++ env_vars.GenerateHelpText(env) +
 """
 The following options are supported:
     --with-32bits   -> Force 32 bit compilation ("-m32" GCC option) on Unix.
 """
 )
-
-Default(msndfile)
