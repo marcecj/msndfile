@@ -9,13 +9,13 @@ AddOption('--with-32bits', dest='32bits', action='store_true',
 
 # general help
 Help(
-"""This build system compiles the msndread Mex file.  To compile, use one of
+"""This build system compiles the msndfile Mex file.  To compile, use one of
 the following build targets:
-    msndread     -> compile msndread (default)
-    msndread-dbg -> compile msndread with debugging information
-    makezip      -> create a zip file (contains msndread + libsndfile)
+    msndfile     -> compile msndfile (default)
+    msndfile-dbg -> compile msndfile with debugging information
+    makezip      -> create a zip file (contains msndfile + libsndfile)
     doc          -> compiles documentation to HTML
-    all          -> runs both msndread and makezip
+    all          -> runs both msndfile and makezip
 """
 )
 
@@ -99,13 +99,13 @@ if not (GetOption('clean') or GetOption('help')):
     env = conf.Finish()
 
 do_debug = False
-msndread = env.SConscript(os.sep.join(['src', 'SConstruct']),
+msndfile = env.SConscript(os.sep.join(['src', 'SConstruct']),
                           variant_dir = "build",
                           exports     = ["env", "do_debug"],
                           duplicate   = False)
 
 do_debug = True
-msndread_dbg = env.SConscript(os.sep.join(['src', 'SConstruct']),
+msndfile_dbg = env.SConscript(os.sep.join(['src', 'SConstruct']),
                               variant_dir = "debug",
                               exports     = ["env", "do_debug"],
                               duplicate   = False)
@@ -115,7 +115,7 @@ if platform == 'win32':
                      for d in ["build", "debug"]]
 
     sndfile_vs = MSVSProject(
-        target      = "msndread" + env['MSVSPROJECTSUFFIX'],
+        target      = "msndfile" + env['MSVSPROJECTSUFFIX'],
         buildtarget = build_targets,
         runfile     = os.sep.join([env['MATLAB']['ROOT'], "bin", "matlab.exe"]),
         srcs        = os.sep.join(["src", "msndread.c"]),
@@ -131,7 +131,7 @@ if platform == 'win32':
 
 # package the software
 
-pkg_src = [msndread, os.sep.join(["src", "msndread.m"]), os.sep.join(["src", "msndblockread.m"])]
+pkg_src = [msndfile, os.sep.join(["src", "msndread.m"]), os.sep.join(["src", "msndblockread.m"])]
 if platform == 'win32':
     pkg_src += [os.sep.join(['Win', env['SHLIBPREFIX'] + sndfile_lib + env['SHLIBSUFFIX']])]
 
@@ -147,10 +147,10 @@ docs = env.AsciiDoc(['README', 'INSTALL', 'LICENSE'])
 
 # some useful aliases
 Alias("makezip", sndfile_pkg)
-Alias("msndread", msndread)
-Alias("msndread-dbg", msndread_dbg)
+Alias("msndfile", msndfile)
+Alias("msndfile-dbg", msndfile_dbg)
 Alias('doc', docs)
-Alias("all", [msndread, sndfile_pkg])
+Alias("all", [msndfile, sndfile_pkg])
 
 # options help
 Help(
@@ -160,4 +160,4 @@ The following options are supported:
 """
 )
 
-Default(msndread)
+Default(msndfile)
