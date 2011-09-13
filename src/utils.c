@@ -11,7 +11,7 @@
 #define FMT_STR_SIZE 10
 
 /* function to get a value from a look-up table */
-int lookup_val(const FMT_TABLE *array, const char *name)
+int lookup_val(const FMT_TABLE *const array, const char *const name)
 {
     int i;
     for(i = 0; i < array->size; i++)
@@ -26,7 +26,7 @@ int lookup_val(const FMT_TABLE *array, const char *name)
  */
 
 /* create an AUDIO_FILE_INFO struct */
-AUDIO_FILE_INFO* create_file_info(const char *name, SF_INFO* sf_file_info, SNDFILE* file)
+AUDIO_FILE_INFO* create_file_info(const char *const name, SF_INFO* sf_file_info, SNDFILE* file)
 {
     const int name_len = strlen(name);
 
@@ -69,7 +69,7 @@ AUDIO_FILES* store_file_info(AUDIO_FILES *array, AUDIO_FILE_INFO *file_info)
 
 /* Get an AUDIO_FILE_INFO structure from an AUDIO_FILES look-up table.
  * Returns NULL if the file is not open. */
-AUDIO_FILE_INFO* lookup_file_info(const AUDIO_FILES *array, const char *name)
+AUDIO_FILE_INFO* lookup_file_info(const AUDIO_FILES *const array, const char *const name)
 {
     int i;
 
@@ -84,7 +84,7 @@ AUDIO_FILE_INFO* lookup_file_info(const AUDIO_FILES *array, const char *name)
 }
 
 /* remove an AUDIO_FILE_INFO structure from an AUDIO_FILES look-up table */
-AUDIO_FILES* remove_file_info(AUDIO_FILES *array, char *name)
+AUDIO_FILES* remove_file_info(AUDIO_FILES *array, const char *const name)
 {
     int i=0;
 
