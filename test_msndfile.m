@@ -20,6 +20,5 @@ test.msndblockread;
 %
 
 if do_perf_tests
-    test.msndread_perf;
-    test.msndblockread_perf;
+    test.performance;
 end
