@@ -9,7 +9,7 @@
  * TODO: this needs more testing
  */
 
-SNDFILE* sf_input_file=NULL;
+static SNDFILE* sf_input_file=NULL;
 
 /* function for clearing memory after Matlab ends */
 void clear_memory(void)
@@ -26,11 +26,20 @@ void mexFunction(int nlhs, mxArray *plhs[],
     int         num_chns;
     const int   str_size = (nrhs > 0 ? mxGetN(prhs[0])+1 : 0); // length of the input file name
     char        *sf_in_fname; // input file name
-    sf_count_t  num_frames=0, processed_frames=0;
+    sf_count_t  num_frames=0;
     double      *data, *output;
     SF_INFO     *sf_file_info;
 
     mexAtExit(&clear_memory);
+
+    /* If a file was not closed properly last run, attempt to close it
+     * again.  If it still fails, abort. */
+    if( sf_input_file != NULL ) {
+        if( !sf_close(sf_input_file) )
+            sf_input_file = NULL;
+        else
+            mexErrMsgTxt("There was still a file open that could not be closed!");
+    }
 
     if( nrhs < 1 )
         mexErrMsgTxt("Missing argument: you need to pass a file name.");
@@ -43,11 +52,6 @@ void mexFunction(int nlhs, mxArray *plhs[],
     }
     mxGetString(prhs[0], sf_in_fname, str_size);
 
-    /*
-     * allocate the strings corresponding to the names of the major formats,
-     * format subtypes and the endianness as per the libsndfile documentation
-     */
-
     /* initialize sf_file_info struct pointer */
     sf_file_info = (SF_INFO*)malloc(sizeof(SF_INFO));
     if( sf_file_info == NULL ) {
@@ -55,16 +59,13 @@ void mexFunction(int nlhs, mxArray *plhs[],
         mexErrMsgTxt("Could not allocate SF_INFO* instance");
     }
 
-    if( nrhs < 3 )
-        /* "format" needs to be set to 0 before a file is opened for reading,
-         * unless the file is a RAW file */
-        sf_file_info->format = 0;
-    else
-    {
-        /*
-         * handle RAW files
-         */
+    /* "format" needs to be set to 0 before a file is opened for reading,
+     * unless the file is a RAW file */
+    sf_file_info->format = 0;
 
+    /* handle RAW files */
+    if( nrhs >= 3 )
+    {
         if( !mxIsStruct(prhs[2]) ) {
             free(sf_in_fname);
             free(sf_file_info);
@@ -74,16 +75,6 @@ void mexFunction(int nlhs, mxArray *plhs[],
         get_file_info(sf_file_info, sf_in_fname, prhs[2]);
     }
 
-    /* If a file was not closed properly last run, attempt to close it
-     * again.  If it still fails, abort. */
-    if( sf_input_file != NULL ) {
-        if( !sf_close(sf_input_file) )
-            sf_input_file = NULL;
-        else {
-            free(sf_in_fname);
-            mexErrMsgTxt("There was still a file open that could not be closed!");
-        }
-    }
     sf_input_file = sf_open(sf_in_fname, SFM_READ, sf_file_info);
     free(sf_in_fname);
 
@@ -119,8 +110,7 @@ void mexFunction(int nlhs, mxArray *plhs[],
 
             dims[0] = (double)(sf_file_info->frames);
             dims[1] = (double)(sf_file_info->channels);
-        }
-        else {
+        } else {
             free(cmd_str);
             mexErrMsgTxt("Unknown command.");
         }
@@ -155,12 +145,10 @@ void mexFunction(int nlhs, mxArray *plhs[],
     num_chns = sf_file_info->channels;
     plhs[0]  = mxCreateDoubleMatrix((int)num_frames, num_chns, mxREAL);
     output   = mxGetPr(plhs[0]);
-    /* data read via libsndfile */
-    data     = (double*)malloc((int)num_frames*num_chns*sizeof(double));
 
     /* read the entire file in one go */
-    processed_frames = sf_readf_double(sf_input_file, data, num_frames);
-    if( processed_frames <= 0 ) {
+    data = (double*)malloc((int)num_frames*num_chns*sizeof(double));
+    if( sf_readf_double(sf_input_file, data, num_frames) <= 0 ) {
         free(data);
         free(sf_file_info);
         mexErrMsgTxt("Error reading frames from input file: 0 frames read!");

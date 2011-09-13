@@ -26,18 +26,11 @@ void clear_static_vars()
 void mexFunction(int nlhs, mxArray *plhs[],
                  int nrhs, const mxArray *prhs[])
 {
-    SF_INFO*         sf_file_info  = NULL;
-    SNDFILE*         sf_input_file = NULL;
-    AUDIO_FILE_INFO* file_info     = NULL;
-
-    int         sndfile_err; // libsndfile error status
-    int         num_chns;
     const int   cmd_size = (nrhs > 0 ? mxGetN(prhs[0])+1 : 0); // length of the command
     const int   str_size = (nrhs > 1 ? mxGetN(prhs[1])+1 : 0); // length of the input file name
     int         cmd_id = -1;
     char        *cmd_str;
     char        *sf_in_fname=NULL; // input file name
-    sf_count_t  num_frames=0, processed_frames=0;
 
     mexAtExit(&clear_static_vars);
 
@@ -73,9 +66,9 @@ void mexFunction(int nlhs, mxArray *plhs[],
     {
         /* get input filename */
         sf_in_fname = (char*)calloc(str_size, sizeof(char));
-        if( sf_in_fname == NULL ) {
+        if( sf_in_fname == NULL )
             mexErrMsgTxt("calloc error!");
-        }
+
         mxGetString(prhs[1], sf_in_fname, str_size);
     }
     else if( cmd_id != CMD_CLOSEALL )
@@ -83,6 +76,10 @@ void mexFunction(int nlhs, mxArray *plhs[],
 
     if( cmd_id == CMD_OPEN )
     {
+        AUDIO_FILE_INFO* file_info = NULL;
+        SNDFILE* sf_input_file     = NULL;
+        SF_INFO* sf_file_info      = NULL;
+
         if( lookup_file_info(file_list, sf_in_fname) != NULL ) {
             free(sf_in_fname);
             mexErrMsgTxt("File already open!");
@@ -95,16 +92,12 @@ void mexFunction(int nlhs, mxArray *plhs[],
             mexErrMsgTxt("Could not allocate SF_INFO* instance");
         }
 
-        if( nrhs < 3 )
-            /* "format" needs to be set to 0 before a file is opened for reading,
-             * unless the file is a RAW file */
-            sf_file_info->format = 0;
-        else
+        /* "format" needs to be set to 0 before a file is opened for reading,
+         * unless the file is a RAW file */
+        sf_file_info->format = 0;
+        if( nrhs >= 3 )
         {
-            /*
-             * handle RAW files
-             */
-
+            /* handle RAW files */
             if( !mxIsStruct(prhs[2]) ) {
                 free(sf_in_fname);
                 free(sf_file_info);
@@ -138,8 +131,12 @@ void mexFunction(int nlhs, mxArray *plhs[],
     }
     else if( cmd_id == CMD_READ )
     {
+        AUDIO_FILE_INFO* file_info = NULL;
         bool        do_transpose=true;
         double*     temp_array;
+        int         num_chns;
+        sf_count_t  num_frames=0;
+        int         sndfile_err; // libsndfile error status
 
         /*
          * allocate the strings corresponding to the names of the major formats,
@@ -188,8 +185,7 @@ void mexFunction(int nlhs, mxArray *plhs[],
         }
 
         /* read the entire file in one go */
-        processed_frames = sf_readf_double(file_info->file, temp_array, num_frames);
-        if( processed_frames == 0 ) {
+        if( sf_readf_double(file_info->file, temp_array, num_frames) == 0 ) {
             if( do_transpose )
                 free(temp_array);
             mexErrMsgTxt("Error reading frames from input file: 0 frames read!");
