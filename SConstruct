@@ -28,7 +28,7 @@ if platform == "posix":
 
     env.Append(
         LIBPATH = "Linux",
-        CCFLAGS = "-std=c99 -O2 -pedantic -Wall -Wextra",
+        CCFLAGS = "-ansi -O2 -pedantic -Wall -Wextra",
         LIBS    = ["m"]
     )
 
@@ -61,7 +61,7 @@ elif platform == "win32":
 elif platform == "darwin":
 
     env.Append(
-        CCFLAGS = "-std=c99 -O2 -pedantic -Wall -Wextra",
+        CCFLAGS = "-ansi -O2 -pedantic -Wall -Wextra",
         LIBS    = ["m"]
     )
 

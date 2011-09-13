@@ -63,6 +63,6 @@ void destroy_file_list(AUDIO_FILES* array);
 
 /* get information about a file from an args pointer and transfer it to an
  * SF_INFO struct */
-void get_file_info(SF_INFO* sf_file_info, char* sf_in_fname, const mxArray const* args);
+void get_file_info(SF_INFO* sf_file_info, char* sf_in_fname, const mxArray *const  args);
 
 #endif /* __UTILS_H__ */

@@ -26,11 +26,11 @@ void clear_static_vars()
 void mexFunction(int nlhs, mxArray *plhs[],
                  int nrhs, const mxArray *prhs[])
 {
-    const int   cmd_size = (nrhs > 0 ? mxGetN(prhs[0])+1 : 0); // length of the command
-    const int   str_size = (nrhs > 1 ? mxGetN(prhs[1])+1 : 0); // length of the input file name
+    const int   cmd_size = (nrhs > 0 ? mxGetN(prhs[0])+1 : 0); /* length of the command */
+    const int   str_size = (nrhs > 1 ? mxGetN(prhs[1])+1 : 0); /* length of the input file name */
     int         cmd_id = -1;
     char        *cmd_str;
-    char        *sf_in_fname=NULL; // input file name
+    char        *sf_in_fname=NULL; /* input file name */
 
     mexAtExit(&clear_static_vars);
 
@@ -136,7 +136,7 @@ void mexFunction(int nlhs, mxArray *plhs[],
         double*     temp_array;
         int         num_chns;
         sf_count_t  num_frames=0;
-        int         sndfile_err; // libsndfile error status
+        int         sndfile_err; /* libsndfile error status */
 
         /*
          * allocate the strings corresponding to the names of the major formats,
