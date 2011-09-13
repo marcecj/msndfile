@@ -1,0 +1,2 @@
+LIBRARY msndblockread.c
+EXPORTS mexFunction
