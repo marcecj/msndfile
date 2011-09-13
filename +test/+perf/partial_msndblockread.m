@@ -3,12 +3,22 @@ function [timings_mean, timings_std, timings_labels] = partial_msndblockread(num
 fprintf('\n');
 disp(['*** Conducting msndblockread performance comparison (partial reads) ***']);
 
-timings_mean = zeros(length(block_sizes), 4);
-timings_std  = zeros(length(block_sizes), 4);
-timings_labels = {'msndblockread (FLAC)', ...
+if exist('wavReaderOpen', 'file')
+    timings_mean = zeros(length(block_sizes), 4);
+    timings_std  = zeros(length(block_sizes), 4);
+    timings_labels = {'msndblockread (FLAC)', ...
                   'msndblockread (WAV)', ...
                   'msndblockread (WAV, no transposition)', ...
                   'wavReader'};
+else
+    warning('Skipping ''wavReader'' tests.');
+
+    timings_mean = zeros(length(block_sizes), 3);
+    timings_std  = zeros(length(block_sizes), 3);
+    timings_labels = {'msndblockread (FLAC)', ...
+                  'msndblockread (WAV)', ...
+                  'msndblockread (WAV, no transposition)'};
+end
 
 t_e = zeros(num_run, 1);
 
@@ -49,13 +59,15 @@ for aa=1:length(block_sizes)
     timings_std(aa,3)  = std(t_e);
     disp(sprintf('mean time taken by msndblockread (WAV): \t%.6f +- %.6f', mean(t_e), std(t_e)));
 
-    file_h = wavReaderOpen('test.wav');
-    for kk=1:num_run
-        tic, wavReaderReadBlock(file_h, 1, b);
-        t_e(kk) = toc;
+    if exist('wavReaderOpen', 'file')
+        file_h = wavReaderOpen('test.wav');
+        for kk=1:num_run
+            tic, wavReaderReadBlock(file_h, 1, b);
+            t_e(kk) = toc;
+        end
+        wavReaderClose(file_h);
+        timings_mean(aa,4) = mean(t_e);
+        timings_std(aa,4)  = std(t_e);
+        disp(sprintf('mean time taken by wavReader:\t\t\t%.6f +- %.6f', mean(t_e), std(t_e)));
     end
-    wavReaderClose(file_h);
-    timings_mean(aa,4) = mean(t_e);
-    timings_std(aa,4)  = std(t_e);
-    disp(sprintf('mean time taken by wavReader:\t\t\t%.6f +- %.6f', mean(t_e), std(t_e)));
 end

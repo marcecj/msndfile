@@ -7,12 +7,22 @@ function [timings_mean, timings_std, timings_labels] = partial_msndblockread(num
 fprintf('\n');
 disp(['*** Conducting msndblockread performance comparison (whole reads) ***']);
 
-timings_mean = zeros(length(block_sizes), 3);
-timings_std  = zeros(length(block_sizes), 3);
-timings_labels = {'msndblockread (FLAC)', ...
-                  'msndblockread (WAV)', ...
-                  'msndblockread (WAV, no transposition)', ...
-                  'wavReader'};
+if exist('wavReaderOpen', 'file')
+    timings_mean = zeros(length(block_sizes), 4);
+    timings_std  = zeros(length(block_sizes), 4);
+    timings_labels = {'msndblockread (FLAC)', ...
+                      'msndblockread (WAV)', ...
+                      'msndblockread (WAV, no transposition)', ...
+                      'wavReader'};
+else
+    warning('Skipping ''wavReader'' tests.');
+
+    timings_mean = zeros(length(block_sizes), 3);
+    timings_std  = zeros(length(block_sizes), 3);
+    timings_labels = {'msndblockread (FLAC)', ...
+                      'msndblockread (WAV)', ...
+                      'msndblockread (WAV, no transposition)'};
+end
 
 file_size = wavread('test.wav', 'size');
 
@@ -65,17 +75,19 @@ for aa=1:length(block_sizes)
     timings_std(aa,3)  = std(t_e);
     disp(sprintf('mean time taken by msndblockread (WAV): \t%.6f +- %.6f', mean(t_e), std(t_e)));
 
-    for kk=1:num_run
-        file_h = wavReaderOpen('test.wav');
-        tic,
-        for ll=1:b:file_size(1)-b
-            wavReaderReadBlock(file_h, ll, ll+b-1);
+    if exist('wavReaderOpen', 'file')
+        for kk=1:num_run
+            file_h = wavReaderOpen('test.wav');
+            tic,
+            for ll=1:b:file_size(1)-b
+                wavReaderReadBlock(file_h, ll, ll+b-1);
+            end
+            wavReaderReadBlock(file_h, ll, file_size(1));
+            t_e(kk) = toc;
+            wavReaderClose(file_h);
         end
-        wavReaderReadBlock(file_h, ll, file_size(1));
-        t_e(kk) = toc;
-        wavReaderClose(file_h);
+        timings_mean(aa,4) = mean(t_e);
+        timings_std(aa,4)  = std(t_e);
+        disp(sprintf('mean time taken by wavReader:\t\t\t%.6f +- %.6f', mean(t_e), std(t_e)));
     end
-    timings_mean(aa,4) = mean(t_e);
-    timings_std(aa,4)  = std(t_e);
-    disp(sprintf('mean time taken by wavReader:\t\t\t%.6f +- %.6f', mean(t_e), std(t_e)));
 end
