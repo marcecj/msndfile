@@ -12,6 +12,7 @@
 config.log
 build/*
 debug/*
+msndfile/*
 
 msndfile-0.1*
 
@@ -23,12 +24,13 @@ graphics
 *.html
 
 # VS files
-msndfile.sln
-msndfile.vcproj*
-msndfile.suo
-msndfile.ncb
+*.sln*
+*.vcproj*
+*.suo*
+*.ncb
+*.pdb
 _UpgradeReport_Files
-UpgradeLog.XML
+UpgradeLog*.XML
 debug
 release
 Win
