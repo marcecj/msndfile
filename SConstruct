@@ -98,7 +98,6 @@ if platform == 'win32':
 
     sndfile_vs = MSVSProject(
         target      = "msndfile" + env['MSVSPROJECTSUFFIX'],
-        buildtarget = build_targets,
         runfile     = os.sep.join([env['MATLAB']['ROOT'], "bin", "matlab.exe"]),
         srcs        = Glob(os.sep.join(["src", "*.c"]), strings=True),
         localincs   = Glob(os.sep.join(["src", "*.h"]), strings=True),
@@ -123,13 +122,14 @@ sndfile_pkg = env.Package(
 )
 
 # create an alias for building the documentation
-docs = env.AsciiDoc(['README', 'INSTALL', 'LICENSE'])
+if env.WhereIs('asciidoc') is not None:
+    docs = env.AsciiDoc(['README', 'INSTALL', 'LICENSE'])
+    Alias('doc', docs)
 
 # some useful aliases
 Alias("makezip", sndfile_pkg)
 Alias("msndfile", msndfile)
 Alias("msndfile-dbg", msndfile_dbg)
-Alias('doc', docs)
 Alias("all", [msndfile, sndfile_pkg])
 
 Default(msndfile)
