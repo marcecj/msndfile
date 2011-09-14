@@ -112,7 +112,7 @@ pkg_src = [msndfile, Glob(os.sep.join(['src', '*.m']))]
 if platform == 'win32':
     pkg_src += ['Win' + os.sep + env['SHLIBPREFIX'] + sndfile_lib + env['SHLIBSUFFIX']]
 
-env.Install("msndfile", pkg_src)
+msndfile_inst = env.Install("msndfile", pkg_src)
 sndfile_pkg = env.Package(
     NAME        = "msndfile",
     VERSION     = "0.1",
@@ -126,6 +126,7 @@ if env.WhereIs('asciidoc') is not None:
 
 # some useful aliases
 Alias("makezip", sndfile_pkg)
+Alias("install", msndfile_inst)
 Alias("msndfile", msndfile)
 Alias("msndfile-dbg", msndfile_dbg)
 Alias("all", [msndfile, sndfile_pkg])
@@ -139,6 +140,7 @@ the following build targets:
     msndfile     -> compile msndfile (default)
     msndfile-dbg -> compile msndfile with debugging information
     makezip      -> create a zip file (contains msndfile + libsndfile)
+    install      -> install msndfile to directory "msndfile"
     doc          -> compiles documentation to HTML
     all          -> runs both msndfile and makezip
 """
