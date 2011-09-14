@@ -2,20 +2,16 @@
 Import(["env", "do_debug"])
 
 if do_debug:
-    env  = env.Clone()
-    env2 = env.Clone()
+    env = env.Clone()
 
     if env['PLATFORM'] == "win32" and 'mingw' not in env['TOOLS']:
-        env['PDB']  = ['msndread.pdb']
-        env2['PDB'] = ['msndblockread.pdb']
+        env.AppendUnique(CCFLAGS='/Zi')
+        env.AppendUnique(LINKFLAGS='/DEBUG')
     else:
         env.MergeFlags("-g -O0")
-        env2.MergeFlags("-g -O0")
-else:
-    env2 = env
 
 utils_obj     = env.SharedObject("utils.c")
 msndread      = env.Mex("msndread", ["msndread.c", utils_obj])
-msndblockread = env2.Mex("msndblockread", ["msndblockread.c", utils_obj])
+msndblockread = env.Mex("msndblockread", ["msndblockread.c", utils_obj])
 
 Return(["msndread", "msndblockread"])

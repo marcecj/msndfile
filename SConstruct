@@ -92,19 +92,17 @@ msndfile_dbg = env.SConscript(os.sep.join(['src', 'SConstruct']),
 
 win_help_text = ""
 if platform == 'win32':
-    build_targets = [d + os.sep + t + env['MATLAB']['MEX_EXT']
-                     for d in ("build", "debug")
-                     for t in ("msndread", "msndblockread")]
-
-    sndfile_vs = MSVSProject(
+    msndfile_vs = env.MSVSProject(
         target      = "msndfile" + env['MSVSPROJECTSUFFIX'],
+        buildtarget = ["msndfile", "msndfile-dbg"],
         runfile     = os.sep.join([env['MATLAB']['ROOT'], "bin", "matlab.exe"]),
         srcs        = Glob(os.sep.join(["src", "*.c"]), strings=True),
         localincs   = Glob(os.sep.join(["src", "*.h"]), strings=True),
         incs        = os.sep.join(["Win", "sndfile.h"]),
         variant     = ["Release", "Debug"]
     )
-    Alias("vsproj", sndfile_vs)
+
+    Alias("vsproj", [msndfile_vs, msndfile, msndfile_dbg])
 
     win_help_text = """    vsproj    -> create a visual studio project file"""
 
@@ -114,7 +112,7 @@ pkg_src = [msndfile, Glob(os.sep.join(['src', '*.m']))]
 if platform == 'win32':
     pkg_src += ['Win' + os.sep + env['SHLIBPREFIX'] + sndfile_lib + env['SHLIBSUFFIX']]
 
-env.Install(".", pkg_src)
+env.Install("msndfile", pkg_src)
 sndfile_pkg = env.Package(
     NAME        = "msndfile",
     VERSION     = "0.1",
