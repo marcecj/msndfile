@@ -100,8 +100,8 @@ if platform == 'win32':
         target      = "msndfile" + env['MSVSPROJECTSUFFIX'],
         buildtarget = build_targets,
         runfile     = os.sep.join([env['MATLAB']['ROOT'], "bin", "matlab.exe"]),
-        srcs        = Glob(os.sep.join(["src", "*.c"])),
-        localincs   = Glob(os.sep.join(["src", "*.h"])),
+        srcs        = Glob(os.sep.join(["src", "*.c"]), strings=True),
+        localincs   = Glob(os.sep.join(["src", "*.h"]), strings=True),
         incs        = os.sep.join(["Win", "sndfile.h"]),
         variant     = ["Release", "Debug"]
     )
