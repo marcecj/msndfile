@@ -2,10 +2,7 @@
 # TODO: Test Mac.
 
 import os
-
-# some options, help text says all
-AddOption('--with-32bits', dest='32bits', action='store_true',
-          help='Force 32 bit compilation ("-m32" GCC option) on Unix.')
+import platform
 
 # modifiable environment variables
 env_vars = Variables()
@@ -21,10 +18,10 @@ asciidoc = env.Builder(action = ['asciidoc -o $TARGET ${SOURCE}'],
                        single_source = True)
 env['BUILDERS']['AsciiDoc'] = asciidoc
 
-platform = env['PLATFORM']
+cur_platform = env['PLATFORM']
 
 # OS dependent stuff, we assume GCC on Unix like platforms
-if platform == "posix":
+if cur_platform == "posix":
 
     env.Append(
         LIBPATH = "Linux",
@@ -39,7 +36,11 @@ if platform == "posix":
         # env.Append(CCFLAGS=" -ftree-vectorize -ftree-vectorizer-verbose=2")
         env.Append(LINKFLAGS="-Wl,--as-needed")
 
-    if GetOption('32bits'):
+    # if the system is 64 bit and Matlab is 32 bit, compile for 32 bit; since
+    # Matlab currently only runs on x86 architectures, checking for x86_64
+    # should suffice
+    if platform.machine() == "x86_64" \
+       and not env['MATLAB']['ARCH'].endswith('64'):
         env.Append(
             CCFLAGS    = "-m32",
             LINKFLAGS  = "-m32",
@@ -48,7 +49,7 @@ if platform == "posix":
 
     sndfile_lib = "sndfile"
 
-elif platform == "win32":
+elif cur_platform == "win32":
 
     # enforce searching in the top-level Win directory
     win_path = os.sep.join([os.path.abspath(os.path.curdir), 'Win'])
@@ -58,7 +59,7 @@ elif platform == "win32":
 
     sndfile_lib = "libsndfile-1"
 
-elif platform == "darwin":
+elif cur_platform == "darwin":
 
     env.Append(
         CCFLAGS = "-ansi -O2 -pedantic -Wall -Wextra",
@@ -91,7 +92,7 @@ msndfile_dbg = env.SConscript(os.sep.join(['src', 'SConstruct']),
                               duplicate   = False)
 
 win_help_text = ""
-if platform == 'win32':
+if cur_platform == 'win32':
     msndfile_vs = env.MSVSProject(
         target      = "msndfile" + env['MSVSPROJECTSUFFIX'],
         buildtarget = ["msndfile", "msndfile-dbg"],
@@ -109,7 +110,7 @@ if platform == 'win32':
 # package the software
 
 pkg_src = [msndfile, Glob(os.sep.join(['src', '*.m']))]
-if platform == 'win32':
+if cur_platform == 'win32':
     pkg_src += ['Win' + os.sep + env['SHLIBPREFIX'] + sndfile_lib + env['SHLIBSUFFIX']]
 
 msndfile_inst = env.Install("msndfile", pkg_src)
@@ -148,9 +149,5 @@ the following build targets:
 """
 The following environment variables can be overridden by passing them *after*
 the call to scons, i.e. "scons CC=gcc":"""
-+ env_vars.GenerateHelpText(env) +
-"""
-The following options are supported:
-    --with-32bits   -> Force 32 bit compilation ("-m32" GCC option) on Unix.
-"""
++ env_vars.GenerateHelpText(env)
 )
