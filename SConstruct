@@ -23,18 +23,13 @@ cur_platform = env['PLATFORM']
 # OS dependent stuff, we assume GCC on Unix like platforms
 if cur_platform == "posix":
 
-    env.Append(
-        LIBPATH = "Linux",
-        CCFLAGS = "-ansi -O2 -pedantic -Wall -Wextra",
-        LIBS    = ["m"]
-    )
+    env.Append(CCFLAGS = "-ansi -O2 -pedantic -Wall -Wextra")
 
     if env['CC'] == 'gcc':
-        env.Append(CCFLAGS="-fdump-rtl-expand")
         # TODO: Currently these options don't do anything.  Maybe newer GCC
         # versions (with graphite) can vectorize the transposition for-loops?
         # env.Append(CCFLAGS=" -ftree-vectorize -ftree-vectorizer-verbose=2")
-        env.Append(LINKFLAGS="-Wl,--as-needed")
+        env.Append(LINKFLAGS = "-Wl,-O1 -Wl,--no-copy-dt-needed-entries -Wl,--as-needed")
 
     # if the system is 64 bit and Matlab is 32 bit, compile for 32 bit; since
     # Matlab currently only runs on x86 architectures, checking for x86_64
@@ -61,10 +56,7 @@ elif cur_platform == "win32":
 
 elif cur_platform == "darwin":
 
-    env.Append(
-        CCFLAGS = "-ansi -O2 -pedantic -Wall -Wextra",
-        LIBS    = ["m"]
-    )
+    env.Append(CCFLAGS = "-ansi -O2 -pedantic -Wall -Wextra")
 
     sndfile_lib = "sndfile"
 
