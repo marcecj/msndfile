@@ -32,7 +32,7 @@ env['BUILDERS']['AsciiDoc'] = asciidoc
 cur_platform = env['PLATFORM']
 
 # OS dependent stuff, we assume GCC on Unix like platforms
-if cur_platform == "posix":
+if cur_platform in ("posix", "darwin"):
 
     env.Append(CCFLAGS   = "-ansi -O2 -pedantic -Wall -Wextra",
                LINKFLAGS = "-Wl,-O1 -Wl,--no-copy-dt-needed-entries -Wl,--as-needed")
@@ -65,12 +65,6 @@ elif cur_platform == "win32":
     env.Replace(WINDOWS_INSERT_DEF = True)
 
     sndfile_lib = "libsndfile-1"
-
-elif cur_platform == "darwin":
-
-    env.Append(CCFLAGS = "-ansi -O2 -pedantic -Wall -Wextra")
-
-    sndfile_lib = "sndfile"
 
 else:
 
