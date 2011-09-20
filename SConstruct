@@ -4,6 +4,17 @@
 import os
 import platform
 
+Help(
+"""This build system compiles the msndfile Mex files.  To compile, use one of
+the following build targets:
+    msndfile     -> compile msndfile (default)
+    msndfile-dbg -> compile msndfile with debugging information
+    makezip      -> create a zip file (contains msndfile + libsndfile)
+    install      -> install msndfile to directory "msndfile"
+    all          -> runs both msndfile and makezip
+"""
+)
+
 # modifiable environment variables
 env_vars = Variables()
 env_vars.Add('CC', 'The C compiler')
@@ -83,7 +94,6 @@ msndfile_dbg = env.SConscript(os.sep.join(['src', 'SConstruct']),
                               exports     = ["env", "do_debug"],
                               duplicate   = False)
 
-win_help_text = ""
 if cur_platform == 'win32':
     msndfile_vs = env.MSVSProject(
         target      = "msndfile" + env['MSVSPROJECTSUFFIX'],
@@ -97,7 +107,7 @@ if cur_platform == 'win32':
 
     Alias("vsproj", [msndfile_vs, msndfile, msndfile_dbg])
 
-    win_help_text = """    vsproj    -> create a visual studio project file"""
+    Help("    vsproj       -> create a visual studio project file")
 
 # package the software
 
@@ -117,6 +127,10 @@ if env.WhereIs('asciidoc') is not None:
     docs = env.AsciiDoc(['README', 'INSTALL', 'LICENSE'])
     Alias('doc', docs)
 
+    Help("    doc          -> compiles documentation to HTML")
+else:
+    print "asciidoc not found! Cannot build documentation."
+
 # some useful aliases
 Alias("makezip", sndfile_pkg)
 Alias("install", msndfile_inst)
@@ -126,19 +140,8 @@ Alias("all", [msndfile, sndfile_pkg])
 
 Default(msndfile)
 
-# generate the help text
 Help(
-"""This build system compiles the msndfile Mex files.  To compile, use one of
-the following build targets:
-    msndfile     -> compile msndfile (default)
-    msndfile-dbg -> compile msndfile with debugging information
-    makezip      -> create a zip file (contains msndfile + libsndfile)
-    install      -> install msndfile to directory "msndfile"
-    doc          -> compiles documentation to HTML
-    all          -> runs both msndfile and makezip
-"""
-+ win_help_text +
-"""
+"""\n
 The following environment variables can be overridden by passing them *after*
 the call to scons, i.e. "scons CC=gcc":"""
 + env_vars.GenerateHelpText(env)
