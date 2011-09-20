@@ -5,8 +5,7 @@ if do_debug:
     env = env.Clone()
 
     if env['PLATFORM'] == "win32" and 'mingw' not in env['TOOLS']:
-        env.AppendUnique(CCFLAGS='/Zi')
-        env.AppendUnique(LINKFLAGS='/DEBUG')
+        env.AppendUnique(CCFLAGS='/Zi', LINKFLAGS='/DEBUG')
     else:
         env.MergeFlags("-g -O0")
 

@@ -19,19 +19,19 @@ the following build targets:
 env_vars = Variables()
 env_vars.Add('CC', 'The C compiler')
 
-# the matlab tool automatically sets various environment variables
+# the Matlab tool automatically sets various environment variables
 env = Environment(tools = ['default', 'packaging', 'matlab'],
                   variables = env_vars)
 
-# define an asciidoc builder
-asciidoc = env.Builder(action = ['asciidoc -o $TARGET ${SOURCE}'],
+# define an AsciiDoc builder
+asciidoc = env.Builder(action = ['asciidoc -o ${TARGET} ${SOURCE}'],
                        suffix = '.html',
                        single_source = True)
 env['BUILDERS']['AsciiDoc'] = asciidoc
 
 cur_platform = env['PLATFORM']
 
-# OS dependent stuff, we assume GCC on Unix like platforms
+# OS dependent stuff, we assume a GCC-compatible compiler on Unix like platforms
 if cur_platform in ("posix", "darwin"):
 
     env.Append(CCFLAGS   = "-ansi -O2 -pedantic -Wall -Wextra",
@@ -60,7 +60,7 @@ elif cur_platform == "win32":
 
     # enforce searching in the top-level Win directory
     win_path = os.sep.join([os.path.abspath(os.path.curdir), 'Win'])
-    env.Append(LIBPATH=win_path, CPPPATH=win_path)
+    env.Append(LIBPATH = win_path, CPPPATH = win_path)
 
     env.Replace(WINDOWS_INSERT_DEF = True)
 
@@ -117,16 +117,18 @@ sndfile_pkg = env.Package(
     PACKAGETYPE = "zip"
 )
 
-# create an alias for building the documentation
+# create an alias for building the documentation, but only if the asciidoc
+# binary could be found
 if env.WhereIs('asciidoc') is not None:
     docs = env.AsciiDoc(['README', 'INSTALL', 'LICENSE'])
+
     Alias('doc', docs)
 
     Help("    doc          -> compiles documentation to HTML")
 else:
     print "asciidoc not found! Cannot build documentation."
 
-# some useful aliases
+# define some useful aliases
 Alias("makezip", sndfile_pkg)
 Alias("install", msndfile_inst)
 Alias("msndfile", msndfile)
