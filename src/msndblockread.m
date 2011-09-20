@@ -129,10 +129,3 @@ function OutData = msndblockread(cmd, file_name, idx_range, file_info)
 % (c) Marc Joliet <marcec@gmx.de>
 %
 % Licence: see file 'LICENSE'
-%
-% Last modified: 24th November, 2010
-%
-% History: 1.0 - first properly working version
-% History: 1.1 - added support for RAW files
-% History: 1.2 - added support for reading a range of samples and for obtaining
-%                the size of the audio data. Also fixed a stupid bug.
