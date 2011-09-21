@@ -105,13 +105,13 @@ if cur_platform == 'win32':
         variant     = ["Release", "Debug"]
     )
 
-    Alias("vsproj", [msndfile_vs, msndfile, msndfile_dbg])
+    Alias("vsproj", msndfile_vs + msndfile + msndfile_dbg)
 
     Help("    vsproj       -> create a visual studio project file")
 
 # package the software
 
-pkg_src = [msndfile, Glob(os.sep.join(['src', '*.m']))]
+pkg_src = msndfile + Glob(os.sep.join(['src', '*.m']))
 if cur_platform == 'win32':
     pkg_src += ['Win' + os.sep + env['SHLIBPREFIX'] + sndfile_lib + env['SHLIBSUFFIX']]
 
@@ -138,7 +138,7 @@ Alias("makezip", sndfile_pkg)
 Alias("install", msndfile_inst)
 Alias("msndfile", msndfile)
 Alias("msndfile-dbg", msndfile_dbg)
-Alias("all", [msndfile, sndfile_pkg])
+Alias("all", msndfile + sndfile_pkg)
 
 Default(msndfile)
 

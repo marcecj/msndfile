@@ -13,4 +13,6 @@ utils_obj     = env.SharedObject("utils.c")
 msndread      = env.Mex("msndread", ["msndread.c", utils_obj])
 msndblockread = env.Mex("msndblockread", ["msndblockread.c", utils_obj])
 
-Return(["msndread", "msndblockread"])
+target = msndread + msndblockread
+
+Return("target")
