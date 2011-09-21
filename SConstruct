@@ -34,13 +34,19 @@ cur_platform = env['PLATFORM']
 # OS dependent stuff, we assume a GCC-compatible compiler on Unix like platforms
 if cur_platform in ("posix", "darwin"):
 
-    env.Append(CCFLAGS   = "-ansi -O2 -pedantic -Wall -Wextra",
+    env.Append(CCFLAGS   = "-DNDEBUG -ansi -O2 -pedantic -Wall -Wextra",
                LINKFLAGS = "-Wl,-O1 -Wl,--no-copy-dt-needed-entries -Wl,--as-needed")
 
     # Activate optimizations in GCC 4.5
     if env['CC'] == 'gcc' and env['CCVERSION'] >= '4.5':
-        # Matlab crashes without this!
-        env.Append(CCFLAGS="-fno-reorder-blocks")
+        env.Append(CCFLAGS=[
+            "-ftree-vectorize",
+            "-ftree-vectorizer-verbose=2",
+            "-floop-interchange",
+            "-floop-strip-mine",
+            "-floop-block",
+            "-fno-reorder-blocks", # Matlab crashes without this!
+        ])
 
     # if the system is 64 bit and Matlab is 32 bit, compile for 32 bit; since
     # Matlab currently only runs on x86 architectures, checking for x86_64
