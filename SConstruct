@@ -37,11 +37,10 @@ if cur_platform in ("posix", "darwin"):
     env.Append(CCFLAGS   = "-ansi -O2 -pedantic -Wall -Wextra",
                LINKFLAGS = "-Wl,-O1 -Wl,--no-copy-dt-needed-entries -Wl,--as-needed")
 
-    if env['CC'] == 'gcc':
-        # TODO: Currently these options don't do anything.  Maybe newer GCC
-        # versions (with graphite) can vectorize the transposition for-loops?
-        # env.Append(CCFLAGS=" -ftree-vectorize -ftree-vectorizer-verbose=2")
-        pass
+    # Activate optimizations in GCC 4.5
+    if env['CC'] == 'gcc' and env['CCVERSION'] >= '4.5':
+        # Matlab crashes without this!
+        env.Append(CCFLAGS="-fno-reorder-blocks")
 
     # if the system is 64 bit and Matlab is 32 bit, compile for 32 bit; since
     # Matlab currently only runs on x86 architectures, checking for x86_64
