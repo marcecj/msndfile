@@ -6,7 +6,7 @@
 
 % needed with GCC >= 4.5, otherwise Matlab crashes
 extra_flags = '-fno-reorder-blocks';
-out_dir = 'build';
+out_dir     = 'build';
 
 if strcmp(computer, 'PCWIN') || strcmp(computer, 'PCWIN64')
     cmd1 = ['mex -LWin -l''sndfile-1'' -Iinclude -IWin src/msndread.c src/utils.c -outdir ''' out_dir '''']
@@ -21,6 +21,10 @@ elseif strcmp(computer, 'MACI') || strcmp(computer, 'MACI')
     cmd2 = ['mex ' default_flags ' src/msndblockread.c src/utils.c -outdir ''' out_dir ''' CFLAGS=''\$CFLAGS ''' extra_flags];
 end
 
+if ~exist(out_dir, 'dir')
+    mkdir('.', out_dir);
+end
+
 eval(cmd1); eval(cmd2);
 
 %
@@ -29,7 +33,7 @@ eval(cmd1); eval(cmd2);
 
 inst_dir = '+msndfile';
 
-if ~exist('+msndfile', 'dir')
+if ~exist(inst_dir, 'dir')
     mkdir('.', inst_dir);
 end
 
