@@ -12,7 +12,7 @@
 config.log
 build/*
 debug/*
-msndfile/*
++msndfile/*
 
 msndfile-0.1*
 

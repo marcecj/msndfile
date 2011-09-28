@@ -34,42 +34,42 @@ for aa=1:length(block_sizes)
     disp(['Conducting performance comparison (' num2str(num_run) ' full reads, ' num2str(b) ' samples at a time).']);
 
     for kk=1:num_run
-        msndblockread('open', 'test.flac');
+        msndfile.blockread('open', 'test.flac');
         tic,
         for ll=1:b:file_size(1)-b
-            msndblockread('read', 'test.flac', b);
+            msndfile.blockread('read', 'test.flac', b);
         end
-        msndblockread('read', 'test.flac', [ll file_size(1)]);
+        msndfile.blockread('read', 'test.flac', [ll file_size(1)]);
         t_e(kk) = toc;
-        msndblockread('close', 'test.flac');
+        msndfile.blockread('close', 'test.flac');
     end
     timings_mean(aa,1) = mean(t_e);
     timings_std(aa,1)  = std(t_e);
     disp(sprintf('mean time taken by msndblockread (FLAC):\t%.6f +- %.6f', mean(t_e), std(t_e)));
 
     for kk=1:num_run
-        msndblockread('open', 'test.wav');
+        msndfile.blockread('open', 'test.wav');
         tic,
         for ll=1:b:file_size(1)-b
-            msndblockread('read', 'test.wav', b);
+            msndfile.blockread('read', 'test.wav', b);
         end
-        msndblockread('read', 'test.wav', [ll file_size(1)]);
+        msndfile.blockread('read', 'test.wav', [ll file_size(1)]);
         t_e(kk) = toc;
-        msndblockread('close', 'test.wav');
+        msndfile.blockread('close', 'test.wav');
     end
     timings_mean(aa,2) = mean(t_e);
     timings_std(aa,2)  = std(t_e);
     disp(sprintf('mean time taken by msndblockread (WAV): \t%.6f +- %.6f', mean(t_e), std(t_e)));
 
     for kk=1:num_run
-        msndblockread('open', 'test.wav');
+        msndfile.blockread('open', 'test.wav');
         tic,
         for ll=1:b:file_size(1)-b
-            msndblockread('read', 'test.wav', b, false);
+            msndfile.blockread('read', 'test.wav', b, false);
         end
-        msndblockread('read', 'test.wav', [ll file_size(1)], false);
+        msndfile.blockread('read', 'test.wav', [ll file_size(1)], false);
         t_e(kk) = toc;
-        msndblockread('close', 'test.wav');
+        msndfile.blockread('close', 'test.wav');
     end
     timings_mean(aa,3) = mean(t_e);
     timings_std(aa,3)  = std(t_e);
