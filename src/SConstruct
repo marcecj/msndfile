@@ -1,5 +1,7 @@
 # vim:ft=python
-Import(["env", "do_debug"])
+import os
+
+Import("env", "do_debug")
 
 if do_debug:
     env = env.Clone()
@@ -9,10 +11,13 @@ if do_debug:
     else:
         env.MergeFlags("-g -O0")
 
-utils_obj     = env.SharedObject("utils.c")
-msndread      = env.Mex("msndread", ["msndread.c", utils_obj])
-msndblockread = env.Mex("msndblockread", ["msndblockread.c", utils_obj])
+pkg_dir = "+msndfile"
 
+utils_obj     = env.SharedObject("utils.c", srcdir=pkg_dir)
+msndread      = env.Mex(["read.c", utils_obj], srcdir=pkg_dir)
+msndblockread = env.Mex(["blockread.c", utils_obj], srcdir=pkg_dir)
+
+mfiles = env.Glob(pkg_dir + os.sep + '*.m', source=False)
 target = msndread + msndblockread
 
-Return("target")
+Return("target", "mfiles")
