@@ -250,14 +250,6 @@ void get_opts(SF_INFO* sf_file_info, SNDFILE* sf_input_file, mxArray* opts)
     const short nbits      = get_bits(sf_file_info);
     const mwSize ndims[]   = {1, 1};
 
-    const short num_fmt_fields  = 6;
-    const short num_info_fields = SF_STR_LAST-SF_STR_FIRST+1;
-
-    double *fmt_data     = (double*)malloc(num_fmt_fields*sizeof(double));
-    char **info_data     = (char**)calloc(num_info_fields,sizeof(char*));
-    mxArray **fmt_array  = (mxArray**)malloc(num_fmt_fields*sizeof(mxArray*));
-    mxArray **info_array = (mxArray**)malloc(num_info_fields*sizeof(mxArray*));
-
     const char* fmt_fields[] = {
         /* supporting the WAVE format field is... difficult when using a
          * higher-level library like libsndfile.  The sndfile-info utility
@@ -269,6 +261,7 @@ void get_opts(SF_INFO* sf_file_info, SNDFILE* sf_input_file, mxArray* opts)
         "nBlockAlign",
         "nBitsPerSample"
     };
+
     const char* info_fields[] = {
         "inam", /* Title */
         "icpy",
@@ -281,6 +274,16 @@ void get_opts(SF_INFO* sf_file_info, SNDFILE* sf_input_file, mxArray* opts)
         "inum",
         "igen"
     };
+
+    const short num_fmt_fields  = sizeof(fmt_fields)/sizeof(char*);
+    const short num_info_fields = SF_STR_LAST-SF_STR_FIRST+1;
+
+    double *fmt_data     = (double*)malloc(num_fmt_fields*sizeof(double));
+    char **info_data     = (char**)calloc(num_info_fields,sizeof(char*));
+
+    mxArray **fmt_array  = (mxArray**)malloc(num_fmt_fields*sizeof(mxArray*));
+    mxArray **info_array = (mxArray**)malloc(num_info_fields*sizeof(mxArray*));
+
     mxArray *fmt           = mxCreateStructArray(1, ndims, num_fmt_fields, fmt_fields);
     mxArray *info          = mxCreateStructArray(1, ndims, 0, NULL);
 
