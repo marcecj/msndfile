@@ -247,11 +247,17 @@ short get_bits(SF_INFO* sf_file_info)
 void get_opts(SF_INFO* sf_file_info, SNDFILE* sf_input_file, mxArray* opts)
 {
     int i;
-    const double *opts_ptr     = mxGetPr(opts);
-    const short nbits          = get_bits(sf_file_info);
-    const short num_fmt_fields = 6;
-    double *fmt_data           = (double*)malloc(num_fmt_fields*sizeof(double));
-    mxArray **mx_data          = (mxArray**)malloc(num_fmt_fields*sizeof(mxArray*));
+    const short nbits      = get_bits(sf_file_info);
+    const mwSize ndims[]   = {1, 1};
+
+    const short num_fmt_fields  = 6;
+    const short num_info_fields = SF_STR_LAST-SF_STR_FIRST+1;
+
+    double *fmt_data     = (double*)malloc(num_fmt_fields*sizeof(double));
+    char **info_data     = (char**)calloc(num_info_fields,sizeof(char*));
+    mxArray **fmt_array  = (mxArray**)malloc(num_fmt_fields*sizeof(mxArray*));
+    mxArray **info_array = (mxArray**)malloc(num_info_fields*sizeof(mxArray*));
+
     const char* fmt_fields[] = {
         "wFormatTag",
         "nChannels",
@@ -260,8 +266,20 @@ void get_opts(SF_INFO* sf_file_info, SNDFILE* sf_input_file, mxArray* opts)
         "nBlockAlign",
         "nBitsPerSample"
     };
-    const mwSize ndims[]   = {1, 1};
-    mxArray *fmt           = mxCreateStructArray(1, ndims, 6, fmt_fields);
+    const char* info_fields[] = {
+        "inam", /* Title */
+        "icpy",
+        "isft",
+        "iart", /* Artist */
+        "icom",
+        "icrd", /* Date */
+        "ialb",
+        "ilic",
+        "inum",
+        "igen"
+    };
+    mxArray *fmt           = mxCreateStructArray(1, ndims, num_fmt_fields, fmt_fields);
+    mxArray *info          = mxCreateStructArray(1, ndims, 0, NULL);
 
     /*
      * set fmt field
@@ -275,22 +293,36 @@ void get_opts(SF_INFO* sf_file_info, SNDFILE* sf_input_file, mxArray* opts)
     fmt_data[5] = (double)nbits;
 
     for( i = 0; i < num_fmt_fields; i++ ) {
-        mx_data[i] = mxCreateDoubleScalar(fmt_data[i]);
+        fmt_array[i] = mxCreateDoubleScalar(fmt_data[i]);
         mxSetField(fmt, 0, fmt_fields[i], mxCreateDoubleScalar(fmt_data[i]));
     }
 
     mxSetField(opts, 0, "fmt", fmt);
 
     /*
-     * TODO: set info field
+     * set info field
      */
 
-    sf_get_string(sf_input_file, SF_STR_TITLE);
+    for( i = 0; i < num_info_fields; i++ )
+    {
+        info_data[i] = sf_get_string(sf_input_file, i+SF_STR_FIRST);
+        if (info_data[i] != NULL)
+        {
+            info_array[i] = mxCreateString(info_data[i]);
+            mxAddField(info, info_fields[i]);
+            mxSetField(info, 0, info_fields[i], info_array[i]);
+        }
+    }
+
+    mxAddField(opts, "info");
+    mxSetField(opts, 0, "info", info);
 
     /*
      * free pointers
      */
 
-    if( fmt_data != NULL ) free(fmt_data);
-    if( mx_data != NULL )  free(mx_data);
+    if( fmt_data != NULL )   free(fmt_data);
+    if( fmt_array != NULL )  free(fmt_array);
+    if( info_data != NULL )  free(info_data);
+    if( info_array != NULL ) free(info_array);
 }

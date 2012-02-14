@@ -47,7 +47,6 @@ The msndfile suite currently has the following features:
 and as such attempts full API-compatibility.  At the moment, this endeavour is
 not finished.  The missing functionality is:
 
-- the optional output argument "opts"
 - the optional input argument "fmt"
 
 Installation
