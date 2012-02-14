@@ -197,6 +197,15 @@ return_to_matlab:
         *nbits = (double)get_bits(sf_file_info);
     }
 
+    if( nlhs > 3 ) {
+        const mwSize ndims[] = {1, 1};
+        const char* fields[] = {"fmt",};
+
+        plhs[3] = mxCreateStructArray(1, ndims, 1, fields);
+
+        get_opts(sf_file_info, sf_input_file, plhs[3]);
+    }
+
     if( sf_input_file != NULL ) {
         if( !sf_close(sf_input_file) )
             /* sf_close() doesn't set the pointer to NULL, and Matlab doesn't

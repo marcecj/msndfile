@@ -68,4 +68,7 @@ void get_file_info(SF_INFO* sf_file_info, char* sf_in_fname, const mxArray *cons
 /* get the number of bits of an audio file */
 short get_bits(SF_INFO* sf_file_info);
 
+/* create an opts structure a la wavread() */
+void get_opts(SF_INFO* sf_file_info, SNDFILE* sf_input_file, mxArray* opts);
+
 #endif /* __UTILS_H__ */

@@ -242,3 +242,55 @@ short get_bits(SF_INFO* sf_file_info)
     }
     return bits;
 }
+
+/* create an opts structure a la wavread() */
+void get_opts(SF_INFO* sf_file_info, SNDFILE* sf_input_file, mxArray* opts)
+{
+    int i;
+    const double *opts_ptr     = mxGetPr(opts);
+    const short nbits          = get_bits(sf_file_info);
+    const short num_fmt_fields = 6;
+    double *fmt_data           = (double*)malloc(num_fmt_fields*sizeof(double));
+    mxArray **mx_data          = (mxArray**)malloc(num_fmt_fields*sizeof(mxArray*));
+    const char* fmt_fields[] = {
+        "wFormatTag",
+        "nChannels",
+        "nSamplesPerSec",
+        "nAvgBytesPerSec",
+        "nBlockAlign",
+        "nBitsPerSample"
+    };
+    const mwSize ndims[]   = {1, 1};
+    mxArray *fmt           = mxCreateStructArray(1, ndims, 6, fmt_fields);
+
+    /*
+     * set fmt field
+     */
+
+    fmt_data[0] = (double)sf_file_info->format;
+    fmt_data[1] = (double)sf_file_info->channels;
+    fmt_data[2] = (double)sf_file_info->samplerate;
+    fmt_data[3] = (double)(sf_file_info->samplerate*(nbits/8)*sf_file_info->channels);
+    fmt_data[4] = 0.f;
+    fmt_data[5] = (double)nbits;
+
+    for( i = 0; i < num_fmt_fields; i++ ) {
+        mx_data[i] = mxCreateDoubleScalar(fmt_data[i]);
+        mxSetField(fmt, 0, fmt_fields[i], mxCreateDoubleScalar(fmt_data[i]));
+    }
+
+    mxSetField(opts, 0, "fmt", fmt);
+
+    /*
+     * TODO: set info field
+     */
+
+    sf_get_string(sf_input_file, SF_STR_TITLE);
+
+    /*
+     * free pointers
+     */
+
+    if( fmt_data != NULL ) free(fmt_data);
+    if( mx_data != NULL )  free(mx_data);
+}
