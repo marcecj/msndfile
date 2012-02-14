@@ -65,4 +65,7 @@ void destroy_file_list(AUDIO_FILES* array);
  * SF_INFO struct */
 void get_file_info(SF_INFO* sf_file_info, char* sf_in_fname, const mxArray *const  args);
 
+/* get the number of bits of an audio file */
+short get_bits(SF_INFO* sf_file_info);
+
 #endif /* __UTILS_H__ */

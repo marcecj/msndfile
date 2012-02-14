@@ -1,4 +1,4 @@
-function [OutData,fs] = msndread(file_name, idx_range, file_info)
+function [OutData,fs,NBits] = msndread(file_name, idx_range, file_info)
 %MSNDREAD Read audio files using the libsndfile C library.
 %
 % OUTDATA = MSNDREAD(FILE_NAME) will read the file specified by FILE_NAME and
@@ -16,6 +16,8 @@ function [OutData,fs] = msndread(file_name, idx_range, file_info)
 %
 % [..., FS] = MSNDREAD(...) returns the sampling rate FS.
 %
+% [..., NBITS] = MSNDREAD(...) returns the bit rate NBITS.
+%
 % Input parameters
 % ----------------
 %
@@ -31,6 +33,7 @@ function [OutData,fs] = msndread(file_name, idx_range, file_info)
 %
 %      OutData:   The new data vector (Len x Chns).
 %      fs:        The sampling rate of the audio file.
+%      NBits:     The bit rate of the audio file.
 %
 % The file_info struct
 % --------------------

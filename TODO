@@ -2,7 +2,6 @@ Before v1.0:
 -----------
 
 - implement missing features in msndread to make it API-compatible with wavread:
-  - nbits return value
   - opts return value
   - fmt input argument
 

@@ -213,3 +213,32 @@ void get_file_info(SF_INFO* sf_file_info, char* sf_in_fname, const mxArray *cons
         mexErrMsgTxt("Invalid format specified.");
     }
 }
+
+/* get the number of bits of an audio file */
+short get_bits(SF_INFO* sf_file_info)
+{
+    /* a best effort attempt to get the number of bits of an audio file */
+    short bits = 0;
+    switch(sf_file_info->format & SF_FORMAT_SUBMASK)
+    {
+        case SF_FORMAT_PCM_S8:
+        case SF_FORMAT_PCM_U8:
+        case SF_FORMAT_DPCM_8:
+            bits =  8; break;
+        case SF_FORMAT_DWVW_12:
+            bits = 12; break;
+        case SF_FORMAT_PCM_16:
+        case SF_FORMAT_DPCM_16:
+        case SF_FORMAT_DWVW_16:
+            bits = 16; break;
+        case SF_FORMAT_PCM_24:
+        case SF_FORMAT_DWVW_24:
+            bits = 24; break;
+        case SF_FORMAT_PCM_32:
+        case SF_FORMAT_FLOAT:
+            bits = 32; break;
+        case SF_FORMAT_DOUBLE:
+            bits = 64; break;
+    }
+    return bits;
+}

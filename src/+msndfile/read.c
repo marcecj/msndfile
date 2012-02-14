@@ -188,14 +188,14 @@ return_to_matlab:
         *fs = (double)sf_file_info->samplerate;
     }
 
-    /* TODO: return the number of bits (requires checking the SF_INFO ->format field) */
-    /*
-     * if( nlhs > 2 ) {
-     *     plhs[2] = mxCreateDoubleMatrix(1, 1, mxREAL);
-     *     double *nbits   = mxGetPr(plhs[2]);
-     *     *nbits  = 0;
-     * }
-     */
+    if( nlhs > 2 ) {
+        double *nbits;
+
+        plhs[2] = mxCreateDoubleMatrix(1, 1, mxREAL);
+        nbits   = mxGetPr(plhs[2]);
+
+        *nbits = (double)get_bits(sf_file_info);
+    }
 
     if( sf_input_file != NULL ) {
         if( !sf_close(sf_input_file) )
