@@ -114,8 +114,8 @@ if cur_platform == 'win32':
 # define the package sources and corresponding install targets
 pkg_src = msndfile + mfiles
 if cur_platform == 'win32':
-    pkg_src += env.File('Win' + os.sep +
-                        env['SHLIBPREFIX'] + sndfile_lib + env['SHLIBSUFFIX'])
+    pkg_src.append(env.File('Win' + os.sep +
+                        env['SHLIBPREFIX'] + sndfile_lib + env['SHLIBSUFFIX']))
 
 msndfile_inst = env.Install("+msndfile", pkg_src)
 sndfile_pkg = env.Package(
