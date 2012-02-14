@@ -259,7 +259,10 @@ void get_opts(SF_INFO* sf_file_info, SNDFILE* sf_input_file, mxArray* opts)
     mxArray **info_array = (mxArray**)malloc(num_info_fields*sizeof(mxArray*));
 
     const char* fmt_fields[] = {
-        "wFormatTag",
+        /* supporting the WAVE format field is... difficult when using a
+         * higher-level library like libsndfile.  The sndfile-info utility
+         * apparently reads the file itself to get the info. */
+        /* "wFormatTag", */
         "nChannels",
         "nSamplesPerSec",
         "nAvgBytesPerSec",
@@ -285,12 +288,12 @@ void get_opts(SF_INFO* sf_file_info, SNDFILE* sf_input_file, mxArray* opts)
      * set fmt field
      */
 
-    fmt_data[0] = (double)sf_file_info->format;
-    fmt_data[1] = (double)sf_file_info->channels;
-    fmt_data[2] = (double)sf_file_info->samplerate;
-    fmt_data[3] = (double)(sf_file_info->samplerate*(nbits/8)*sf_file_info->channels);
-    fmt_data[4] = 0.f;
-    fmt_data[5] = (double)nbits;
+    /* fmt_data[0] = 0; */
+    fmt_data[0] = (double)sf_file_info->channels;
+    fmt_data[1] = (double)sf_file_info->samplerate;
+    fmt_data[2] = (double)(sf_file_info->samplerate*(nbits/8)*sf_file_info->channels);
+    fmt_data[3] = (double)(sf_file_info->channels*nbits/8); /* see wavread() */
+    fmt_data[4] = (double)nbits;
 
     for( i = 0; i < num_fmt_fields; i++ ) {
         fmt_array[i] = mxCreateDoubleScalar(fmt_data[i]);
