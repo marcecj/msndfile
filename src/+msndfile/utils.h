@@ -77,4 +77,7 @@ void get_opts(SF_INFO* sf_file_info, SNDFILE* sf_input_file, mxArray* opts);
  * appropriate values. */
 int sf_str_to_index(int i);
 
+/* generate a value for the wFormatTag field based on the format subtype. */
+int get_wformattag(SF_INFO* sf_file_info);
+
 #endif /* __UTILS_H__ */

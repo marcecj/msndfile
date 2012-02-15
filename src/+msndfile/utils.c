@@ -251,10 +251,7 @@ void get_opts(SF_INFO* sf_file_info, SNDFILE* sf_input_file, mxArray* opts)
     const mwSize ndims[]   = {1, 1};
 
     const char* fmt_fields[] = {
-        /* supporting the WAVE format field is... difficult when using a
-         * higher-level library like libsndfile.  The sndfile-info utility
-         * apparently reads the file itself to get the info. */
-        /* "wFormatTag", */
+        "wFormatTag",
         "nChannels",
         "nSamplesPerSec",
         "nAvgBytesPerSec",
@@ -288,15 +285,19 @@ void get_opts(SF_INFO* sf_file_info, SNDFILE* sf_input_file, mxArray* opts)
      * set fmt field
      */
 
-    /* fmt_data[0] = 0; */
-    fmt_data[0] = (double)sf_file_info->channels;
-    fmt_data[1] = (double)sf_file_info->samplerate;
-    fmt_data[2] = (double)(sf_file_info->samplerate*(nbits/8)*sf_file_info->channels);
-    fmt_data[3] = (double)(sf_file_info->channels*nbits/8); /* see wavread() */
-    fmt_data[4] = (double)nbits;
+    fmt_data[0] = (double)get_wformattag(sf_file_info);
+    fmt_data[1] = (double)sf_file_info->channels;
+    fmt_data[2] = (double)sf_file_info->samplerate;
+    fmt_data[3] = (double)(sf_file_info->samplerate*(nbits/8)*sf_file_info->channels);
+    fmt_data[4] = (double)(sf_file_info->channels*nbits/8); /* see wavread() */
+    fmt_data[5] = (double)nbits;
 
     for( i = 0; i < num_fmt_fields; i++ )
         mxSetField(fmt, 0, fmt_fields[i], mxCreateDoubleScalar(fmt_data[i]));
+
+    /* remove the wFormatTag field if the file is not a WAV file */
+    if (fmt_data[0] == -1)
+        mxRemoveField(fmt, 0);
 
     mxSetField(opts, 0, "fmt", fmt);
 
@@ -354,4 +355,40 @@ int sf_str_to_index(int i)
     }
 
     return SF_STR_TRACKNUMBER;
+}
+
+/* generate a value for the wFormatTag field based on the format subtype. */
+int get_wformattag(SF_INFO* sf_file_info)
+{
+    /* TODO: maybe add exceptions for other WAV-like formats? */
+    if( (sf_file_info->format & SF_FORMAT_TYPEMASK) != SF_FORMAT_WAV)
+        return -1;
+
+    /* see e.g. http://www.sonicspot.com/guide/wavefiles.html#wavefileheader */
+    switch(sf_file_info->format & SF_FORMAT_SUBMASK)
+    {
+        case SF_FORMAT_PCM_S8:
+        case SF_FORMAT_PCM_U8:
+        case SF_FORMAT_PCM_16:
+        case SF_FORMAT_PCM_24:
+        case SF_FORMAT_PCM_32:
+            return 1;
+        case SF_FORMAT_MS_ADPCM:
+            return 2;
+        case SF_FORMAT_ALAW:
+            return 6;
+        case SF_FORMAT_ULAW:
+            return 7;
+        case SF_FORMAT_IMA_ADPCM:
+            return 17;
+        case SF_FORMAT_G723_24:
+        case SF_FORMAT_G723_40:
+            return 20;
+        case SF_FORMAT_GSM610:
+            return 49;
+        case SF_FORMAT_G721_32:
+            return 64;
+    }
+
+    return 0;
 }
