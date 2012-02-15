@@ -47,7 +47,14 @@ The msndfile suite currently has the following features:
 and as such attempts full API-compatibility.  At the moment, this endeavour is
 not finished.  The missing functionality is:
 
-- the optional input argument "fmt"
+- the optional input argument `fmt`
+
+Furthermore, due to limitations in libsndfile, not everything that `wavread`
+does is possible with libsndfile, due to different design goals: the libsndfile
+API is format agnostic and so does not care about the format details of a
+particular file).  This means that the following differences to `wavread` hold:
+
+- the opts.fmt struct has no "wFormatTag" field.
 
 Installation
 ------------
