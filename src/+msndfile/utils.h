@@ -71,4 +71,10 @@ short get_bits(SF_INFO* sf_file_info);
 /* create an opts structure a la wavread() */
 void get_opts(SF_INFO* sf_file_info, SNDFILE* sf_input_file, mxArray* opts);
 
+/* The value of SF_STR_GENRE is a bit of a jump from the previous element of the
+ * enum, which makes it difficult to us the SF_STR_* values as indices.  This
+ * function works around this difficulty by manually checking them and returning
+ * appropriate values. */
+int sf_str_to_index(int i);
+
 #endif /* __UTILS_H__ */

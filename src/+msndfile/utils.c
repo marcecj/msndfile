@@ -276,7 +276,6 @@ void get_opts(SF_INFO* sf_file_info, SNDFILE* sf_input_file, mxArray* opts)
     };
 
     const short num_fmt_fields  = sizeof(fmt_fields)/sizeof(char*);
-    const short num_info_fields = sizeof(info_fields)/sizeof(char*);
     short info_count = SF_STR_LAST-SF_STR_FIRST+1;
 
     double *fmt_data     = (double*)malloc(num_fmt_fields*sizeof(double));
@@ -310,16 +309,11 @@ void get_opts(SF_INFO* sf_file_info, SNDFILE* sf_input_file, mxArray* opts)
 
         if (info_data != NULL)
         {
-            const short j = i - SF_STR_FIRST;
+            const int j = sf_str_to_index(i);
             mxArray *info_array = mxCreateString(info_data);
 
-            if( j < num_info_fields ) {
-                mxAddField(info, info_fields[j]);
-                mxSetField(info, 0, info_fields[j], info_array);
-            } else {
-                mxAddField(info, info_fields[num_info_fields-1]);
-                mxSetField(info, 0, info_fields[num_info_fields-1], info_array);
-            }
+            mxAddField(info, info_fields[j]);
+            mxSetField(info, 0, info_fields[j], info_array);
         }
         else
             --info_count;
@@ -336,4 +330,27 @@ void get_opts(SF_INFO* sf_file_info, SNDFILE* sf_input_file, mxArray* opts)
      */
 
     if( fmt_data != NULL ) free(fmt_data);
+}
+
+/* The value of SF_STR_GENRE is a bit of a jump from the previous element of the
+ * enum, which makes it difficult to us the SF_STR_* values as indices.  This
+ * function works around this difficulty by manually checking them and returning
+ * appropriate values. */
+int sf_str_to_index(int i)
+{
+    switch(i)
+    {
+        case SF_STR_TITLE:
+        case SF_STR_COPYRIGHT:
+        case SF_STR_SOFTWARE:
+        case SF_STR_ARTIST:
+        case SF_STR_COMMENT:
+        case SF_STR_DATE:
+        case SF_STR_ALBUM:
+        case SF_STR_LICENSE:
+        case SF_STR_TRACKNUMBER:
+            return i - SF_STR_FIRST;
+    }
+
+    return SF_STR_TRACKNUMBER;
 }
