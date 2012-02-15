@@ -155,6 +155,11 @@ void mexFunction(int nlhs, mxArray *plhs[],
     }
 
     /*
+     * TODO: support "fmt" option ("double" and "native"). The gist of it is:
+     * if( sf_read_raw(sf_input_file, data, num_frames*num_chns*get_bits(sf_file_info)/8) <= 0 ) {
+     */
+
+    /*
      * transpose returned data
      *
      * TODO: maybe do an in-place transpose? Files already open in about 2/3 of
