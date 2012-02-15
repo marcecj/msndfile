@@ -43,18 +43,21 @@ The msndfile suite currently has the following features:
   files that becomes *extremely* fast when reading the same range of samples
   repeatedly.].
 
+Compatibility with `wavread`
+----------------------------
+
 `msndread` is supposed to be able to act as a drop-in replacement for `wavread`,
 and as such attempts full API-compatibility.  At the moment, this endeavour is
 not finished.  The missing functionality is:
 
 - the optional input argument `fmt`
 
-Furthermore, due to limitations in libsndfile, not everything that `wavread`
-does is possible with libsndfile, due to different design goals: the libsndfile
-API is format agnostic and so does not care about the format details of a
-particular file).  This means that the following differences to `wavread` hold:
+Furthermore, msndfile may differ in behaviour a bit if a file is not a WAV file.
+In these cases, the following differences to `wavread` hold:
 
-- the opts.fmt struct has no "wFormatTag" field.
+- The opts.fmt struct has no "wFormatTag" field if the file type is not a WAV
+  file (which is completely logical).
+- The opts.info struct can contain fields unique to non-WAV formats.
 
 Installation
 ------------
