@@ -262,17 +262,18 @@ void get_opts(SF_INFO* sf_file_info, SNDFILE* sf_input_file, mxArray* opts)
         "nBitsPerSample"
     };
 
+    /* see e.g. http://www.kk.iij4u.or.jp/~kondo/wave/mpidata.txt */
     const char* info_fields[] = {
         "inam", /* Title */
-        "icpy",
-        "isft",
+        "icop", /* Copyright */
+        "isft", /* Software */
         "iart", /* Artist */
-        "icom",
+        "icmt", /* Comment */
         "icrd", /* Date */
-        "ialb",
-        "ilic",
-        "inum",
-        "igen"
+        "ialb", /* Album */
+        "ilic", /* License */
+        "inum", /* Track number */
+        "ignr", /* Genre */
     };
 
     const short num_fmt_fields  = sizeof(fmt_fields)/sizeof(char*);
