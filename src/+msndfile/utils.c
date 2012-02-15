@@ -277,6 +277,7 @@ void get_opts(SF_INFO* sf_file_info, SNDFILE* sf_input_file, mxArray* opts)
 
     const short num_fmt_fields  = sizeof(fmt_fields)/sizeof(char*);
     const short num_info_fields = SF_STR_LAST-SF_STR_FIRST+1;
+    short info_count = num_info_fields;
 
     double *fmt_data     = (double*)malloc(num_fmt_fields*sizeof(double));
 
@@ -313,10 +314,15 @@ void get_opts(SF_INFO* sf_file_info, SNDFILE* sf_input_file, mxArray* opts)
             mxAddField(info, info_fields[i]);
             mxSetField(info, 0, info_fields[i], info_array);
         }
+        else
+            --info_count;
     }
 
-    mxAddField(opts, "info");
-    mxSetField(opts, 0, "info", info);
+    /* only add the info field if it is non-empty */
+    if (info_count > 0) {
+        mxAddField(opts, "info");
+        mxSetField(opts, 0, "info", info);
+    }
 
     /*
      * free pointers
