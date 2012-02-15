@@ -276,7 +276,7 @@ void get_opts(SF_INFO* sf_file_info, SNDFILE* sf_input_file, mxArray* opts)
     const short num_fmt_fields  = sizeof(fmt_fields)/sizeof(char*);
     short info_count = SF_STR_LAST-SF_STR_FIRST+1;
 
-    double *fmt_data     = (double*)malloc(num_fmt_fields*sizeof(double));
+    double fmt_data[6];
 
     mxArray *fmt           = mxCreateStructArray(1, ndims, num_fmt_fields, fmt_fields);
     mxArray *info          = mxCreateStructArray(1, ndims, 0, NULL);
@@ -326,12 +326,6 @@ void get_opts(SF_INFO* sf_file_info, SNDFILE* sf_input_file, mxArray* opts)
         mxAddField(opts, "info");
         mxSetField(opts, 0, "info", info);
     }
-
-    /*
-     * free pointers
-     */
-
-    if( fmt_data != NULL ) free(fmt_data);
 }
 
 /* The value of SF_STR_GENRE is a bit of a jump from the previous element of the
