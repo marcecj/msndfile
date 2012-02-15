@@ -279,10 +279,6 @@ void get_opts(SF_INFO* sf_file_info, SNDFILE* sf_input_file, mxArray* opts)
     const short num_info_fields = SF_STR_LAST-SF_STR_FIRST+1;
 
     double *fmt_data     = (double*)malloc(num_fmt_fields*sizeof(double));
-    char **info_data     = (char**)calloc(num_info_fields,sizeof(char*));
-
-    mxArray **fmt_array  = (mxArray**)malloc(num_fmt_fields*sizeof(mxArray*));
-    mxArray **info_array = (mxArray**)malloc(num_info_fields*sizeof(mxArray*));
 
     mxArray *fmt           = mxCreateStructArray(1, ndims, num_fmt_fields, fmt_fields);
     mxArray *info          = mxCreateStructArray(1, ndims, 0, NULL);
@@ -298,10 +294,8 @@ void get_opts(SF_INFO* sf_file_info, SNDFILE* sf_input_file, mxArray* opts)
     fmt_data[3] = (double)(sf_file_info->channels*nbits/8); /* see wavread() */
     fmt_data[4] = (double)nbits;
 
-    for( i = 0; i < num_fmt_fields; i++ ) {
-        fmt_array[i] = mxCreateDoubleScalar(fmt_data[i]);
+    for( i = 0; i < num_fmt_fields; i++ )
         mxSetField(fmt, 0, fmt_fields[i], mxCreateDoubleScalar(fmt_data[i]));
-    }
 
     mxSetField(opts, 0, "fmt", fmt);
 
@@ -311,12 +305,13 @@ void get_opts(SF_INFO* sf_file_info, SNDFILE* sf_input_file, mxArray* opts)
 
     for( i = 0; i < num_info_fields; i++ )
     {
-        info_data[i] = sf_get_string(sf_input_file, i+SF_STR_FIRST);
-        if (info_data[i] != NULL)
+        const char* info_data = sf_get_string(sf_input_file, i+SF_STR_FIRST);
+
+        if (info_data != NULL)
         {
-            info_array[i] = mxCreateString(info_data[i]);
+            mxArray *info_array = mxCreateString(info_data);
             mxAddField(info, info_fields[i]);
-            mxSetField(info, 0, info_fields[i], info_array[i]);
+            mxSetField(info, 0, info_fields[i], info_array);
         }
     }
 
@@ -327,8 +322,5 @@ void get_opts(SF_INFO* sf_file_info, SNDFILE* sf_input_file, mxArray* opts)
      * free pointers
      */
 
-    if( fmt_data != NULL )   free(fmt_data);
-    if( fmt_array != NULL )  free(fmt_array);
-    if( info_data != NULL )  free(info_data);
-    if( info_array != NULL ) free(info_array);
+    if( fmt_data != NULL ) free(fmt_data);
 }
