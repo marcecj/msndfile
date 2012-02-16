@@ -18,6 +18,7 @@ the following build targets:
 # modifiable environment variables
 env_vars = Variables()
 env_vars.Add('CC', 'The C compiler')
+env_vars.Add('DESTDIR', 'The install destination', os.curdir)
 
 # the Matlab tool automatically sets various environment variables
 env = Environment(tools = ['default', 'packaging', 'matlab'],
@@ -117,7 +118,8 @@ if cur_platform == 'win32':
     pkg_src.append(env.File('Win' + os.sep +
                         env['SHLIBPREFIX'] + sndfile_lib + env['SHLIBSUFFIX']))
 
-msndfile_inst = env.Install("+msndfile", pkg_src)
+msndfile_inst = env.Install(os.sep.join([env['DESTDIR'], "+msndfile"]),
+                            pkg_src)
 sndfile_pkg = env.Package(
     NAME        = "msndfile",
     VERSION     = "0.1",
