@@ -214,6 +214,23 @@ void get_file_info(SF_INFO* sf_file_info, char* sf_in_fname, const mxArray *cons
     }
 }
 
+/* check the fmt argument */
+int get_fmt(const char* const args)
+{
+    int do_read_raw = false;
+
+    if( strcmp(args, "native") )
+        do_read_raw = true;
+    else if( strcmp(args, "double") )
+        do_read_raw = false;
+    else {
+        do_read_raw = false;
+        mexWarnMsgTxt("Bad 'fmt' argument: defaulting to 'double'.");
+    }
+
+    return do_read_raw;
+}
+
 /* get the number of bits of an audio file */
 short get_bits(SF_INFO* sf_file_info)
 {

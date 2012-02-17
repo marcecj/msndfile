@@ -29,6 +29,7 @@ void mexFunction(int nlhs, mxArray *plhs[],
     sf_count_t  num_frames=0;
     double      *data, *output;
     SF_INFO     *sf_file_info;
+    int         do_read_raw = false;
 
     mexAtExit(&clear_memory);
 
@@ -63,16 +64,38 @@ void mexFunction(int nlhs, mxArray *plhs[],
      * unless the file is a RAW file */
     sf_file_info->format = 0;
 
-    /* handle RAW files */
-    if( nrhs >= 3 )
+    /* handle the fourth input argument */
+    if( nrhs >= 4 && !mxIsEmpty(prhs[3]) )
     {
-        if( !mxIsStruct(prhs[2]) ) {
+        if( !mxIsStruct(prhs[3]) ) {
             free(sf_in_fname);
             free(sf_file_info);
-            mexErrMsgTxt("The second argument has to be a struct! (see help text)");
+            mexErrMsgTxt("The fourth argument has to be a struct! (see help text)");
         }
 
-        get_file_info(sf_file_info, sf_in_fname, prhs[2]);
+        get_file_info(sf_file_info, sf_in_fname, prhs[3]);
+    }
+
+    /* handle the third input argument */
+    if( nrhs >= 3 && !mxIsEmpty(prhs[2]) )
+    {
+        const short fmt_len = mxGetN(prhs[2])+1;
+        char* fmt = (char*)malloc(fmt_len*sizeof(char));
+
+        if( !mxIsChar(prhs[2]) ) {
+            free(sf_in_fname);
+            free(sf_file_info);
+            mexErrMsgTxt("The third argument has to be a string! (see help text)");
+        }
+
+        if( mxGetString(prhs[2], fmt, fmt_len) == 1 ) {
+            free(sf_in_fname);
+            free(sf_file_info);
+            free(fmt);
+            mexErrMsgTxt("Error getting 'fmt' string.");
+        }
+
+        do_read_raw = get_fmt(fmt);
     }
 
     sf_input_file = sf_open(sf_in_fname, SFM_READ, sf_file_info);
@@ -91,7 +114,7 @@ void mexFunction(int nlhs, mxArray *plhs[],
             && !mxIsEmpty(prhs[1])
             && mxIsChar(prhs[1]))
     {
-        const short cmd_size = 5;
+        const short cmd_size = mxGetN(prhs[1])+1;
 
         char *cmd_str = (char*)malloc(cmd_size*sizeof(char));
         if( cmd_str == NULL )
@@ -110,6 +133,8 @@ void mexFunction(int nlhs, mxArray *plhs[],
 
             dims[0] = (double)(sf_file_info->frames);
             dims[1] = (double)(sf_file_info->channels);
+        if( strcmp(cmd_str, "double") || strcmp(cmd_str, "native") )
+            do_read_raw = get_fmt(cmd_str);
         } else {
             free(cmd_str);
             mexErrMsgTxt("Unknown command.");
