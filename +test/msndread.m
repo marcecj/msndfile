@@ -26,12 +26,21 @@ catch
 end
 
 try
-    fprintf('\n* Attemting to read test.raw with empty range and file_info struct...\n\n');
+    fprintf('\n* Attemting to read test.raw with empty range and fmt...\n\n');
     [in_raw, fs] = msndfile.read('test.raw', [], []);
     warning('... error should be thrown!');
 catch
     disp('... error correctly raised.');
 end
+
+try
+    fprintf('\n* Attemting to read test.raw with empty range, fmt and empty file_info struct...\n\n');
+    [in_raw, fs] = msndfile.read('test.raw', [], [], []);
+    warning('... error should be thrown!');
+catch
+    disp('... error correctly raised.');
+end
+
 
 % verify that msndread raises an error when file_info is incomplete
 
@@ -40,7 +49,7 @@ fprintf('\n* Attemting to read test.raw with file_info struct...\n');
 file_info.samplerate   = 44100;
 try
     fprintf('\nwith field ''samplerate''...\n');
-    [in_raw, fs] = msndfile.read('test.raw', [], file_info);
+    [in_raw, fs] = msndfile.read('test.raw', [], [], file_info);
     warning('... error should be thrown!');
 catch
     disp('... error correctly raised.');
@@ -49,7 +58,7 @@ end
 file_info.channels     = 2;
 try
     fprintf('\nwith fields ''samplerate'' and ''channels''...\n');
-    [in_raw, fs] = msndfile.read('test.raw', [], file_info);
+    [in_raw, fs] = msndfile.read('test.raw', [], [], file_info);
     warning('... error should be thrown!');
 catch
     disp('... error correctly raised.');
@@ -58,7 +67,7 @@ end
 file_info.format       = 'RAW';
 try
     fprintf('\nwith fields ''samplerate'', ''channels'' and ''format''...\n');
-    [in_raw, fs] = msndfile.read('test.raw', [], file_info);
+    [in_raw, fs] = msndfile.read('test.raw', [], [], file_info);
     warning('... error should be thrown!');
 catch
     disp('... error correctly raised.');
@@ -70,7 +79,7 @@ file_info.sampleformat = 'PCM_16';
 
 % test the RAW file import
 
-[in_raw, fs] = msndfile.read('test.raw', [], file_info);
+[in_raw, fs] = msndfile.read('test.raw', [], [], file_info);
 fprintf('\n... it worked!\n');
 
 num_unequal = sum(abs(in_wav - in_raw) > 0);
@@ -88,7 +97,7 @@ in_blockwise     = zeros(num_samples, 2);
 in_raw_blockwise = zeros(num_samples, 2);
 for kk = 1:1024:16384
     in_blockwise(kk:kk+1023, :)     = msndfile.read('test.wav', [kk kk+1023]);
-    in_raw_blockwise(kk:kk+1023, :) = msndfile.read('test.raw', [kk kk+1023], file_info);
+    in_raw_blockwise(kk:kk+1023, :) = msndfile.read('test.raw', [kk kk+1023], [], file_info);
 end
 
 num_unequal  = sum(in_blockwise  - in_wav(1:num_samples,:));
@@ -115,7 +124,7 @@ disp(sprintf('wavread   (WAV):\tLength = %i,\tNChns = %i,\tFS = %i', file_size, 
 [file_size, fs] = msndfile.read('test.wav', 'size');
 disp(sprintf('msndread  (WAV):\tLength = %i,\tNChns = %i,\tFS = %i', file_size, fs));
 
-[file_size, fs] = msndfile.read('test.raw', 'size', file_info);
+[file_size, fs] = msndfile.read('test.raw', 'size', [], file_info);
 disp(sprintf('msndread  (RAW):\tLength = %i,\tNChns = %i,\tFS = %i', file_size, fs));
 
 [file_size, fs] = msndfile.read('test.flac', 'size');
