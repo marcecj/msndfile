@@ -61,12 +61,24 @@ void destroy_file_list(AUDIO_FILES* array);
  * misc functions
  */
 
+/*
+ * return a transposed version of "input" as "output"
+ *
+ * TODO: maybe do an in-place transpose? Files already open in about 2/3 of
+ * the time of Matlab's wavread(), so some additional time complexity
+ * probably won't hurt much.
+ */
+void transpose_data(void* output, void* input, int num_frames, int num_chns, mxClassID class_id);
+
 /* get information about a file from an args pointer and transfer it to an
  * SF_INFO struct */
 void get_file_info(SF_INFO* sf_file_info, char* sf_in_fname, const mxArray *const  args);
 
-/* check the fmt argument */
+/* check the fmt argument and return true or false */
 int get_fmt(const char* const args);
+
+/* get the mxClassID corresponding to a format subtype */
+mxClassID get_class_id(SF_INFO* sf_file_info);
 
 /* get the number of bits of an audio file */
 short get_bits(SF_INFO* sf_file_info);

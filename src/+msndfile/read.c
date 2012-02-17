@@ -1,5 +1,6 @@
 #include <string.h>
 #include <mex.h>
+#include <matrix.h>
 #include <sndfile.h>
 #include "utils.h"
 
@@ -21,7 +22,6 @@ void clear_memory(void)
 void mexFunction(int nlhs, mxArray *plhs[],
                  int nrhs, const mxArray *prhs[])
 {
-    int         i; /* counter in for-loops */
     int         sndfile_err; /* libsndfile error status */
     int         num_chns;
     const int   str_size = (nrhs > 0 ? mxGetN(prhs[0])+1 : 0); /* length of the input file name */
@@ -30,6 +30,7 @@ void mexFunction(int nlhs, mxArray *plhs[],
     double      *data, *output;
     SF_INFO     *sf_file_info;
     int         do_read_raw = 0;
+    mxClassID   class_id = mxDOUBLE_CLASS;
 
     mexAtExit(&clear_memory);
 
@@ -133,16 +134,18 @@ void mexFunction(int nlhs, mxArray *plhs[],
 
             dims[0] = (double)(sf_file_info->frames);
             dims[1] = (double)(sf_file_info->channels);
-        if( strcmp(cmd_str, "double") || strcmp(cmd_str, "native") )
+
+            /* Skip everything else and close the SF_INFO file */
+            free(cmd_str);
+            goto return_to_matlab;
+        } else if( !strcmp(cmd_str, "double") || !strcmp(cmd_str, "native") ) {
             do_read_raw = get_fmt(cmd_str);
         } else {
             free(cmd_str);
             mexErrMsgTxt("Unknown command.");
         }
 
-        /* Skip everything else and close the SF_INFO file */
         free(cmd_str);
-        goto return_to_matlab;
     }
 
     if( nrhs > 1
@@ -168,34 +171,34 @@ void mexFunction(int nlhs, mxArray *plhs[],
 
     /* initialise Matlab output array */
     num_chns = sf_file_info->channels;
-    plhs[0]  = mxCreateDoubleMatrix((int)num_frames, num_chns, mxREAL);
-    output   = mxGetPr(plhs[0]);
+    if( do_read_raw )
+        class_id = get_class_id(sf_file_info);
+    plhs[0]  = mxCreateNumericMatrix((int)num_frames, num_chns, class_id, mxREAL);
+    output   = (double*)mxGetPr(plhs[0]);
 
     /* read the entire file in one go */
     data = (double*)malloc((int)num_frames*num_chns*sizeof(double));
-    if( sf_readf_double(sf_input_file, data, num_frames) <= 0 ) {
-        free(data);
-        free(sf_file_info);
-        mexErrMsgTxt("Error reading frames from input file: 0 frames read!");
+    if( do_read_raw )
+    {
+        const size_t nbytes = num_frames*num_chns*get_bits(sf_file_info)/8;
+        mexPrintf("Reading RAW bytes.\n");
+        if( sf_read_raw(sf_input_file, data, nbytes) <= 0 ) {
+            free(data);
+            free(sf_file_info);
+            mexErrMsgTxt("Error reading bytes from input file: 0 bytes read!");
+        }
+    }
+    else
+    {
+        if( sf_readf_double(sf_input_file, data, num_frames) <= 0 ) {
+            free(data);
+            free(sf_file_info);
+            mexErrMsgTxt("Error reading frames from input file: 0 frames read!");
+        }
     }
 
-    /*
-     * TODO: support "fmt" option ("double" and "native"). The gist of it is:
-     * if( sf_read_raw(sf_input_file, data, num_frames*num_chns*get_bits(sf_file_info)/8) <= 0 ) {
-     */
-
-    /*
-     * transpose returned data
-     *
-     * TODO: maybe do an in-place transpose? Files already open in about 2/3 of
-     * the time of Matlab's wavread(), so some additional time complexity
-     * probably won't hurt much.
-     */
-    for( i=0; i<num_frames; i++ ) {
-        int j;
-        for( j=0; j<num_chns; j++ )
-            output[i+j*num_frames] = data[i*num_chns+j];
-    }
+    /* transpose returned data */
+    transpose_data(output, data, num_frames, num_chns, class_id);
     free(data);
 
     /* rudimentary way of dealing with libsndfile errors */
