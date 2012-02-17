@@ -217,16 +217,14 @@ void get_file_info(SF_INFO* sf_file_info, char* sf_in_fname, const mxArray *cons
 /* check the fmt argument */
 int get_fmt(const char* const args)
 {
-    int do_read_raw = false;
+    int do_read_raw = 0;
 
     if( strcmp(args, "native") )
-        do_read_raw = true;
+        do_read_raw = 1;
     else if( strcmp(args, "double") )
-        do_read_raw = false;
-    else {
-        do_read_raw = false;
+        do_read_raw = 0;
+    else
         mexWarnMsgTxt("Bad 'fmt' argument: defaulting to 'double'.");
-    }
 
     return do_read_raw;
 }

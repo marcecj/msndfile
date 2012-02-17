@@ -29,7 +29,7 @@ void mexFunction(int nlhs, mxArray *plhs[],
     sf_count_t  num_frames=0;
     double      *data, *output;
     SF_INFO     *sf_file_info;
-    int         do_read_raw = false;
+    int         do_read_raw = 0;
 
     mexAtExit(&clear_memory);
 
