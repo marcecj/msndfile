@@ -1,4 +1,4 @@
-function [OutData,fs,NBits,Opts] = msndread(file_name, idx_range, file_info)
+function [OutData,fs,NBits,Opts] = msndread(file_name, idx_range, fmt, file_info)
 %MSNDREAD Read audio files using the libsndfile C library.
 %
 % OUTDATA = MSNDREAD(FILE_NAME) will read the file specified by FILE_NAME and
@@ -29,6 +29,9 @@ function [OutData,fs,NBits,Opts] = msndread(file_name, idx_range, file_info)
 %      idx_range:   A row vector defining the range of samples to be read. If it
 %                   only has one element, the file will read from the beginning
 %                   up to the specified index.
+%      fmt:         A string that defines the data type of OutData.  Can be
+%                   either "double" (double precision) or "native" (the data
+%                   type of the WAV data). (defaults to "double")
 %      file_info:   (RAW files only) A struct containing the file information.
 %                   (see section "The file_info struct" below).
 %
