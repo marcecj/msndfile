@@ -46,14 +46,8 @@ The msndfile suite currently has the following features:
 Compatibility with `wavread`
 ----------------------------
 
-`msndread` is supposed to be able to act as a drop-in replacement for `wavread`,
-and as such attempts full API-compatibility.  At the moment, this endeavour is
-not finished.  The missing functionality is:
-
-- the optional input argument `fmt`
-
-Furthermore, msndfile may differ in behaviour a bit if a file is not a WAV file.
-In these cases, the following differences to `wavread` hold:
+Msndfile may differ in behaviour a bit if a file is not a WAV file.  In these
+cases, the following differences to `wavread` hold:
 
 - The opts.fmt struct has no "wFormatTag" field if the file type is not a WAV
   file (which is completely logical).

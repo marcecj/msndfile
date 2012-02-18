@@ -1,9 +1,8 @@
 Before v1.0:
 -----------
 
-- implement missing features in msndread to make it API-compatible with wavread:
-  - fmt input argument
 - test opts return value (compare with wavread)
+- test fmt input argument (compare with wavread)
 
 General:
 --------
