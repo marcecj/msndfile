@@ -182,7 +182,6 @@ void mexFunction(int nlhs, mxArray *plhs[],
     if( do_read_raw )
     {
         const size_t nbytes = num_frames*num_chns*get_bits(sf_file_info)/8;
-        mexPrintf("Reading RAW bytes.\n");
         if( sf_read_raw(sf_input_file, data, nbytes) <= 0 ) {
             free(data);
             free(sf_file_info);
