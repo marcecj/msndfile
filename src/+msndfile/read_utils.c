@@ -121,9 +121,9 @@ void get_opts(SF_INFO* sf_file_info, SNDFILE* sf_input_file, mxArray* opts)
 }
 
 /* The value of SF_STR_GENRE is a bit of a jump from the previous element of the
- * enum, which makes it difficult to us the SF_STR_* values as indices.  This
- * function works around this difficulty by manually checking them and returning
- * appropriate values. */
+ * enum, which makes it difficult to calculate indices based on the SF_STR_*
+ * values.  This function works around this difficulty by manually checking them
+ * and returning appropriate values. */
 int sf_str_to_index(int i)
 {
     switch(i)

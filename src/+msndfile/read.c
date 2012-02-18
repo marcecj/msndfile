@@ -177,7 +177,10 @@ void mexFunction(int nlhs, mxArray *plhs[],
     plhs[0]  = mxCreateNumericMatrix((int)num_frames, num_chns, class_id, mxREAL);
     output   = (double*)mxGetPr(plhs[0]);
 
-    /* read the entire file in one go */
+    /* read the entire file in one go
+     *
+     * If we want the native file type (do_read_raw), then we need to use
+     * sf_read_raw() and pass it the number of *bytes* to be read.*/
     data = (double*)malloc((int)num_frames*num_chns*sizeof(double));
     if( do_read_raw )
     {

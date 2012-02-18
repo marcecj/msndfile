@@ -16,8 +16,6 @@ AUDIO_FILE_INFO* create_file_info(const char *const name, SF_INFO* sf_file_info,
     AUDIO_FILE_INFO* file_info =
         (AUDIO_FILE_INFO*)malloc(sizeof(AUDIO_FILE_INFO));
 
-    /* file_info.info = (SF_INFO*)malloc(sizeof(SF_INFO)); */
-    /* file_info.info = memcpy(file_info.info, sf_file_info, sizeof(sf_file_info)); */
     file_info->info = sf_file_info;
     file_info->file = file;
 
@@ -30,6 +28,7 @@ AUDIO_FILE_INFO* create_file_info(const char *const name, SF_INFO* sf_file_info,
 /* add an AUDIO_FILE_INFO structure to an AUDIO_FILES look-up table */
 AUDIO_FILES* store_file_info(AUDIO_FILES *array, AUDIO_FILE_INFO *file_info)
 {
+    /* create a new AUDIO_FILES* array if it does not exist */
     if( array == NULL ) {
         array = (AUDIO_FILES*)malloc(sizeof(AUDIO_FILES));
         if( array == NULL )
@@ -38,8 +37,8 @@ AUDIO_FILES* store_file_info(AUDIO_FILES *array, AUDIO_FILE_INFO *file_info)
         array->files = (AUDIO_FILE_INFO**)malloc(sizeof(AUDIO_FILE_INFO*));
     }
 
+    /* if the file name is not stored yet, append it to the array */
     if( lookup_file_info(array, file_info->name) == NULL ) {
-        /* append the file name */
         if( array->num_files > 0 )
             array->files = (AUDIO_FILE_INFO**)realloc(array->files, (array->num_files+1)*sizeof(AUDIO_FILE_INFO*));
         array->num_files++;
@@ -81,7 +80,11 @@ AUDIO_FILES* remove_file_info(AUDIO_FILES *array, const char *const name)
         /* replace the deleted element with the last one */
         array->files[i] = array->files[array->num_files-1];
 
+        /* resize the array */
         array->files = (AUDIO_FILE_INFO**)realloc(array->files, (--array->num_files)*sizeof(AUDIO_FILE_INFO*));
+
+        /* if array->files now has zero elements, it will have an address of
+         * NULL, so allocate it with one element */
         if( array->num_files < 1 )
             array->files = (AUDIO_FILE_INFO**)malloc(sizeof(AUDIO_FILE_INFO*));
     }
@@ -115,7 +118,7 @@ AUDIO_FILE_INFO* destroy_file_info(AUDIO_FILE_INFO* file_info)
 void destroy_file_list(AUDIO_FILES* array)
 {
     if( array != NULL ) {
-        int i=0;
+        int i;
         for( i = 0; i < array->num_files; i++ )
             array->files[i] = destroy_file_info(array->files[i]);
     }

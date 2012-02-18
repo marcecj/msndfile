@@ -40,7 +40,7 @@ void transpose_data(void* output, void* input, int num_frames, int num_chns, mxC
 
     /* transpose the data
      *
-     * to transpose correctly, we need to cast both the input and the output.
+     * To transpose correctly, we need to cast both the input and the output.
      * Sadly I can't think of any other way to it than below without violating
      * ANSI C.  (In C99 I could probably just define pointers that point to cast
      * versions of input and output and use only one loop.)
