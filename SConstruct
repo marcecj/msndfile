@@ -84,13 +84,13 @@ if not (GetOption('clean') or GetOption('help')):
     env = conf.Finish()
 
 do_debug = False
-msndfile, mfiles = env.SConscript(os.sep.join(['src', 'SConstruct']),
+msndfile, mfiles = env.SConscript(dirs='src',
                           variant_dir = "build",
                           exports     = ["env", "do_debug"],
                           duplicate   = False)
 
 do_debug = True
-msndfile_dbg = env.SConscript(os.sep.join(['src', 'SConstruct']),
+msndfile_dbg = env.SConscript(dirs='src',
                               variant_dir = "debug",
                               exports     = ["env", "do_debug"],
                               duplicate   = False)
