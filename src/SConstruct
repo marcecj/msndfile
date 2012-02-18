@@ -14,8 +14,9 @@ if do_debug:
 pkg_dir = "+msndfile"
 
 utils_obj     = env.SharedObject("utils.c", srcdir=pkg_dir)
-msndread      = env.Mex(["read.c", utils_obj], srcdir=pkg_dir)
-msndblockread = env.Mex(["blockread.c", utils_obj], srcdir=pkg_dir)
+msndread      = env.Mex(["read.c", "read_utils.c", utils_obj], srcdir=pkg_dir)
+msndblockread = env.Mex(["blockread.c", "audio_files.c", utils_obj],
+                        srcdir=pkg_dir)
 
 mfiles = env.Glob(pkg_dir + os.sep + '*.m', source=False)
 target = msndread + msndblockread

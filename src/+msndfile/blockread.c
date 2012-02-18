@@ -2,6 +2,7 @@
 #include <mex.h>
 #include <sndfile.h>
 #include "utils.h"
+#include "audio_files.h"
 
 /*
  * This is a simple mex-File using libsndfile for reading in audio files

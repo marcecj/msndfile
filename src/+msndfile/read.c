@@ -3,6 +3,7 @@
 #include <matrix.h>
 #include <sndfile.h>
 #include "utils.h"
+#include "read_utils.h"
 
 /*
  * This is a simple mex-File using libsndfile for reading in audio files
