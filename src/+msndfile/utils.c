@@ -148,8 +148,7 @@ void get_file_info(SF_INFO* sf_file_info, char* sf_in_fname, const mxArray *cons
     if( tmp_ptr != NULL )
         mxGetString(tmp_ptr, endianness_name, mxGetN(tmp_ptr)+1);
 
-    /* sf_file_info->format = lookup_val(&maj_fmts, maj_fmt_name) | \ */
-    sf_file_info->format = SF_FORMAT_RAW
+    sf_file_info->format = lookup_val(&maj_fmts, maj_fmt_name)
         | lookup_val(&sub_fmts, sub_fmt_name)
         | lookup_val(&endianness_types, endianness_name);
 

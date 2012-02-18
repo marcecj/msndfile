@@ -54,7 +54,7 @@ function OutData = msndblockread(cmd, file_name, idx_range, file_info)
 %     sampleformat: the sample format (format "subtype")
 %
 % The file_info struct may optionally contain the following fields:
-%     format:       the file format ("major format"), currently ignored
+%     format:       the file format ("major format") (defaults to "RAW")
 %     endianness:   the sample endian-ness (defaults to "FILE")
 %
 % Following is a list of valid values for the format specifiers "format",
