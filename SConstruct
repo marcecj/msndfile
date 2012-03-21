@@ -20,9 +20,15 @@ env_vars = Variables()
 env_vars.Add('CC', 'The C compiler')
 env_vars.Add('DESTDIR', 'The install destination', os.curdir)
 
+do_force_mingw = ARGUMENTS.get('forcemingw', 0)
+
 # the Matlab tool automatically sets various environment variables
-env = Environment(tools = ['default', 'packaging', 'matlab'],
-                  variables = env_vars)
+if do_force_mingw:
+    env = Environment(tools = ['mingw', 'filesystem', 'zip', 'packaging', 'matlab'],
+                      variables = env_vars)
+else:
+    env = Environment(tools = ['default', 'packaging', 'matlab'],
+                      variables = env_vars)
 
 # define an AsciiDoc builder
 asciidoc = env.Builder(action = ['asciidoc -o ${TARGET} ${SOURCE}'],
@@ -95,7 +101,7 @@ msndfile_dbg = env.SConscript(dirs='src',
                               exports     = ["env", "do_debug"],
                               duplicate   = False)
 
-if cur_platform == 'win32':
+if cur_platform == 'win32' and not do_force_mingw:
     msndfile_vs = env.MSVSProject(
         target      = "msndfile" + env['MSVSPROJECTSUFFIX'],
         buildtarget = ["msndfile", "msndfile-dbg"],
