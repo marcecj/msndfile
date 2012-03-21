@@ -2,6 +2,7 @@
 #include <mex.h>
 #include <sndfile.h>
 #include "utils.h"
+#include "audio_files.h"
 
 /*
  * This is a simple mex-File using libsndfile for reading in audio files
@@ -169,9 +170,8 @@ void mexFunction(int nlhs, mxArray *plhs[],
         else
             num_frames = file_info->info->frames;
 
-        if( nrhs == 4 && mxIsLogicalScalar(prhs[3]) ) {
+        if( nrhs == 4 && mxIsLogicalScalar(prhs[3]) )
             do_transpose = *mxGetPr(prhs[3]);
-        }
 
         /* initialise Matlab output array */
         num_chns = file_info->info->channels;

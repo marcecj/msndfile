@@ -18,6 +18,7 @@ the following build targets:
 # modifiable environment variables
 env_vars = Variables()
 env_vars.Add('CC', 'The C compiler')
+env_vars.Add('DESTDIR', 'The install destination', os.curdir)
 
 # the Matlab tool automatically sets various environment variables
 env = Environment(tools = ['default', 'packaging', 'matlab'],
@@ -83,13 +84,13 @@ if not (GetOption('clean') or GetOption('help')):
     env = conf.Finish()
 
 do_debug = False
-msndfile, mfiles = env.SConscript(os.sep.join(['src', 'SConstruct']),
+msndfile, mfiles = env.SConscript(dirs='src',
                           variant_dir = "build",
                           exports     = ["env", "do_debug"],
                           duplicate   = False)
 
 do_debug = True
-msndfile_dbg = env.SConscript(os.sep.join(['src', 'SConstruct']),
+msndfile_dbg = env.SConscript(dirs='src',
                               variant_dir = "debug",
                               exports     = ["env", "do_debug"],
                               duplicate   = False)
@@ -117,7 +118,8 @@ if cur_platform == 'win32':
     pkg_src.append(env.File('Win' + os.sep +
                         env['SHLIBPREFIX'] + sndfile_lib + env['SHLIBSUFFIX']))
 
-msndfile_inst = env.Install("+msndfile", pkg_src)
+msndfile_inst = env.Install(os.sep.join([env['DESTDIR'], "+msndfile"]),
+                            pkg_src)
 sndfile_pkg = env.Package(
     NAME        = "msndfile",
     VERSION     = "0.1",

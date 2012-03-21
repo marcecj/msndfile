@@ -1,7 +1,9 @@
 #include <string.h>
 #include <mex.h>
+#include <matrix.h>
 #include <sndfile.h>
 #include "utils.h"
+#include "read_utils.h"
 
 /*
  * This is a simple mex-File using libsndfile for reading in audio files
@@ -21,7 +23,6 @@ void clear_memory(void)
 void mexFunction(int nlhs, mxArray *plhs[],
                  int nrhs, const mxArray *prhs[])
 {
-    int         i; /* counter in for-loops */
     int         sndfile_err; /* libsndfile error status */
     int         num_chns;
     const int   str_size = (nrhs > 0 ? mxGetN(prhs[0])+1 : 0); /* length of the input file name */
@@ -29,6 +30,8 @@ void mexFunction(int nlhs, mxArray *plhs[],
     sf_count_t  num_frames=0;
     double      *data, *output;
     SF_INFO     *sf_file_info;
+    int         do_read_raw = 0;
+    mxClassID   class_id = mxDOUBLE_CLASS;
 
     mexAtExit(&clear_memory);
 
@@ -63,16 +66,38 @@ void mexFunction(int nlhs, mxArray *plhs[],
      * unless the file is a RAW file */
     sf_file_info->format = 0;
 
-    /* handle RAW files */
-    if( nrhs >= 3 )
+    /* handle the fourth input argument */
+    if( nrhs >= 4 && !mxIsEmpty(prhs[3]) )
     {
-        if( !mxIsStruct(prhs[2]) ) {
+        if( !mxIsStruct(prhs[3]) ) {
             free(sf_in_fname);
             free(sf_file_info);
-            mexErrMsgTxt("The second argument has to be a struct! (see help text)");
+            mexErrMsgTxt("The fourth argument has to be a struct! (see help text)");
         }
 
-        get_file_info(sf_file_info, sf_in_fname, prhs[2]);
+        get_file_info(sf_file_info, sf_in_fname, prhs[3]);
+    }
+
+    /* handle the third input argument */
+    if( nrhs >= 3 && !mxIsEmpty(prhs[2]) )
+    {
+        const short fmt_len = mxGetN(prhs[2])+1;
+        char* fmt = (char*)malloc(fmt_len*sizeof(char));
+
+        if( !mxIsChar(prhs[2]) ) {
+            free(sf_in_fname);
+            free(sf_file_info);
+            mexErrMsgTxt("The third argument has to be a string! (see help text)");
+        }
+
+        if( mxGetString(prhs[2], fmt, fmt_len) == 1 ) {
+            free(sf_in_fname);
+            free(sf_file_info);
+            free(fmt);
+            mexErrMsgTxt("Error getting 'fmt' string.");
+        }
+
+        do_read_raw = get_fmt(fmt);
     }
 
     sf_input_file = sf_open(sf_in_fname, SFM_READ, sf_file_info);
@@ -91,7 +116,7 @@ void mexFunction(int nlhs, mxArray *plhs[],
             && !mxIsEmpty(prhs[1])
             && mxIsChar(prhs[1]))
     {
-        const short cmd_size = 5;
+        const short cmd_size = mxGetN(prhs[1])+1;
 
         char *cmd_str = (char*)malloc(cmd_size*sizeof(char));
         if( cmd_str == NULL )
@@ -110,14 +135,18 @@ void mexFunction(int nlhs, mxArray *plhs[],
 
             dims[0] = (double)(sf_file_info->frames);
             dims[1] = (double)(sf_file_info->channels);
+
+            /* Skip everything else and close the SF_INFO file */
+            free(cmd_str);
+            goto return_to_matlab;
+        } else if( !strcmp(cmd_str, "double") || !strcmp(cmd_str, "native") ) {
+            do_read_raw = get_fmt(cmd_str);
         } else {
             free(cmd_str);
             mexErrMsgTxt("Unknown command.");
         }
 
-        /* Skip everything else and close the SF_INFO file */
         free(cmd_str);
-        goto return_to_matlab;
     }
 
     if( nrhs > 1
@@ -143,29 +172,36 @@ void mexFunction(int nlhs, mxArray *plhs[],
 
     /* initialise Matlab output array */
     num_chns = sf_file_info->channels;
-    plhs[0]  = mxCreateDoubleMatrix((int)num_frames, num_chns, mxREAL);
-    output   = mxGetPr(plhs[0]);
+    if( do_read_raw )
+        class_id = get_class_id(sf_file_info);
+    plhs[0]  = mxCreateNumericMatrix((int)num_frames, num_chns, class_id, mxREAL);
+    output   = (double*)mxGetPr(plhs[0]);
 
-    /* read the entire file in one go */
-    data = (double*)malloc((int)num_frames*num_chns*sizeof(double));
-    if( sf_readf_double(sf_input_file, data, num_frames) <= 0 ) {
-        free(data);
-        free(sf_file_info);
-        mexErrMsgTxt("Error reading frames from input file: 0 frames read!");
-    }
-
-    /*
-     * transpose returned data
+    /* read the entire file in one go
      *
-     * TODO: maybe do an in-place transpose? Files already open in about 2/3 of
-     * the time of Matlab's wavread(), so some additional time complexity
-     * probably won't hurt much.
-     */
-    for( i=0; i<num_frames; i++ ) {
-        int j;
-        for( j=0; j<num_chns; j++ )
-            output[i+j*num_frames] = data[i*num_chns+j];
+     * If we want the native file type (do_read_raw), then we need to use
+     * sf_read_raw() and pass it the number of *bytes* to be read.*/
+    data = (double*)malloc((int)num_frames*num_chns*sizeof(double));
+    if( do_read_raw )
+    {
+        const size_t nbytes = num_frames*num_chns*get_bits(sf_file_info)/8;
+        if( sf_read_raw(sf_input_file, data, nbytes) <= 0 ) {
+            free(data);
+            free(sf_file_info);
+            mexErrMsgTxt("Error reading bytes from input file: 0 bytes read!");
+        }
     }
+    else
+    {
+        if( sf_readf_double(sf_input_file, data, num_frames) <= 0 ) {
+            free(data);
+            free(sf_file_info);
+            mexErrMsgTxt("Error reading frames from input file: 0 frames read!");
+        }
+    }
+
+    /* transpose returned data */
+    transpose_data(output, data, num_frames, num_chns, class_id);
     free(data);
 
     /* rudimentary way of dealing with libsndfile errors */
@@ -188,14 +224,23 @@ return_to_matlab:
         *fs = (double)sf_file_info->samplerate;
     }
 
-    /* TODO: return the number of bits (requires checking the SF_INFO ->format field) */
-    /*
-     * if( nlhs > 2 ) {
-     *     plhs[2] = mxCreateDoubleMatrix(1, 1, mxREAL);
-     *     double *nbits   = mxGetPr(plhs[2]);
-     *     *nbits  = 0;
-     * }
-     */
+    if( nlhs > 2 ) {
+        double *nbits;
+
+        plhs[2] = mxCreateDoubleMatrix(1, 1, mxREAL);
+        nbits   = mxGetPr(plhs[2]);
+
+        *nbits = (double)get_bits(sf_file_info);
+    }
+
+    if( nlhs > 3 ) {
+        const mwSize ndims[] = {1, 1};
+        const char* fields[] = {"fmt",};
+
+        plhs[3] = mxCreateStructArray(1, ndims, 1, fields);
+
+        get_opts(sf_file_info, sf_input_file, plhs[3]);
+    }
 
     if( sf_input_file != NULL ) {
         if( !sf_close(sf_input_file) )

@@ -1,4 +1,4 @@
-function [OutData,fs] = msndread(file_name, idx_range, file_info)
+function [OutData,fs,NBits,Opts] = msndread(file_name, idx_range, fmt, file_info)
 %MSNDREAD Read audio files using the libsndfile C library.
 %
 % OUTDATA = MSNDREAD(FILE_NAME) will read the file specified by FILE_NAME and
@@ -16,6 +16,12 @@ function [OutData,fs] = msndread(file_name, idx_range, file_info)
 %
 % [..., FS] = MSNDREAD(...) returns the sampling rate FS.
 %
+% [..., NBITS] = MSNDREAD(...) returns the bit rate NBITS.
+%
+% [..., OPTS] = MSNDREAD(...) returns the a struct OPTS, which may contain
+% structs as fields that give more information about the file, such as format
+% details and meta-data (artist, album, etc.).
+%
 % Input parameters
 % ----------------
 %
@@ -23,6 +29,9 @@ function [OutData,fs] = msndread(file_name, idx_range, file_info)
 %      idx_range:   A row vector defining the range of samples to be read. If it
 %                   only has one element, the file will read from the beginning
 %                   up to the specified index.
+%      fmt:         A string that defines the data type of OutData.  Can be
+%                   either "double" (double precision) or "native" (the data
+%                   type of the WAV data). (defaults to "double")
 %      file_info:   (RAW files only) A struct containing the file information.
 %                   (see section "The file_info struct" below).
 %
@@ -31,6 +40,9 @@ function [OutData,fs] = msndread(file_name, idx_range, file_info)
 %
 %      OutData:   The new data vector (Len x Chns).
 %      fs:        The sampling rate of the audio file.
+%      NBits:     The bit rate of the audio file.
+%      Opts:      An optional struct that contains additional information about
+%                 the file, such as format details and meta-data.
 %
 % The file_info struct
 % --------------------
@@ -43,7 +55,7 @@ function [OutData,fs] = msndread(file_name, idx_range, file_info)
 %     sampleformat: the sample format (format "subtype")
 %
 % The file_info struct may optionally contain the following fields:
-%     format:       the file format ("major format"), currently ignored
+%     format:       the file format ("major format") (defaults to "RAW")
 %     endianness:   the sample endian-ness (defaults to "FILE")
 %
 % Following is a list of valid values for the format specifiers "format",

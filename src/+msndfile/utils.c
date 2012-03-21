@@ -1,5 +1,7 @@
+#include <stdint.h>
 #include <string.h>
 #include <mex.h>
+#include <sndfile.h>
 #include "utils.h"
 #include "format_tables.h"
 
@@ -22,126 +24,72 @@ int lookup_val(const FMT_TABLE *const array, const char *const name)
 }
 
 /*
- * audio file info look-up functions
- */
-
-/* create an AUDIO_FILE_INFO struct */
-AUDIO_FILE_INFO* create_file_info(const char *const name, SF_INFO* sf_file_info, SNDFILE* file)
-{
-    const int name_len = strlen(name);
-
-    AUDIO_FILE_INFO* file_info =
-        (AUDIO_FILE_INFO*)malloc(sizeof(AUDIO_FILE_INFO));
-
-    /* file_info.info = (SF_INFO*)malloc(sizeof(SF_INFO)); */
-    /* file_info.info = memcpy(file_info.info, sf_file_info, sizeof(sf_file_info)); */
-    file_info->info = sf_file_info;
-    file_info->file = file;
-
-    file_info->name = (char*)calloc((name_len+1), sizeof(char));
-    file_info->name = strcpy(file_info->name, name);
-
-    return file_info;
-}
-
-/* add an AUDIO_FILE_INFO structure to an AUDIO_FILES look-up table */
-AUDIO_FILES* store_file_info(AUDIO_FILES *array, AUDIO_FILE_INFO *file_info)
-{
-    if( array == NULL ) {
-        array = (AUDIO_FILES*)malloc(sizeof(AUDIO_FILES));
-        if( array == NULL )
-            return NULL;
-        array->num_files = 0;
-        array->files = (AUDIO_FILE_INFO**)malloc(sizeof(AUDIO_FILE_INFO*));
-    }
-
-    if( lookup_file_info(array, file_info->name) == NULL ) {
-        /* append the file name */
-        if( array->num_files > 0 )
-            array->files = (AUDIO_FILE_INFO**)realloc(array->files, (array->num_files+1)*sizeof(AUDIO_FILE_INFO*));
-        array->num_files++;
-
-        array->files[array->num_files-1] = file_info;
-    }
-
-    return array;
-}
-
-/* Get an AUDIO_FILE_INFO structure from an AUDIO_FILES look-up table.
- * Returns NULL if the file is not open. */
-AUDIO_FILE_INFO* lookup_file_info(const AUDIO_FILES *const array, const char *const name)
-{
-    int i;
-
-    if( array == NULL )
-        return NULL;
-
-    for(i = 0; i < array->num_files; i++)
-        if( strcmp(name, array->files[i]->name) == 0 )
-            return array->files[i];
-
-    return NULL;
-}
-
-/* remove an AUDIO_FILE_INFO structure from an AUDIO_FILES look-up table */
-AUDIO_FILES* remove_file_info(AUDIO_FILES *array, const char *const name)
-{
-    int i=0;
-
-    while( strcmp(name, array->files[i]->name) != 0 )
-        i++;
-
-    if( i < array->num_files )
-    {
-        array->files[i] = destroy_file_info(array->files[i]);
-
-        /* replace the deleted element with the last one */
-        array->files[i] = array->files[array->num_files-1];
-
-        array->files = (AUDIO_FILE_INFO**)realloc(array->files, (--array->num_files)*sizeof(AUDIO_FILE_INFO*));
-        if( array->num_files < 1 )
-            array->files = (AUDIO_FILE_INFO**)malloc(sizeof(AUDIO_FILE_INFO*));
-    }
-    else
-        mexWarnMsgTxt("File not open.");
-
-    return array;
-}
-
-/* deallocate an AUDIO_FILE_INFO structure */
-AUDIO_FILE_INFO* destroy_file_info(AUDIO_FILE_INFO* file_info)
-{
-    if( file_info == NULL )
-        mexWarnMsgTxt("File already removed! This is odd.");
-
-    free(file_info->name);
-    free(file_info->info);
-
-    /* TODO: what to do here? */
-    if( !sf_close(file_info->file) )
-        file_info->file = NULL;
-    else
-        mexWarnMsgTxt("libsndfile could not close the file!");
-
-    free(file_info);
-
-    return file_info;
-}
-
-/* deallocate an AUDIO_FILES look-up table */
-void destroy_file_list(AUDIO_FILES* array)
-{
-    if( array != NULL ) {
-        int i=0;
-        for( i = 0; i < array->num_files; i++ )
-            array->files[i] = destroy_file_info(array->files[i]);
-    }
-    free(array);
-}
-
-/*
  * misc functions
  */
+
+/*
+ * return a transposed version of "input" as "output"
+ *
+ * TODO: maybe do an in-place transpose? Files already open in about 2/3 of
+ * the time of Matlab's wavread(), so some additional time complexity
+ * probably won't hurt much.
+ */
+void transpose_data(void* output, void* input, int num_frames, int num_chns, mxClassID class_id)
+{
+    int i; /* loop variable */
+
+    /* transpose the data
+     *
+     * To transpose correctly, we need to cast both the input and the output.
+     * Sadly I can't think of any other way to it than below without violating
+     * ANSI C.  (In C99 I could probably just define pointers that point to cast
+     * versions of input and output and use only one loop.)
+     */
+    switch ( class_id ) {
+        case mxINT8_CLASS:
+            for( i=0; i<num_frames; i++ ) {
+                int j;
+                for( j=0; j<num_chns; j++ )
+                    ((int8_t*)output)[i+j*num_frames] = ((int8_t*)input)[i*num_chns+j];
+            }
+            break;
+        case mxUINT8_CLASS:
+            for( i=0; i<num_frames; i++ ) {
+                int j;
+                for( j=0; j<num_chns; j++ )
+                    ((uint8_t*)output)[i+j*num_frames] = ((uint8_t*)input)[i*num_chns+j];
+            }
+            break;
+        case mxINT16_CLASS:
+            for( i=0; i<num_frames; i++ ) {
+                int j;
+                for( j=0; j<num_chns; j++ )
+                    ((int16_t*)output)[i+j*num_frames] = ((int16_t*)input)[i*num_chns+j];
+            }
+            break;
+        case mxINT32_CLASS:
+            for( i=0; i<num_frames; i++ ) {
+                int j;
+                for( j=0; j<num_chns; j++ )
+                    ((int32_t*)output)[i+j*num_frames] = ((int32_t*)input)[i*num_chns+j];
+            }
+            break;
+        case mxSINGLE_CLASS:
+            for( i=0; i<num_frames; i++ ) {
+                int j;
+                for( j=0; j<num_chns; j++ )
+                    ((float*)output)[i+j*num_frames] = ((float*)input)[i*num_chns+j];
+            }
+            break;
+        default:
+            for( i=0; i<num_frames; i++ ) {
+                int j;
+                for( j=0; j<num_chns; j++ )
+                    ((double*)output)[i+j*num_frames] = ((double*)input)[i*num_chns+j];
+            }
+            break;
+    }
+}
 
 /* get information about a file from an args pointer and transfer it to an
  * SF_INFO struct */
@@ -200,8 +148,7 @@ void get_file_info(SF_INFO* sf_file_info, char* sf_in_fname, const mxArray *cons
     if( tmp_ptr != NULL )
         mxGetString(tmp_ptr, endianness_name, mxGetN(tmp_ptr)+1);
 
-    /* sf_file_info->format = lookup_val(&maj_fmts, maj_fmt_name) | \ */
-    sf_file_info->format = SF_FORMAT_RAW
+    sf_file_info->format = lookup_val(&maj_fmts, maj_fmt_name)
         | lookup_val(&sub_fmts, sub_fmt_name)
         | lookup_val(&endianness_types, endianness_name);
 
@@ -212,4 +159,44 @@ void get_file_info(SF_INFO* sf_file_info, char* sf_in_fname, const mxArray *cons
         free(sf_file_info);
         mexErrMsgTxt("Invalid format specified.");
     }
+}
+
+/* check the fmt argument and return true or false */
+int get_fmt(const char* const args)
+{
+    int do_read_raw = 0;
+
+    if( !strcmp(args, "native") )
+        do_read_raw = 1;
+    else if( !strcmp(args, "double") )
+        do_read_raw = 0;
+    else
+        mexWarnMsgTxt("Bad 'fmt' argument: defaulting to 'double'.");
+
+    return do_read_raw;
+}
+
+/* get the mxClassID corresponding to a format subtype */
+mxClassID get_class_id(SF_INFO* sf_file_info)
+{
+    /* TODO: What other formats should I add here? */
+    switch( sf_file_info->format & SF_FORMAT_SUBMASK )
+    {
+        case SF_FORMAT_PCM_S8:
+            return mxINT8_CLASS;
+        case SF_FORMAT_PCM_16:
+            return mxINT16_CLASS;
+        case SF_FORMAT_PCM_24:
+        case SF_FORMAT_PCM_32:
+            return mxINT32_CLASS;
+        case SF_FORMAT_PCM_U8:
+            return mxUINT8_CLASS;
+        case SF_FORMAT_FLOAT:
+            return mxSINGLE_CLASS;
+        case SF_FORMAT_DOUBLE:
+            return mxDOUBLE_CLASS;
+    }
+
+    /* default to 32bit int */
+    return mxINT32_CLASS;
 }
