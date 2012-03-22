@@ -83,10 +83,17 @@ else:
     exit("Oops, not a supported platform.")
 
 if not (GetOption('clean') or GetOption('help')):
-    # look for libsndfile plus header and exit if either one isn't found
     conf = env.Configure()
+
+    # look for libsndfile plus header and exit if either one isn't found
     if not conf.CheckLibWithHeader(sndfile_lib, 'sndfile.h', 'c'):
         exit("You need to install libsndfile(-dev)!")
+
+    # we use the types defined in stdint.h, which not all versions of Visual
+    # Studio have
+    if not conf.CheckHeader('stdint.h', language='c'):
+        exit("You need the stdint header!")
+
     env = conf.Finish()
 
 do_debug = False
