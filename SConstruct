@@ -23,7 +23,7 @@ env_vars.Add('DESTDIR', 'The install destination', os.curdir)
 do_force_mingw = ARGUMENTS.get('forcemingw', 0)
 
 # the Matlab tool automatically sets various environment variables
-if do_force_mingw:
+if os.name == 'nt' and do_force_mingw:
     env = Environment(tools = ['mingw', 'filesystem', 'zip', 'packaging', 'matlab'],
                       variables = env_vars)
 else:
