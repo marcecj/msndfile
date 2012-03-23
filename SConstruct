@@ -20,7 +20,14 @@ env_vars = Variables()
 env_vars.Add('CC', 'The C compiler')
 env_vars.Add('DESTDIR', 'The install destination', os.curdir)
 
-do_force_mingw = ARGUMENTS.get('forcemingw', 0)
+AddOption('--force-mingw',
+          dest='forcemingw',
+          default=False,
+          action='store_true',
+          help='Force the use of mingw on Windows platforms.'
+         )
+
+do_force_mingw = GetOption('forcemingw')
 
 # the Matlab tool automatically sets various environment variables
 if os.name == 'nt' and do_force_mingw:
@@ -161,6 +168,9 @@ Default(msndfile)
 
 Help(
 """\n
+The following options may be set:
+    --force-mingw   ->  Force the use of mingw (Windows only).
+
 The following environment variables can be overridden by passing them *after*
 the call to scons, i.e. "scons CC=gcc":"""
 + env_vars.GenerateHelpText(env)
