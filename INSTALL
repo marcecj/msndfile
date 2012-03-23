@@ -3,17 +3,23 @@ Installing msndfile
 
 There are two ways to compile msndfile.  The easy way is to call the m-file
 `compile_msndfile.m` from Matlab.  There is also a more flexible build system
-based on SCons available, that can also generate IDE project files (though right
-now only for Microsoft Visual Studio).  For details on both methods, see their
-relevant subsections.
+based on SCons available, that can also generate a Visual Studio IDE project
+file.  For details on both methods, see their relevant subsections.
 
 Prerequisites
 -------------
 
 The basic dependencies of msndfile are:
 
-- Matlab (tested with 2008a and 2010a Student Edition)
+- Matlab (tested with 2010a Student Edition)
 - http://www.mega-nerd.com/libsndfile[libsndfile]
+- `stdint.h` (a C99 header file; required for reading files in their native
+  format, à la `wavread(..., 'native')`
+
+The `stdint.h` header is available in Visual Studio 2010 and up.  Otherwise, all
+somewhat recent compilers should support it (especially those that support C99).
+If your compiler does not have `stdint.h` and you cannot use one that does, you
+could find a copy and place it in the `Win` subdirectory.
 
 To obtain libsndfile, you may try the following steps:
 
@@ -23,7 +29,7 @@ Linux::
 Windows::
     Follow the instructions at http://www.mega-nerd.com/libsndfile[]).  After
     you have done that, copy the files `libsndfile-1.dll` and `libsndfile-1.lib`
-    into the `Win` subdirectory (create it if it does not exist).
+    into the `Win` subdirectory.
 Mac OS X::
     Either download the sources from http://www.mega-nerd.com/libsndfile[] and
     compile them yourself or use a package management system like fink or
@@ -32,7 +38,7 @@ Mac OS X::
 If you are going to use the SCons based build system, you will also need
 
 - http://www.python.org[Python] (whatever version SCons works with)
-- http://scons.org[SCons] (tested with SCons 2.0.x)
+- http://scons.org[SCons] (tested with SCons 2.1.x)
 - http://starship.python.net/crew/mhammond/win32/Downloads.html[Python Win32
   extensions] (optional, but necessary for some SCons features on Windows)
 - the http://sconsmatlabtool.sf.net[Matlab SCons Tool]
@@ -83,15 +89,15 @@ parallel builds, etc.) it can do the following things:
 - supports whatever compilers SCons (or third party extensions) supports, and
   not just what The Mathworks supports, which is incomplete and quite outdated
   anyway footnote:[Fun fact: the most recent minor version of GCC officially
-  supported by The Mathworks for Matlab 2011a (GCC 4.3) is not even supported by
-  the _compiler vendor_ anymore, though I admit this may be deliberate.].
+  supported by The Mathworks for Matlab 2012a (GCC 4.4) is not even supported by
+  the _compiler vendor_ anymore, though I suppose this may be deliberate.].
 
-For more information (such as available build targets and options), see the
-output of `scons --help`.
+For more information (such as available build targets, options and overridable
+environment variables), see the output of `scons --help`.
 
 If you need to work on the Code and plan to compile often, you can speed up the
 process in general by using the interactive mode by passing the `--interactive`
-option to SCons.  You can also override certain environment variables.
+option to SCons.
 
 NOTE: To debug from within Visual Studio, you need to configure the project to
 call MATLAB with the "-wait" argument.  I could not find a way to do this
@@ -106,21 +112,18 @@ Just open a terminal and type
     $ scons
 -----------------
 
-while in the source directory.  Users with 32 bit Matlab on 64 bit systems
-should pass the option `--with-32bits` to enforce 32 bit compilation.
+while in the top-level project directory.
 
 Windows
 ~~~~~~~
 
-You can launch the batch file `start_scons.bat`, which launches scons and
-defines an alias "scons" via doskey to simplify repeated compiling (i.e., just
-type `scons` instead of `Full:\Path\To\scons`).  If scons is installed somewhere
-else on your system, you need to alter the paths first.  Also, if SCons already
-resides in your path, remove the line containing `doskey`.
+You can launch the batch file `start_scons.bat`, which launches scons and keeps
+the terminal window open.  It is expected that SCons is in your $PATH.
 
 Under Windows, the build system has an additional `vsproj` target.  This creates
 a MS Visual Studio Solution file with msndfile as a project.  For other IDEs,
-see http://www.scons.org/wiki/IDEIntegration[].
+see http://www.scons.org/wiki/IDEIntegration[].  Also, there is an option to
+force the use of MinGW in case it is installed along with Visual Studio.
 
 Mac OS X
 ~~~~~~~~
@@ -134,3 +137,5 @@ Testing
 To run the test scripts, call `test_msndfile.m` from MATLAB.  This will test
 `msndread` and `msndblockread`.  Performance tests are deactivated by default.
 To run them, too, change `do_perf_tests` to `true` in `test_msndfile.m`.
+
+# vim:ft=asciidoc
