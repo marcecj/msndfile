@@ -104,10 +104,9 @@ void get_opts(SF_INFO* sf_file_info, SNDFILE* sf_input_file, mxArray* opts)
         if (info_data != NULL)
         {
             const int j = sf_str_to_index(i);
-            mxArray *info_array = mxCreateString(info_data);
 
             mxAddField(info, info_fields[j]);
-            mxSetField(info, 0, info_fields[j], info_array);
+            mxSetField(info, 0, info_fields[j], mxCreateString(info_data));
         }
         else
             --info_count;
