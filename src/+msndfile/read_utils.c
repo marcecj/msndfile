@@ -51,6 +51,19 @@ void get_opts(SF_INFO* sf_file_info, SNDFILE* sf_input_file, mxArray* opts)
         "nBitsPerSample"
     };
 
+    const char* bext_fields[] = {
+        "description",
+        "originator",
+        "originator_reference",
+        "origination_date",
+        "origination_time",
+        "time_reference",
+        "version",
+        "umid",
+        "coding_history"
+    };
+
+
     /* see e.g. http://www.kk.iij4u.or.jp/~kondo/wave/mpidata.txt */
     const char* info_fields[] = {
         "inam", /* Title */
@@ -66,9 +79,11 @@ void get_opts(SF_INFO* sf_file_info, SNDFILE* sf_input_file, mxArray* opts)
     };
 
     const short num_fmt_fields  = sizeof(fmt_fields)/sizeof(char*);
+    const short num_bext_fields = sizeof(bext_fields)/sizeof(char*);
     short info_count = SF_STR_LAST-SF_STR_FIRST+1;
 
     double fmt_data[6];
+    SF_BROADCAST_INFO bwv_data;
 
     mxArray *fmt           = mxCreateStructArray(1, ndims, num_fmt_fields, fmt_fields);
     mxArray *info          = mxCreateStructArray(1, ndims, 0, NULL);
@@ -116,6 +131,29 @@ void get_opts(SF_INFO* sf_file_info, SNDFILE* sf_input_file, mxArray* opts)
     if (info_count > 0) {
         mxAddField(opts, "info");
         mxSetField(opts, 0, "info", info);
+    }
+
+    /*
+     * set broadcast wave info
+     */
+
+    if( sf_command(sf_input_file, SFC_GET_BROADCAST_INFO, &bwv_data, sizeof(SF_BROADCAST_INFO)) == SF_TRUE )
+    {
+        mxArray *bext = mxCreateStructArray(1, ndims, num_bext_fields, bext_fields);
+        const double time_ref_samples = 4294967296.l*bwv_data.time_reference_high + bwv_data.time_reference_low;
+
+        mxSetField(bext, 0, bext_fields[0], mxCreateString(bwv_data.description));
+        mxSetField(bext, 0, bext_fields[1], mxCreateString(bwv_data.originator));
+        mxSetField(bext, 0, bext_fields[2], mxCreateString(bwv_data.originator_reference));
+        mxSetField(bext, 0, bext_fields[3], mxCreateString(bwv_data.origination_date));
+        mxSetField(bext, 0, bext_fields[4], mxCreateString(bwv_data.origination_time));
+        mxSetField(bext, 0, bext_fields[5], mxCreateDoubleScalar(time_ref_samples));
+        mxSetField(bext, 0, bext_fields[6], mxCreateDoubleScalar(bwv_data.version));
+        mxSetField(bext, 0, bext_fields[7], mxCreateString(bwv_data.umid));
+        mxSetField(bext, 0, bext_fields[8], mxCreateString(bwv_data.coding_history));
+
+        mxAddField(opts, "bext");
+        mxSetField(opts, 0, "bext", bext);
     }
 }
 

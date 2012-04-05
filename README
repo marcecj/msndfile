@@ -50,6 +50,7 @@ cases, the following differences to `wavread` hold:
 
 - The opts.fmt struct has no "wFormatTag" field if the file type is not a WAV
   file (which is completely logical).
+- Broadcast WAV files produce an additional opts.bext field.
 - The opts.info struct may contain fields unique to non-WAV formats.
 
 Installation
