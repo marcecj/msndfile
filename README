@@ -11,13 +11,12 @@ Introduction
 
 The MATLAB built-in functions for reading and writing WAV files (i.e., `wavread`
 and `wavwrite`) have their limitations.  They do not support files larger than 4
-GB, and do not support certain non-Microsoft WAV formats (e.g., RF64, Broadcast
-WAV).  This leads to users editing `wavread` to support whatever formats they
-need to use.  This project, msndfile, aims to provide `wavread` and `wavwrite`
-compatible functions that uses the
-http://www.mega-nerd.com/libsndfile[libsndfile] C library.  This also means that
-msndfile supports http://www.vorbis.com/[OGG Vorbis] and (in my opinion much
-more interesting) the Free Lossless Audio Codec
+GB, and do not support certain non-Microsoft WAV formats (e.g., RF64).  This
+leads to users editing `wavread` to support whatever formats they need to use.
+This project, msndfile, aims to provide `wavread` and `wavwrite` compatible
+functions that uses the http://www.mega-nerd.com/libsndfile[libsndfile] C
+library.  This also means that msndfile supports http://www.vorbis.com/[OGG
+Vorbis] and (in my opinion much more interesting) the Free Lossless Audio Codec
 http://flac.sourceforge.net[FLAC].
 
 Currently, the suite consists of two functions: `msndread` and `msndblockread`.
@@ -34,7 +33,7 @@ The msndfile suite currently has the following features:
 
 - Can read any file type supported by libsndfile, such as FLAC and OGG Vorbis,
   but also various WAV formats not supported by the `wavread` function, e.g.
-  Riff64 (RF64) and Broadcast WAV, and has no (known) file size limit.
+  Riff64 (RF64), and has no (known) file size limit.
 - Can read multiple files in a block-wise manner via the function
   `msndblockread`.
 - It is in general more efficient (read: faster) than pure-MATLAB code, except
