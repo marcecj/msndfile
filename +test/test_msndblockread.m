@@ -15,7 +15,7 @@ ref_data.file_info.sampleformat = 'PCM_16';
 ref_data.file_size    = wavread('test_files/test.wav', 'size');
 ref_data.block_size   = 1024;
 
-function teardown(ref_data)
+function teardown(~)
 
 % make sure there are no open files in case of an error to prevent spurious
 % "File already open" errors

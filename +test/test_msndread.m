@@ -11,19 +11,19 @@ ref_data.file_info.channels     = 2;
 ref_data.file_info.format       = 'RAW';
 ref_data.file_info.sampleformat = 'PCM_16';
 
-function test_no_args(ref_data)
+function test_no_args(~)
 % verify that msndread raises an error when called without input arguments
 
 assertExceptionThrown(@msndfile.read, '');
 
-function test_raw_empty_args(ref_data)
+function test_raw_empty_args(~)
 % verify that msndread raises an error when called with insufficient arguments
 
 assertExceptionThrown(@() msndfile.read('test_files/test.raw', []), '');
 assertExceptionThrown(@() msndfile.read('test_files/test.raw', [], []), '');
 assertExceptionThrown(@() msndfile.read('test_files/test.raw', [], [], []), '');
 
-function test_raw_incomplete_file_info(ref_data)
+function test_raw_incomplete_file_info(~)
 % verify that msndread raises an error when file_info is incomplete
 
 file_info.samplerate   = 44100;
@@ -129,7 +129,7 @@ assertEqual(nbits_ref, nbits);
 [~, ~, nbits] = msndfile.read('test_files/test.flac', 'size');
 assertEqual(nbits_ref, nbits);
 
-function test_output_opts(ref_data)
+function test_output_opts(~)
 % test opts return value
 
 [~, ~, ~, opts_ref]  = wavread('test_files/test.wav', 'size');
