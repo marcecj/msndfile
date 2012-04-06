@@ -109,3 +109,29 @@ in_test = msndfile.read('test_files/test.raw', [], 'native', ref_data.file_info)
 err_sum = sum(abs(in_test - in_wav));
 
 assertTrue(all(err_sum==0));
+
+function test_opts(ref_data)
+% test opts return value separately from the others
+
+[~, ~, ~, opts_ref]  = wavread('test_files/test.wav', 'size');
+[~, ~, ~, opts]      = msndfile.read('test_files/test.wav', 'size');
+
+% compare fmt fields
+fmt_fields_ref = fieldnames(opts_ref.fmt);
+fmt_fields     = fieldnames(opts.fmt);
+assertEqual(fmt_fields_ref, fmt_fields);
+assertEqual(length(fmt_fields_ref), length(fmt_fields));
+for k=1:length(fmt_fields_ref)
+    assertEqual(fmt_fields_ref{k}, fmt_fields{k});
+    assertEqual(opts_ref.fmt.(fmt_fields_ref{k}), opts.fmt.(fmt_fields{k}));
+end
+
+% compare info fields
+info_fields_ref = fieldnames(opts_ref.fmt);
+info_fields     = fieldnames(opts.fmt);
+assertEqual(info_fields_ref, info_fields);
+assertEqual(length(info_fields_ref), length(info_fields));
+for k=1:length(info_fields_ref)
+    assertEqual(info_fields_ref{k}, info_fields{k});
+    assertEqual(opts_ref.fmt.(info_fields_ref{k}), opts.fmt.(info_fields{k}));
+end
