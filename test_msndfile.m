@@ -9,8 +9,7 @@ addpath('build');
 
 disp('Test file used in all tests: test.wav (also as RAW and FLAC)')
 
-test.msndread;
-test.msndblockread;
+runtests('test', '-verbose');
 
 %
 %% Test 4: performance comparisons

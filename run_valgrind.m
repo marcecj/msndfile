@@ -4,6 +4,4 @@ clear;
 close all;
 
 addpath('debug');
-
-test.msndread;
-test.msndblockread;
+runtests('test');
