@@ -2,7 +2,6 @@ Before v1.0:
 -----------
 
 - test opts return value (compare with wavread)
-- test fmt input argument (compare with wavread)
 
 General:
 --------

@@ -131,3 +131,27 @@ fprintf('  msndread  (RAW):\tLength = %i,\tNChns = %i,\tFS = %i\n', file_size, f
 
 [file_size, fs] = msndfile.read('test.flac', 'size');
 fprintf('  msndread (FLAC):\tLength = %i,\tNChns = %i,\tFS = %i\n', file_size, fs);
+
+%
+%% Test 4: test 'fmt' argument
+%
+
+in_test     = msndfile.read('test.wav', 'double');
+in_wav      = wavread('test.wav', 'double');
+num_unequal = sum(in_test - in_wav);
+
+disp('* Testing fmt=''double'' (WAV).');
+disp(['  There are ' num2str(num_unequal) ' incorrect samples']);
+
+in_test     = msndfile.read('test.wav', 'native');
+in_wav      = wavread('test.wav', 'native');
+num_unequal = sum(in_test - in_wav);
+
+disp('* Testing fmt=''native'' (WAV).');
+disp(['  There are ' num2str(num_unequal) ' incorrect samples']);
+
+in_test     = msndfile.read('test.raw', [], 'native', file_info);
+num_unequal = sum(in_test - in_wav);
+
+disp('* Testing fmt=''native'' (RAW).');
+disp(['  There are ' num2str(num_unequal) ' incorrect samples']);
