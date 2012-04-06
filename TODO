@@ -2,6 +2,8 @@ Before v1.0:
 -----------
 
 - test opts return value (compare with wavread)
+- find out what those Valgrind warnings for lines 202 and 205 in
+  src/+msndfile/blockread.c are about
 
 General:
 --------
