@@ -73,19 +73,22 @@ assertTrue(all(err_sum==0));
 
 function test_size(ref_data)
 
-[file_size_ref, fs_ref] = wavread('test_files/test.wav', 'size');
+[file_size_ref, fs_ref, nbits_ref] = wavread('test_files/test.wav', 'size');
 
-[file_size, fs] = msndfile.read('test_files/test.wav', 'size');
+[file_size, fs, nbits] = msndfile.read('test_files/test.wav', 'size');
 assertEqual(file_size_ref, file_size);
 assertEqual(fs_ref, fs);
+assertEqual(nbits_ref, nbits);
 
-[file_size, fs] = msndfile.read('test_files/test.raw', 'size', [], ref_data.file_info);
+[file_size, fs, nbits] = msndfile.read('test_files/test.raw', 'size', [], ref_data.file_info);
 assertEqual(file_size_ref, file_size);
 assertEqual(fs_ref, fs);
+assertEqual(nbits_ref, nbits);
 
-[file_size, fs] = msndfile.read('test_files/test.flac', 'size');
+[file_size, fs, nbits] = msndfile.read('test_files/test.flac', 'size');
 assertEqual(file_size_ref, file_size);
 assertEqual(fs_ref, fs);
+assertEqual(nbits_ref, nbits);
 
 function test_fmt(ref_data)
 % test fmt input argument
