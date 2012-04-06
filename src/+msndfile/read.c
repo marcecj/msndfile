@@ -78,6 +78,7 @@ void mexFunction(int nlhs, mxArray *plhs[],
 
         if( !mxIsChar(prhs[2]) ) {
             free(sf_in_fname);
+            free(fmt);
             mexErrMsgTxt("The third argument has to be a string! (see help text)");
         }
 
@@ -88,6 +89,7 @@ void mexFunction(int nlhs, mxArray *plhs[],
         }
 
         do_read_raw = get_fmt(fmt);
+        free(fmt);
     }
 
     sf_input_file = sf_open(sf_in_fname, SFM_READ, &sf_file_info);
