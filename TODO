@@ -7,5 +7,6 @@ Before v1.0:
 General:
 --------
 
+- maybe add support for "fmt" option to blockread
 - implement msndwrite
 - implement msndblockwrite
