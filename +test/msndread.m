@@ -23,7 +23,7 @@ end
 % verify that msndread raises an error when called with insufficient arguments
 
 try
-    disp('* Attemting to read test.raw with empty range...\n');
+    disp('* Attemting to read test.raw with empty range...');
     [in_raw, fs] = msndfile.read('test.raw', []);
     warning('test:err', '... error should be thrown!');
 catch ME
@@ -99,7 +99,7 @@ disp(['  There are ' num2str(num_unequal) ' incorrect samples']);
 num_samples  = 16384;
 in_blockwise     = zeros(num_samples, 2);
 in_raw_blockwise = zeros(num_samples, 2);
-for kk = 1:1024:16384
+for kk = 1:1024:num_samples
     in_blockwise(kk:kk+1023, :)     = msndfile.read('test.wav', [kk kk+1023]);
     in_raw_blockwise(kk:kk+1023, :) = msndfile.read('test.raw', [kk kk+1023], [], file_info);
 end
