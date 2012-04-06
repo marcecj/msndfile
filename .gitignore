@@ -9,7 +9,6 @@
 .matlab_output
 .sconf_temp/*
 .sconsign.dblite
-config.log
 build/*
 debug/*
 +msndfile/*
@@ -22,6 +21,7 @@ graphics
 *.mex*
 *.zip
 *.html
+*.log
 
 # VS files
 *.sln*
