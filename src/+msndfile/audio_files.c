@@ -11,15 +11,13 @@
 /* create an AUDIO_FILE_INFO struct */
 AUDIO_FILE_INFO* create_file_info(const char *const name, SF_INFO* sf_file_info, SNDFILE* file)
 {
-    const int name_len = strlen(name);
-
     AUDIO_FILE_INFO* file_info =
         (AUDIO_FILE_INFO*)malloc(sizeof(AUDIO_FILE_INFO));
 
     file_info->info = sf_file_info;
     file_info->file = file;
 
-    file_info->name = (char*)calloc((name_len+1), sizeof(char));
+    file_info->name = (char*)calloc(strlen(name)+1, sizeof(char));
     file_info->name = strcpy(file_info->name, name);
 
     return file_info;
