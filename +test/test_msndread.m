@@ -44,8 +44,7 @@ function test_raw_read(ref_data)
 
 [in_raw, fs] = msndfile.read('test_files/test.raw', [], [], ref_data.file_info);
 
-err_sum = sum(abs(ref_data.in_wav - in_raw));
-assertTrue(all(err_sum==0));
+assertEqual(ref_data.in_wav, in_raw);
 
 function test_blockwise_read(ref_data)
 % test block-wise reading
@@ -61,11 +60,8 @@ for kk = 1025:1024:num_samples
     in_raw_blockwise(kk:kk+1023, :) = msndfile.read('test_files/test.raw', [kk kk+1023], [], ref_data.file_info);
 end
 
-err_sum = sum(abs(in_blockwise - ref_data.in_wav(1:num_samples,:)));
-assertTrue(all(err_sum==0));
-
-err_sum = sum(abs(in_raw_blockwise - ref_data.in_wav(1:num_samples,:)));
-assertTrue(all(err_sum==0));
+assertEqual(in_blockwise, ref_data.in_wav(1:num_samples,:));
+assertEqual(in_raw_blockwise, ref_data.in_wav(1:num_samples,:));
 
 function test_input_size(ref_data)
 % test 'size' input argument
@@ -86,20 +82,17 @@ function test_input_fmt(ref_data)
 
 in_test = msndfile.read('test_files/test.wav', 'double');
 in_wav  = wavread('test_files/test.wav', 'double');
-err_sum = sum(abs(in_test - in_wav));
 
-assertTrue(all(err_sum==0));
+assertEqual(in_test, in_wav);
 
 in_test = msndfile.read('test_files/test.wav', 'native');
 in_wav  = wavread('test_files/test.wav', 'native');
-err_sum = sum(abs(in_test - in_wav));
 
-assertTrue(all(err_sum==0));
+assertEqual(in_test, in_wav);
 
 in_test = msndfile.read('test_files/test.raw', [], 'native', ref_data.file_info);
-err_sum = sum(abs(in_test - in_wav));
 
-assertTrue(all(err_sum==0));
+assertEqual(in_test, in_wav);
 
 function test_output_fs(ref_data)
 % test 'fs' return value

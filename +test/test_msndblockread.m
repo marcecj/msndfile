@@ -43,10 +43,8 @@ end
 msndfile.blockread('close', 'test_files/test.wav');
 
 % compare the outputs
-err_sum = sum(abs(in_blockwise1 - in_wav(1:num_samples,:)));
-assertTrue(all(err_sum==0));
-err_sum = sum(abs(in_blockwise2 - in_wav(1:num_samples,:)));
-assertTrue(all(err_sum==0));
+assertEqual(in_blockwise1, in_wav(1:num_samples,:));
+assertEqual(in_blockwise2, in_wav(1:num_samples,:));
 
 % open the WAV file again and read from it
 msndfile.blockread('open', 'test_files/test.wav');
@@ -58,8 +56,7 @@ end
 msndfile.blockread('close', 'test_files/test.wav');
 
 % compare the WAV outputs again
-err_sum = sum(abs(in_blockwise1  - in_wav(1:num_samples,:)));
-assertTrue(all(err_sum==0));
+assertEqual(in_blockwise1, in_wav(1:num_samples,:));
 
 % read from the FLAC file again and close it
 for kk = 1:block_size:num_samples
@@ -75,8 +72,7 @@ end
 in_blockwise(kk:end, :) = msndfile.blockread('read', 'test_files/test.wav', [kk ref_data.file_size(1)]);
 msndfile.blockread('close', 'test_files/test.wav');
 
-err_sum = sum(abs(in_blockwise - in_wav));
-assertTrue(all(err_sum==0));
+assertEqual(in_blockwise, in_wav);
 
 %
 %% Test 2: opening and closing files
@@ -103,12 +99,9 @@ in_blockwise1(kk:end, :) = msndfile.blockread('read', 'test_files/test.wav', [kk
 in_blockwise2(kk:end, :) = msndfile.blockread('read', 'test_files/test.flac', [kk ref_data.file_size(1)]);
 in_blockwise3(kk:end, :) = msndfile.blockread('read', 'test_files/test.raw', [kk ref_data.file_size(1)]);
 
-err_sum = sum(abs(in_blockwise1 - in_wav));
-assertTrue(all(err_sum==0));
-err_sum = sum(abs(in_blockwise2 - in_wav));
-assertTrue(all(err_sum==0));
-err_sum = sum(abs(in_blockwise3 - in_wav));
-assertTrue(all(err_sum==0));
+assertEqual(in_blockwise1, in_wav);
+assertEqual(in_blockwise2, in_wav);
+assertEqual(in_blockwise3, in_wav);
 
 msndfile.blockread('close', 'test_files/test.raw');
 
@@ -123,18 +116,13 @@ end
 in_blockwise1(kk:end, :) = msndfile.blockread('read', 'test_files/test.wav', [kk ref_data.file_size(1)]);
 in_blockwise2(kk:end, :) = msndfile.blockread('read', 'test_files/test.flac', [kk ref_data.file_size(1)]);
 
-err_sum = sum(abs(in_blockwise1 - in_wav));
-assertTrue(all(err_sum==0));
-
-err_sum = sum(abs(in_blockwise2 - in_wav));
-assertTrue(all(err_sum==0));
+assertEqual(in_blockwise1, in_wav);
+assertEqual(in_blockwise2, in_wav);
 
 msndfile.blockread('closeall');
 
 assertExceptionThrown(@() msndfile.blockread('read', 'test_files/test.wav', [kk kk+block_size-1]), '');
-
 assertExceptionThrown(@() msndfile.blockread('read', 'test_files/test.flac', [kk kk+block_size-1]), '');
-
 assertExceptionThrown(@() msndfile.blockread('read', 'test_files/test.raw', [kk kk+block_size-1]), '');
 
 %
@@ -155,7 +143,6 @@ for kk = 1:block_size:ref_data.file_size(1)-block_size
 end
 in_blockwise1(kk+block_size:end, :) = msndfile.blockread('read', 'test_files/test.wav', ref_data.file_size(1)-(kk+block_size)+1);
 
-err_sum = sum(abs(in_blockwise1 - in_wav));
-assertTrue(all(err_sum==0));
+assertEqual(in_blockwise1, in_wav);
 
 msndfile.blockread('close', 'test_files/test.wav');
