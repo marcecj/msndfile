@@ -1,5 +1,7 @@
+function msndblockread()
 fprintf('\n*** Testing msndblockread ***\n\n');
 
+% the reference: the entire file imported by wavread
 [in_wav, fs] = wavread('test.wav');
 
 file_info = [];

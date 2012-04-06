@@ -1,3 +1,8 @@
+function msndread()
+
+% the reference: the entire file imported by wavread
+[in_wav, fs] = wavread('test.wav');
+
 fprintf('\n*** Testing msndread ***\n\n');
 
 file_info = [];

@@ -1,8 +1,8 @@
+function performance(do_write_plots)
+
 [file_size, fs] = wavread('test.wav', 'size');
 block_sizes = 2.^(8:16).';
 num_run     = 1000;
-
-do_write_plots = true;
 
 %
 %% Test 1: read the first N samples of a file with varying N.
