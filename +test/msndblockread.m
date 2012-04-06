@@ -118,8 +118,8 @@ msndfile.blockread('close', 'test.raw');
 try
     fprintf('\n* Attemting to read test.raw...\n\n');
     msndfile.blockread('read', 'test.raw', [kk kk+block_size-1]);
-    warning('File not closed properly!');
-catch
+    warning('test:err', 'File not closed properly!');
+catch ME
     disp('Error correctly raised...');
 end
 
@@ -151,24 +151,24 @@ msndfile.blockread('closeall');
 try
     fprintf('\n* Attemting to read test.wav...\n\n');
     msndfile.blockread('read', 'test.wav', [kk kk+block_size-1]);
-    warning('File not closed properly!');
-catch
+    warning('test:err', 'File not closed properly!');
+catch ME
     disp('Error correctly raised...');
 end
 
 try
     fprintf('\n* Attemting to read test.flac...\n\n');
     msndfile.blockread('read', 'test.flac', [kk kk+block_size-1]);
-    warning('File not closed properly!');
-catch
+    warning('test:err', 'File not closed properly!');
+catch ME
     disp('Error correctly raised...');
 end
 
 try
     fprintf('\n* Attemting to read test.raw...\n\n');
     msndfile.blockread('read', 'test.raw', [kk kk+block_size-1]);
-    warning('File not closed properly!');
-catch
+    warning('test:err', 'File not closed properly!');
+catch ME
     disp('Error correctly raised...');
 end
 

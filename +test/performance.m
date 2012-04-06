@@ -13,7 +13,7 @@ do_write_plots = true;
 
 tm = [tm1 tm2];
 ts = [ts1 ts2];
-tl = {tl1{:}, tl2{:}};
+tl = [tl1 tl2];
 
 perf_h = figure;
 errorbar(repmat(block_sizes, 1, size(tm,2)), tm.*1e3, ts.*1e3);

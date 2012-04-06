@@ -6,8 +6,8 @@ file_info = [];
 try
     fprintf('\n* Calling without arguments...\n\n');
     msndfile.read;
-    warning('... error should be thrown!');
-catch
+    warning('test:err', '... error should be thrown!');
+catch ME
     disp('... error correctly raised.');
 end
 
@@ -20,24 +20,24 @@ end
 try
     fprintf('\n* Attemting to read test.raw with empty range...\n\n');
     [in_raw, fs] = msndfile.read('test.raw', []);
-    warning('... error should be thrown!');
-catch
+    warning('test:err', '... error should be thrown!');
+catch ME
     disp('... error correctly raised.');
 end
 
 try
     fprintf('\n* Attemting to read test.raw with empty range and fmt...\n\n');
     [in_raw, fs] = msndfile.read('test.raw', [], []);
-    warning('... error should be thrown!');
-catch
+    warning('test:err', '... error should be thrown!');
+catch ME
     disp('... error correctly raised.');
 end
 
 try
     fprintf('\n* Attemting to read test.raw with empty range, fmt and empty file_info struct...\n\n');
     [in_raw, fs] = msndfile.read('test.raw', [], [], []);
-    warning('... error should be thrown!');
-catch
+    warning('test:err', '... error should be thrown!');
+catch ME
     disp('... error correctly raised.');
 end
 
@@ -50,8 +50,8 @@ file_info.samplerate   = 44100;
 try
     fprintf('\nwith field ''samplerate''...\n');
     [in_raw, fs] = msndfile.read('test.raw', [], [], file_info);
-    warning('... error should be thrown!');
-catch
+    warning('test:err', '... error should be thrown!');
+catch ME
     disp('... error correctly raised.');
 end
 
@@ -59,8 +59,8 @@ file_info.channels     = 2;
 try
     fprintf('\nwith fields ''samplerate'' and ''channels''...\n');
     [in_raw, fs] = msndfile.read('test.raw', [], [], file_info);
-    warning('... error should be thrown!');
-catch
+    warning('test:err', '... error should be thrown!');
+catch ME
     disp('... error correctly raised.');
 end
 
@@ -68,8 +68,8 @@ file_info.format       = 'RAW';
 try
     fprintf('\nwith fields ''samplerate'', ''channels'' and ''format''...\n');
     [in_raw, fs] = msndfile.read('test.raw', [], [], file_info);
-    warning('... error should be thrown!');
-catch
+    warning('test:err', '... error should be thrown!');
+catch ME
     disp('... error correctly raised.');
 end
 
