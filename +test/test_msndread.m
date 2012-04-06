@@ -16,19 +16,11 @@ function test_no_args(ref_data)
 
 assertExceptionThrown(@msndfile.read, '');
 
-function test_raw_empty_range(ref_data)
+function test_raw_empty_args(ref_data)
 % verify that msndread raises an error when called with insufficient arguments
 
 assertExceptionThrown(@() msndfile.read('test_files/test.raw', []), '');
-
-function test_raw_empty_range_fmt(ref_data)
-% verify that msndread raises an error when called with insufficient arguments
-
 assertExceptionThrown(@() msndfile.read('test_files/test.raw', [], []), '');
-
-function test_raw_empty_range_fmt_info(ref_data)
-% verify that msndread raises an error when called with insufficient arguments
-
 assertExceptionThrown(@() msndfile.read('test_files/test.raw', [], [], []), '');
 
 function test_raw_incomplete_file_info(ref_data)
@@ -43,10 +35,11 @@ assertExceptionThrown(@() msndfile.read('test_files/test.raw', [], [], file_info
 file_info.sampleformat = 'PCM_16';
 [in_sig, fs] = msndfile.read('test_files/test.raw', [], [], file_info);
 
-% file_info.endianness   = 'LITTLE'; % defaults to 'FILE'
+% endianness defaults to 'FILE'; it is unused here, test anyway
+file_info.endianness   = 'FILE';
+[in_sig, fs] = msndfile.read('test_files/test.raw', [], [], file_info);
 
-
-function test_raw(ref_data)
+function test_raw_read(ref_data)
 % test the RAW file import
 
 [in_raw, fs] = msndfile.read('test_files/test.raw', [], [], ref_data.file_info);
@@ -54,13 +47,16 @@ function test_raw(ref_data)
 err_sum = sum(abs(ref_data.in_wav - in_raw));
 assertTrue(all(err_sum==0));
 
-function test_blockwise(ref_data)
+function test_blockwise_read(ref_data)
+% test block-wise reading
 
 num_samples  = 16384;
 
 in_blockwise     = zeros(num_samples, 2);
 in_raw_blockwise = zeros(num_samples, 2);
-for kk = 1:1024:num_samples
+in_blockwise(1:1024, :)     = msndfile.read('test_files/test.wav', 1024);
+in_raw_blockwise(1:1024, :) = msndfile.read('test_files/test.raw', 1024, [], ref_data.file_info);
+for kk = 1025:1024:num_samples
     in_blockwise(kk:kk+1023, :)     = msndfile.read('test_files/test.wav', [kk kk+1023]);
     in_raw_blockwise(kk:kk+1023, :) = msndfile.read('test_files/test.raw', [kk kk+1023], [], ref_data.file_info);
 end
@@ -71,26 +67,21 @@ assertTrue(all(err_sum==0));
 err_sum = sum(abs(in_raw_blockwise - ref_data.in_wav(1:num_samples,:)));
 assertTrue(all(err_sum==0));
 
-function test_size(ref_data)
+function test_input_size(ref_data)
+% test 'size' input argument
 
-[file_size_ref, fs_ref, nbits_ref] = wavread('test_files/test.wav', 'size');
+file_size_ref = wavread('test_files/test.wav', 'size');
 
-[file_size, fs, nbits] = msndfile.read('test_files/test.wav', 'size');
+file_size = msndfile.read('test_files/test.wav', 'size');
 assertEqual(file_size_ref, file_size);
-assertEqual(fs_ref, fs);
-assertEqual(nbits_ref, nbits);
 
-[file_size, fs, nbits] = msndfile.read('test_files/test.raw', 'size', [], ref_data.file_info);
+file_size = msndfile.read('test_files/test.raw', 'size', [], ref_data.file_info);
 assertEqual(file_size_ref, file_size);
-assertEqual(fs_ref, fs);
-assertEqual(nbits_ref, nbits);
 
-[file_size, fs, nbits] = msndfile.read('test_files/test.flac', 'size');
+file_size = msndfile.read('test_files/test.flac', 'size');
 assertEqual(file_size_ref, file_size);
-assertEqual(fs_ref, fs);
-assertEqual(nbits_ref, nbits);
 
-function test_fmt(ref_data)
+function test_input_fmt(ref_data)
 % test fmt input argument
 
 in_test = msndfile.read('test_files/test.wav', 'double');
@@ -110,8 +101,36 @@ err_sum = sum(abs(in_test - in_wav));
 
 assertTrue(all(err_sum==0));
 
-function test_opts(ref_data)
-% test opts return value separately from the others
+function test_output_fs(ref_data)
+% test 'fs' return value
+
+[~, fs_ref] = wavread('test_files/test.wav', 'size');
+
+[~, fs] = msndfile.read('test_files/test.wav', 'size');
+assertEqual(fs_ref, fs);
+
+[~, fs] = msndfile.read('test_files/test.raw', 'size', [], ref_data.file_info);
+assertEqual(fs_ref, fs);
+
+[~, fs] = msndfile.read('test_files/test.flac', 'size');
+assertEqual(fs_ref, fs);
+
+function test_output_bits(ref_data)
+% test 'nbits' return value
+
+[~, ~, nbits_ref] = wavread('test_files/test.wav', 'size');
+
+[~, ~, nbits] = msndfile.read('test_files/test.wav', 'size');
+assertEqual(nbits_ref, nbits);
+
+[~, ~, nbits] = msndfile.read('test_files/test.raw', 'size', [], ref_data.file_info);
+assertEqual(nbits_ref, nbits);
+
+[~, ~, nbits] = msndfile.read('test_files/test.flac', 'size');
+assertEqual(nbits_ref, nbits);
+
+function test_output_opts(ref_data)
+% test opts return value
 
 [~, ~, ~, opts_ref]  = wavread('test_files/test.wav', 'size');
 [~, ~, ~, opts]      = msndfile.read('test_files/test.wav', 'size');
