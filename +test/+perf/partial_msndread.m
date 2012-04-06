@@ -16,7 +16,7 @@ for aa=1:length(block_sizes)
     disp(['Conducting performance comparison (' num2str(num_run) ' reads, first ' num2str(b) ' samples)']);
 
     for kk=1:num_run
-        tic, msndfile.read('test.flac', b);
+        tic, msndfile.read('test_files/test.flac', b);
         t_e(kk) = toc;
     end
     timings_mean(aa,1) = mean(t_e);
@@ -24,7 +24,7 @@ for aa=1:length(block_sizes)
     disp(sprintf('mean time taken by msndread (FLAC):\t%.6f +- %.6f', mean(t_e), std(t_e)));
 
     for kk=1:num_run
-        tic, msndfile.read('test.wav', b);
+        tic, msndfile.read('test_files/test.wav', b);
         t_e(kk) = toc;
     end
     timings_mean(aa,2) = mean(t_e);
@@ -32,7 +32,7 @@ for aa=1:length(block_sizes)
     disp(sprintf('mean time taken by msndread (WAV):\t%.6f +- %.6f', mean(t_e), std(t_e)));
 
     for kk=1:num_run
-        tic, wavread('test.wav', b);
+        tic, wavread('test_files/test.wav', b);
         t_e(kk) = toc;
     end
     timings_mean(aa,3) = mean(t_e);

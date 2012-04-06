@@ -24,7 +24,7 @@ else
                       'msndblockread (WAV, no transposition)'};
 end
 
-file_size = wavread('test.wav', 'size');
+file_size = wavread('test_files/test.wav', 'size');
 
 for aa=1:length(block_sizes)
     fprintf('\n');
@@ -34,42 +34,42 @@ for aa=1:length(block_sizes)
     disp(['Conducting performance comparison (' num2str(num_run) ' full reads, ' num2str(b) ' samples at a time).']);
 
     for kk=1:num_run
-        msndfile.blockread('open', 'test.flac');
+        msndfile.blockread('open', 'test_files/test.flac');
         tic,
         for ll=1:b:file_size(1)-b
-            msndfile.blockread('read', 'test.flac', b);
+            msndfile.blockread('read', 'test_files/test.flac', b);
         end
-        msndfile.blockread('read', 'test.flac', [ll file_size(1)]);
+        msndfile.blockread('read', 'test_files/test.flac', [ll file_size(1)]);
         t_e(kk) = toc;
-        msndfile.blockread('close', 'test.flac');
+        msndfile.blockread('close', 'test_files/test.flac');
     end
     timings_mean(aa,1) = mean(t_e);
     timings_std(aa,1)  = std(t_e);
     disp(sprintf('mean time taken by msndblockread (FLAC):\t%.6f +- %.6f', mean(t_e), std(t_e)));
 
     for kk=1:num_run
-        msndfile.blockread('open', 'test.wav');
+        msndfile.blockread('open', 'test_files/test.wav');
         tic,
         for ll=1:b:file_size(1)-b
-            msndfile.blockread('read', 'test.wav', b);
+            msndfile.blockread('read', 'test_files/test.wav', b);
         end
-        msndfile.blockread('read', 'test.wav', [ll file_size(1)]);
+        msndfile.blockread('read', 'test_files/test.wav', [ll file_size(1)]);
         t_e(kk) = toc;
-        msndfile.blockread('close', 'test.wav');
+        msndfile.blockread('close', 'test_files/test.wav');
     end
     timings_mean(aa,2) = mean(t_e);
     timings_std(aa,2)  = std(t_e);
     disp(sprintf('mean time taken by msndblockread (WAV): \t%.6f +- %.6f', mean(t_e), std(t_e)));
 
     for kk=1:num_run
-        msndfile.blockread('open', 'test.wav');
+        msndfile.blockread('open', 'test_files/test.wav');
         tic,
         for ll=1:b:file_size(1)-b
-            msndfile.blockread('read', 'test.wav', b, false);
+            msndfile.blockread('read', 'test_files/test.wav', b, false);
         end
-        msndfile.blockread('read', 'test.wav', [ll file_size(1)], false);
+        msndfile.blockread('read', 'test_files/test.wav', [ll file_size(1)], false);
         t_e(kk) = toc;
-        msndfile.blockread('close', 'test.wav');
+        msndfile.blockread('close', 'test_files/test.wav');
     end
     timings_mean(aa,3) = mean(t_e);
     timings_std(aa,3)  = std(t_e);
@@ -77,7 +77,7 @@ for aa=1:length(block_sizes)
 
     if exist('wavReaderOpen', 'file')
         for kk=1:num_run
-            file_h = wavReaderOpen('test.wav');
+            file_h = wavReaderOpen('test_files/test.wav');
             tic,
             for ll=1:b:file_size(1)-b
                 wavReaderReadBlock(file_h, ll, ll+b-1);
