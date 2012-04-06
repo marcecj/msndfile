@@ -112,7 +112,6 @@ void get_file_info(SF_INFO* sf_file_info, char* sf_in_fname, const mxArray *cons
         sf_file_info->samplerate = (int)*mxGetPr(tmp_ptr);
     else {
         free(sf_in_fname);
-        free(sf_file_info);
         mexErrMsgTxt("Field 'samplerate' not set.");
     }
 
@@ -121,7 +120,6 @@ void get_file_info(SF_INFO* sf_file_info, char* sf_in_fname, const mxArray *cons
         sf_file_info->channels = (int)*mxGetPr(tmp_ptr);
     else {
         free(sf_in_fname);
-        free(sf_file_info);
         mexErrMsgTxt("Field 'channels' not set.");
     }
 
@@ -139,7 +137,6 @@ void get_file_info(SF_INFO* sf_file_info, char* sf_in_fname, const mxArray *cons
         mxGetString(tmp_ptr, sub_fmt_name, FMT_STR_SIZE);
     else {
         free(sf_in_fname);
-        free(sf_file_info);
         mexErrMsgTxt("Field 'sampleformat' not set.");
     }
 
@@ -156,7 +153,6 @@ void get_file_info(SF_INFO* sf_file_info, char* sf_in_fname, const mxArray *cons
     if( !sf_format_check(sf_file_info) ) {
         mexPrintf("Format '%x' invalid.\n", sf_file_info->format);
         free(sf_in_fname);
-        free(sf_file_info);
         mexErrMsgTxt("Invalid format specified.");
     }
 }

@@ -29,7 +29,7 @@ void mexFunction(int nlhs, mxArray *plhs[],
     char        *sf_in_fname; /* input file name */
     sf_count_t  num_frames=0;
     double      *data, *output;
-    SF_INFO     *sf_file_info;
+    SF_INFO     sf_file_info;
     int         do_read_raw = 0;
     mxClassID   class_id = mxDOUBLE_CLASS;
 
@@ -55,27 +55,19 @@ void mexFunction(int nlhs, mxArray *plhs[],
     }
     mxGetString(prhs[0], sf_in_fname, str_size);
 
-    /* initialize sf_file_info struct pointer */
-    sf_file_info = (SF_INFO*)malloc(sizeof(SF_INFO));
-    if( sf_file_info == NULL ) {
-        free(sf_in_fname);
-        mexErrMsgTxt("Could not allocate SF_INFO* instance");
-    }
-
     /* "format" needs to be set to 0 before a file is opened for reading,
      * unless the file is a RAW file */
-    sf_file_info->format = 0;
+    sf_file_info.format = 0;
 
     /* handle the fourth input argument */
     if( nrhs >= 4 && !mxIsEmpty(prhs[3]) )
     {
         if( !mxIsStruct(prhs[3]) ) {
             free(sf_in_fname);
-            free(sf_file_info);
             mexErrMsgTxt("The fourth argument has to be a struct! (see help text)");
         }
 
-        get_file_info(sf_file_info, sf_in_fname, prhs[3]);
+        get_file_info(&sf_file_info, sf_in_fname, prhs[3]);
     }
 
     /* handle the third input argument */
@@ -86,13 +78,11 @@ void mexFunction(int nlhs, mxArray *plhs[],
 
         if( !mxIsChar(prhs[2]) ) {
             free(sf_in_fname);
-            free(sf_file_info);
             mexErrMsgTxt("The third argument has to be a string! (see help text)");
         }
 
         if( mxGetString(prhs[2], fmt, fmt_len) == 1 ) {
             free(sf_in_fname);
-            free(sf_file_info);
             free(fmt);
             mexErrMsgTxt("Error getting 'fmt' string.");
         }
@@ -100,11 +90,10 @@ void mexFunction(int nlhs, mxArray *plhs[],
         do_read_raw = get_fmt(fmt);
     }
 
-    sf_input_file = sf_open(sf_in_fname, SFM_READ, sf_file_info);
+    sf_input_file = sf_open(sf_in_fname, SFM_READ, &sf_file_info);
     free(sf_in_fname);
 
     if( sf_input_file == NULL ) {
-        free(sf_file_info);
         mexErrMsgTxt("Could not open audio file.");
     }
 
@@ -133,8 +122,8 @@ void mexFunction(int nlhs, mxArray *plhs[],
             plhs[0] = mxCreateDoubleMatrix(1, 2, mxREAL);
             dims    = mxGetPr(plhs[0]);
 
-            dims[0] = (double)(sf_file_info->frames);
-            dims[1] = (double)(sf_file_info->channels);
+            dims[0] = (double)(sf_file_info.frames);
+            dims[1] = (double)(sf_file_info.channels);
 
             /* Skip everything else and close the SF_INFO file */
             free(cmd_str);
@@ -168,12 +157,12 @@ void mexFunction(int nlhs, mxArray *plhs[],
             mexErrMsgTxt("Range can be a row vector with 1 or 2 elements.");
     }
     else
-        num_frames = sf_file_info->frames;
+        num_frames = sf_file_info.frames;
 
     /* initialise Matlab output array */
-    num_chns = sf_file_info->channels;
+    num_chns = sf_file_info.channels;
     if( do_read_raw )
-        class_id = get_class_id(sf_file_info);
+        class_id = get_class_id(&sf_file_info);
     plhs[0]  = mxCreateNumericMatrix((int)num_frames, num_chns, class_id, mxREAL);
     output   = (double*)mxGetPr(plhs[0]);
 
@@ -184,10 +173,9 @@ void mexFunction(int nlhs, mxArray *plhs[],
     data = (double*)malloc((int)num_frames*num_chns*sizeof(double));
     if( do_read_raw )
     {
-        const size_t nbytes = num_frames*num_chns*get_bits(sf_file_info)/8;
+        const size_t nbytes = num_frames*num_chns*get_bits(&sf_file_info)/8;
         if( sf_read_raw(sf_input_file, data, nbytes) <= 0 ) {
             free(data);
-            free(sf_file_info);
             mexErrMsgTxt("Error reading bytes from input file: 0 bytes read!");
         }
     }
@@ -195,7 +183,6 @@ void mexFunction(int nlhs, mxArray *plhs[],
     {
         if( sf_readf_double(sf_input_file, data, num_frames) <= 0 ) {
             free(data);
-            free(sf_file_info);
             mexErrMsgTxt("Error reading frames from input file: 0 frames read!");
         }
     }
@@ -207,7 +194,6 @@ void mexFunction(int nlhs, mxArray *plhs[],
     /* rudimentary way of dealing with libsndfile errors */
     sndfile_err = sf_error(sf_input_file);
     if( sndfile_err != SF_ERR_NO_ERROR ) {
-        free(sf_file_info);
         mexWarnMsgTxt("libsndfile error!");
         mexErrMsgTxt(sf_error_number(sndfile_err));
     }
@@ -221,7 +207,7 @@ return_to_matlab:
         plhs[1] = mxCreateDoubleMatrix(1, 1, mxREAL);
         fs      = mxGetPr(plhs[1]);
 
-        *fs = (double)sf_file_info->samplerate;
+        *fs = (double)sf_file_info.samplerate;
     }
 
     if( nlhs > 2 ) {
@@ -230,7 +216,7 @@ return_to_matlab:
         plhs[2] = mxCreateDoubleMatrix(1, 1, mxREAL);
         nbits   = mxGetPr(plhs[2]);
 
-        *nbits = (double)get_bits(sf_file_info);
+        *nbits = (double)get_bits(&sf_file_info);
     }
 
     if( nlhs > 3 ) {
@@ -239,7 +225,7 @@ return_to_matlab:
 
         plhs[3] = mxCreateStructArray(1, ndims, 1, fields);
 
-        get_opts(sf_file_info, sf_input_file, plhs[3]);
+        get_opts(&sf_file_info, sf_input_file, plhs[3]);
     }
 
     if( sf_input_file != NULL ) {
@@ -251,7 +237,4 @@ return_to_matlab:
         else
             mexWarnMsgTxt("libsndfile could not close the file!");
     }
-
-    /* free memory */
-    free(sf_file_info);
 }
