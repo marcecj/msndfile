@@ -1,14 +1,14 @@
-fprintf('\n*** Testing msndread ***\n');
+fprintf('\n*** Testing msndread ***\n\n');
 
 file_info = [];
 
 % verify that msndread raises an error when called without input arguments
 try
-    fprintf('\n* Calling without arguments...\n\n');
+    disp('* Calling without arguments...');
     msndfile.read;
     warning('test:err', '... error should be thrown!');
 catch ME
-    disp('... error correctly raised.');
+    disp('  ... error correctly raised.');
 end
 
 %
@@ -18,75 +18,74 @@ end
 % verify that msndread raises an error when called with insufficient arguments
 
 try
-    fprintf('\n* Attemting to read test.raw with empty range...\n\n');
+    disp('* Attemting to read test.raw with empty range...\n');
     [in_raw, fs] = msndfile.read('test.raw', []);
     warning('test:err', '... error should be thrown!');
 catch ME
-    disp('... error correctly raised.');
+    disp('  ... error correctly raised.');
 end
 
 try
-    fprintf('\n* Attemting to read test.raw with empty range and fmt...\n\n');
+    disp('* Attemting to read test.raw with empty range and fmt...');
     [in_raw, fs] = msndfile.read('test.raw', [], []);
     warning('test:err', '... error should be thrown!');
 catch ME
-    disp('... error correctly raised.');
+    disp('  ... error correctly raised.');
 end
 
 try
-    fprintf('\n* Attemting to read test.raw with empty range, fmt and empty file_info struct...\n\n');
+    disp('* Attemting to read test.raw with empty range, fmt and empty file_info struct...');
     [in_raw, fs] = msndfile.read('test.raw', [], [], []);
     warning('test:err', '... error should be thrown!');
 catch ME
-    disp('... error correctly raised.');
+    disp('  ... error correctly raised.');
 end
 
 
 % verify that msndread raises an error when file_info is incomplete
 
-fprintf('\n* Attemting to read test.raw with file_info struct...\n');
+disp('* Attemting to read test.raw with file_info struct...');
 
 file_info.samplerate   = 44100;
 try
-    fprintf('\nwith field ''samplerate''...\n');
+    disp('  with field ''samplerate''...');
     [in_raw, fs] = msndfile.read('test.raw', [], [], file_info);
     warning('test:err', '... error should be thrown!');
 catch ME
-    disp('... error correctly raised.');
+    disp('  ... error correctly raised.');
 end
 
 file_info.channels     = 2;
 try
-    fprintf('\nwith fields ''samplerate'' and ''channels''...\n');
+    disp('  with fields ''samplerate'' and ''channels''...');
     [in_raw, fs] = msndfile.read('test.raw', [], [], file_info);
     warning('test:err', '... error should be thrown!');
 catch ME
-    disp('... error correctly raised.');
+    disp('  ... error correctly raised.');
 end
 
 file_info.format       = 'RAW';
 try
-    fprintf('\nwith fields ''samplerate'', ''channels'' and ''format''...\n');
+    disp('  with fields ''samplerate'', ''channels'' and ''format''...');
     [in_raw, fs] = msndfile.read('test.raw', [], [], file_info);
     warning('test:err', '... error should be thrown!');
 catch ME
-    disp('... error correctly raised.');
+    disp('  ... error correctly raised.');
 end
 
-fprintf('\n* Attemting to read test.raw with complete file_info struct...\n');
+disp('* Attemting to read test.raw with complete file_info struct...');
 file_info.sampleformat = 'PCM_16';
 % file_info.endianness   = 'LITTLE'; % defaults to 'FILE'
 
 % test the RAW file import
 
 [in_raw, fs] = msndfile.read('test.raw', [], [], file_info);
-fprintf('\n... it worked!\n');
+disp('  ... it worked!');
 
 num_unequal = sum(abs(in_wav - in_raw) > 0);
 
-fprintf('\n');
-disp('Comparing RAW (msndread) and WAV (wavread)');
-disp(['There are ' num2str(num_unequal) ' incorrect samples']);
+disp('* Comparing RAW (msndread) and WAV (wavread)');
+disp(['  There are ' num2str(num_unequal) ' incorrect samples']);
 
 %
 %% Test 2: block-wise reading
@@ -102,30 +101,28 @@ end
 
 num_unequal  = sum(in_blockwise  - in_wav(1:num_samples,:));
 
-fprintf('\n');
-disp('Comparing WAV (msndread, blockwise) and WAV (wavread)');
-disp(['There are ' num2str(num_unequal) ' incorrect samples']);
+disp('* Comparing WAV (msndread, blockwise) and WAV (wavread)');
+disp(['  There are ' num2str(num_unequal) ' incorrect samples']);
 
 num_unequal = sum(in_raw_blockwise - in_wav(1:num_samples,:));
 
-fprintf('\n');
-disp('Comparing RAW (msndread, blockwise) and WAV (wavread)');
-disp(['There are ' num2str(num_unequal) ' incorrect samples']);
+disp('* Comparing RAW (msndread, blockwise) and WAV (wavread)');
+disp(['  There are ' num2str(num_unequal) ' incorrect samples']);
 
 %
 %% Test 3: test 'size' command
 %
 
-fprintf('\n* Comparing output of ''size'' command...\n\n');
+disp('* Comparing output of ''size'' command...');
 
 [file_size, fs] = wavread('test.wav', 'size');
-disp(sprintf('wavread   (WAV):\tLength = %i,\tNChns = %i,\tFS = %i', file_size, fs));
+fprintf('  wavread   (WAV):\tLength = %i,\tNChns = %i,\tFS = %i\n', file_size, fs);
 
 [file_size, fs] = msndfile.read('test.wav', 'size');
-disp(sprintf('msndread  (WAV):\tLength = %i,\tNChns = %i,\tFS = %i', file_size, fs));
+fprintf('  msndread  (WAV):\tLength = %i,\tNChns = %i,\tFS = %i\n', file_size, fs);
 
 [file_size, fs] = msndfile.read('test.raw', 'size', [], file_info);
-disp(sprintf('msndread  (RAW):\tLength = %i,\tNChns = %i,\tFS = %i', file_size, fs));
+fprintf('  msndread  (RAW):\tLength = %i,\tNChns = %i,\tFS = %i\n', file_size, fs);
 
 [file_size, fs] = msndfile.read('test.flac', 'size');
-disp(sprintf('msndread (FLAC):\tLength = %i,\tNChns = %i,\tFS = %i', file_size, fs));
+fprintf('  msndread (FLAC):\tLength = %i,\tNChns = %i,\tFS = %i\n', file_size, fs);
