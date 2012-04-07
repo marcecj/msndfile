@@ -68,7 +68,12 @@ AUDIO_FILES* remove_file_info(AUDIO_FILES *array, const char *const name)
 {
     int i=0;
 
-    while( strcmp(name, array->files[i]->name) != 0 )
+    if( array == NULL ) {
+        mexWarnMsgIdAndTxt("blockread:filenotopen", "File not open.");
+        return array;
+    }
+
+    while( i < array->num_files && strcmp(name, array->files[i]->name) != 0 )
         i++;
 
     if( i < array->num_files )
@@ -87,7 +92,7 @@ AUDIO_FILES* remove_file_info(AUDIO_FILES *array, const char *const name)
             array->files = (AUDIO_FILE_INFO**)malloc(sizeof(AUDIO_FILE_INFO*));
     }
     else
-        mexWarnMsgTxt("File not open.");
+        mexWarnMsgIdAndTxt("blockread:filenotopen", "File not open.");
 
     return array;
 }

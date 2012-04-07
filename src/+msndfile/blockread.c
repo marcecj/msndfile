@@ -122,8 +122,7 @@ void mexFunction(int nlhs, mxArray *plhs[],
     }
     else if( cmd_id == CMD_CLOSE )
     {
-        if( lookup_file_info(file_list, sf_in_fname) != NULL )
-            file_list = remove_file_info(file_list, sf_in_fname);
+        file_list = remove_file_info(file_list, sf_in_fname);
     }
     else if( cmd_id == CMD_CLOSEALL )
     {
