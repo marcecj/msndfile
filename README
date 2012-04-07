@@ -19,12 +19,12 @@ library.  This also means that msndfile supports http://www.vorbis.com/[OGG
 Vorbis] and (in my opinion much more interesting) the Free Lossless Audio Codec
 http://flac.sourceforge.net[FLAC].
 
-Currently, the suite consists of two functions: `msndread` and `msndblockread`.
-The latter is intended solely for reading audio files block-wise, for instance
-to process large files that don't fit in RAM.  Still missing are the
-corresponding functions for writing data: `msndwrite` and `msndblockwrite`.
-Just as with `msndread`, `msndwrite` is supposed to be API-compatible with
-`wavwrite`.
+Currently, the suite consists of two functions: `msndfile.read` and
+`msndfile.blockread`.  The latter is intended solely for reading audio files
+block-wise, for instance to process large files that don't fit in RAM.  Still
+missing are the corresponding functions for writing data: `msndfile.write` and
+`msndfile.blockwrite`.  Just as with `msndfile.read`, `msndfile.write` is
+supposed to be API-compatible with `wavwrite`.
 
 Features
 --------
@@ -35,7 +35,7 @@ The msndfile suite currently has the following features:
   but also various WAV formats not supported by the `wavread` function, e.g.
   Riff64 (RF64), and has no (known) file size limit.
 - Can read multiple files in a block-wise manner via the function
-  `msndblockread`.
+  `msndfile.blockread`.
 - It is in general more efficient (read: faster) than pure-MATLAB code, except
   under special circumstances which favour the JIT compiler footnote:[The one
   example I can think of is a pure-MATLAB function for block-wise reading of WAV
