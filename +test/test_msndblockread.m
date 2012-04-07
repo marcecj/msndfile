@@ -1,7 +1,6 @@
 function test_suite = test_msndblockread()
 initTestSuite;
 
-% TODO: clean this up and have the functions test separate things
 function ref_data = setup()
 
 % the reference: the entire file imported by wavread
@@ -21,8 +20,57 @@ function teardown(~)
 % "File already open" errors
 msndfile.blockread('closeall');
 
+function test_open(ref_data)
+% test open command
+
+msndfile.blockread('open', 'test_files/test.wav');
+msndfile.blockread('open', 'test_files/test.flac');
+msndfile.blockread('open', 'test_files/test.raw', ref_data.file_info);
+
+assertExceptionThrown(@() msndfile.blockread('open', 'test_files/test.wav'), '');
+assertExceptionThrown(@() msndfile.blockread('open', 'test_files/test.flac'), '');
+assertExceptionThrown(@() msndfile.blockread('open', 'test_files/test.raw', ref_data.file_info), '');
+
+function test_close(ref_data)
+% test close command
+
+msndfile.blockread('open', 'test_files/test.wav');
+msndfile.blockread('open', 'test_files/test.flac');
+msndfile.blockread('open', 'test_files/test.raw', ref_data.file_info);
+
+msndfile.blockread('close', 'test_files/test.wav');
+msndfile.blockread('close', 'test_files/test.flac');
+msndfile.blockread('close', 'test_files/test.raw', ref_data.file_info);
+
+% should not throw an exception
+warning('off', 'blockread:filenotopen');
+msndfile.blockread('close', 'test_files/test.wav');
+msndfile.blockread('close', 'test_files/test.flac');
+msndfile.blockread('close', 'test_files/test.raw', ref_data.file_info);
+warning('on', 'blockread:filenotopen');
+
+function test_closeall(ref_data)
+% test read command
+
+msndfile.blockread('open', 'test_files/test.wav');
+msndfile.blockread('open', 'test_files/test.flac');
+msndfile.blockread('open', 'test_files/test.raw', ref_data.file_info);
+
+msndfile.blockread('closeall');
+
+assertExceptionThrown(@() msndfile.blockread('read', 'test_files/test.wav', ref_data.block_size), '');
+assertExceptionThrown(@() msndfile.blockread('read', 'test_files/test.flac', ref_data.block_size), '');
+assertExceptionThrown(@() msndfile.blockread('read', 'test_files/test.raw', ref_data.block_size, ref_data.file_info), '');
+
+% should not throw an exception
+warning('off', 'blockread:filenotopen');
+msndfile.blockread('close', 'test_files/test.wav');
+msndfile.blockread('close', 'test_files/test.flac');
+msndfile.blockread('close', 'test_files/test.raw', ref_data.file_info);
+warning('on', 'blockread:filenotopen');
+
 function test_read(ref_data)
-% Test 1: reading from various files
+% test read command
 
 block_size = ref_data.block_size;
 in_wav     = ref_data.in_wav;
@@ -39,46 +87,39 @@ for kk = 1:block_size:num_samples
     in_blockwise2(kk:kk+block_size-1, :)    = msndfile.blockread('read', 'test_files/test.flac', [kk kk+block_size-1]);
 end
 
-% close the WAV file
-msndfile.blockread('close', 'test_files/test.wav');
-
 % compare the outputs
 assertEqual(in_blockwise1, in_wav(1:num_samples,:));
 assertEqual(in_blockwise2, in_wav(1:num_samples,:));
 
-% open the WAV file again and read from it
-msndfile.blockread('open', 'test_files/test.wav');
-for kk = 1:block_size:num_samples
-    in_blockwise1(kk:kk+block_size-1, :) = msndfile.blockread('read', 'test_files/test.wav', [kk kk+block_size-1], false).';
-end
-
-% close the WAV file again
+% close the WAV file and try to read from it
 msndfile.blockread('close', 'test_files/test.wav');
+assertExceptionThrown(@() msndfile.blockread('read', 'test_files/test.wav', block_size), '');
 
-% compare the WAV outputs again
-assertEqual(in_blockwise1, in_wav(1:num_samples,:));
-
-% read from the FLAC file again and close it
-for kk = 1:block_size:num_samples
-    in_blockwise2(kk:kk+block_size-1, :)    = msndfile.blockread('read', 'test_files/test.flac', [kk kk+block_size-1]);
-end
+% close the FLAC file and try to read from it
 msndfile.blockread('close', 'test_files/test.flac');
+assertExceptionThrown(@() msndfile.blockread('read', 'test_files/test.flac', block_size), '');
 
-in_blockwise = zeros(ref_data.file_size);
+function test_read_only_blocksize(ref_data)
+% test passing only the block size instead of the full range
+
+block_size = ref_data.block_size;
+in_wav     = ref_data.in_wav;
+
+in_blockwise1 = zeros(ref_data.file_size);
+
 msndfile.blockread('open', 'test_files/test.wav');
+
 for kk = 1:block_size:ref_data.file_size(1)-block_size
-    in_blockwise(kk:kk+block_size-1, :) = msndfile.blockread('read', 'test_files/test.wav', [kk kk+block_size-1]);
+    in_blockwise1(kk:kk+block_size-1, :) = msndfile.blockread('read', 'test_files/test.wav', block_size);
 end
-in_blockwise(kk:end, :) = msndfile.blockread('read', 'test_files/test.wav', [kk ref_data.file_size(1)]);
+in_blockwise1(kk+block_size:end, :) = msndfile.blockread('read', 'test_files/test.wav', ref_data.file_size(1)-(kk+block_size)+1);
+
+assertEqual(in_blockwise1, in_wav);
+
 msndfile.blockread('close', 'test_files/test.wav');
 
-assertEqual(in_blockwise, in_wav);
-
-%
-%% Test 2: opening and closing files
-%
-
-function test_open_close(ref_data)
+function test_reopen(ref_data)
+% test opening and closing files with repeated reading
 
 block_size = ref_data.block_size;
 in_wav     = ref_data.in_wav;
@@ -107,8 +148,8 @@ msndfile.blockread('close', 'test_files/test.raw');
 
 assertExceptionThrown(@() msndfile.blockread('read', 'test_files/test.raw', [kk kk+block_size-1]), '');
 
-in_blockwise1 = zeros(ref_data.file_size);
-in_blockwise2 = zeros(ref_data.file_size);
+in_blockwise1(:) = 0;
+in_blockwise2(:) = 0;
 for kk = 1:block_size:ref_data.file_size(1)-block_size
     in_blockwise1(kk:kk+block_size-1, :) = msndfile.blockread('read', 'test_files/test.wav', [kk kk+block_size-1]);
     in_blockwise2(kk:kk+block_size-1, :) = msndfile.blockread('read', 'test_files/test.flac', [kk kk+block_size-1]);
@@ -124,25 +165,3 @@ msndfile.blockread('closeall');
 assertExceptionThrown(@() msndfile.blockread('read', 'test_files/test.wav', [kk kk+block_size-1]), '');
 assertExceptionThrown(@() msndfile.blockread('read', 'test_files/test.flac', [kk kk+block_size-1]), '');
 assertExceptionThrown(@() msndfile.blockread('read', 'test_files/test.raw', [kk kk+block_size-1]), '');
-
-%
-%% Test 3: passing only the block size instead of the full range
-%
-
-function test_only_blocksize(ref_data)
-
-block_size = ref_data.block_size;
-in_wav     = ref_data.in_wav;
-
-in_blockwise1 = zeros(ref_data.file_size);
-
-msndfile.blockread('open', 'test_files/test.wav');
-
-for kk = 1:block_size:ref_data.file_size(1)-block_size
-    in_blockwise1(kk:kk+block_size-1, :) = msndfile.blockread('read', 'test_files/test.wav', block_size);
-end
-in_blockwise1(kk+block_size:end, :) = msndfile.blockread('read', 'test_files/test.wav', ref_data.file_size(1)-(kk+block_size)+1);
-
-assertEqual(in_blockwise1, in_wav);
-
-msndfile.blockread('close', 'test_files/test.wav');
