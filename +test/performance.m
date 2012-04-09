@@ -54,6 +54,10 @@ legend(tl);
 
 % print figures
 if do_write_plots
+    if ~exist('./graphics', 'dir')
+        mkdir('.', 'graphics');
+    end
+
     fnames = {'perf_partial', ...
               'perf_msndread_whole', ...
               'perf_msndblockread_whole'};
