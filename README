@@ -45,8 +45,13 @@ The msndfile suite currently has the following features:
 Compatibility with `wavread`
 ----------------------------
 
-Msndfile may differ in behaviour a bit if a file is not a WAV file.  In these
-cases, the following differences to `wavread` hold:
+Due to the fact that msndfile can read file types other than WAV, it is
+currently necessary to pass the file name 'with' file type extension, so that
+unlike `wavread`, calls like `msndfile.read('some_file')` are not possible.  This
+is, however, considered a bug.
+
+Furthermore, msndfile may differ in behaviour a bit if a file is not a WAV file.  In
+these cases, the following differences to `wavread` hold:
 
 - The opts.fmt struct has no "wFormatTag" field if the file type is not a WAV
   file (which is completely logical).
