@@ -16,6 +16,17 @@ function test_no_args(~)
 
 assertExceptionThrown(@msndfile.read, '');
 
+function test_filename(~)
+% verify that file names without a suffix will have ".wav" appended and that an
+% appropriate errors are thrown
+
+assertExceptionThrown(@() msndfile.read('test_files/bla'), '');
+assertExceptionThrown(@() msndfile.read('test_files/bla.wav'), '');
+msndfile.read('test_files/test');
+msndfile.read('test_files/test.wav');
+msndfile.read('test_files/test.flac');
+
+
 function test_raw_empty_args(~)
 % verify that msndread raises an error when called with insufficient arguments
 

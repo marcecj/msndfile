@@ -27,6 +27,35 @@ int lookup_val(const FMT_TABLE *const array, const char *const name)
  * misc functions
  */
 
+/* function to get a valid file name; for wavread() compatibility, if the file
+ * name does not have a suffix, file_name+".wav" is attempted, and if that
+ * fails, NULL is returned */
+char* get_filename(char* fname)
+{
+    const size_t N = strlen(fname);
+    FILE* audio_file = NULL;
+
+    /* if the file name has a suffix, the file name is OK */
+    if( strrchr(fname, '.') != NULL )
+        return fname;
+
+    /*
+     * append ".wav" and check if such a file exists
+     */
+
+    fname = (char*)realloc(fname, (N+4)*sizeof(char));
+    fname = strcat(fname, ".wav");
+
+    audio_file = fopen(fname, "r");
+    if( audio_file == NULL ) {
+        free(fname); fname = NULL;
+    }
+    else
+        fclose(audio_file);
+
+    return fname;
+}
+
 /*
  * return a transposed version of "input" as "output"
  *

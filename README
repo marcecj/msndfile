@@ -46,9 +46,12 @@ Compatibility with `wavread`
 ----------------------------
 
 Due to the fact that msndfile can read file types other than WAV, it is
-currently necessary to pass the file name 'with' file type extension, so that
-unlike `wavread`, calls like `msndfile.read('some_file')` are not possible.  This
-is, however, considered a bug.
+sometimes necessary to pass the file name 'with' file type extension, so that
+calls like `msndfile.read('some_file')` are not possible _unless_ `some_file` is
+a WAV file.  I hope to be able to change this, so that in situations where you
+only have one file type (say you converted an entire WAV archive to FLAC and
+removed the WAVs), file names in the Matlab code do not have to be changed,
+but it is not a priority now.
 
 Furthermore, msndfile may differ in behaviour a bit if a file is not a WAV file.  In
 these cases, the following differences to `wavread` hold:

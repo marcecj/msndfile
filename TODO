@@ -1,16 +1,22 @@
 Before v1.0:
 -----------
 
-- find a way to support passing a WAV file without the file suffix (i.e.,
-  msndfile.read('some_file')). Ideas so far:
-  - find all files starting with 'some_file' and print an error if there is no
-    WAV file amongst them
 - find out what those Valgrind warnings for lines 202 and 205 in
   src/+msndfile/blockread.c are about
 
-General:
---------
+Before v1.1:
+------------
+
+- implement msndwrite
+
+Before v1.2:
+------------
+
+- implement msndblockwrite
+
+Misc:
+-----
 
 - maybe add support for "fmt" option to blockread
-- implement msndwrite
-- implement msndblockwrite
+- support leaving out the file extension for non-WAV files, i.e. when there is
+  only one file type in use, and print an error in ambiguous cases

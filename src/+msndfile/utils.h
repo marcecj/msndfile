@@ -26,6 +26,11 @@ int lookup_val(const FMT_TABLE *const array, const char *const name);
  * misc functions
  */
 
+/* function to get a valid file name; for wavread() compatibility, if the file
+ * name does not have a suffix, file_name+".wav" is attempted, and if that
+ * fails, NULL is returned */
+char* get_filename(char* fname);
+
 /*
  * return a transposed version of "input" as "output"
  *
