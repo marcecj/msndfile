@@ -26,6 +26,14 @@ msndfile.read('test_files/test');
 msndfile.read('test_files/test.wav');
 msndfile.read('test_files/test.flac');
 
+function test_read(ref_data)
+% verify that data is read correctly
+
+test_wav  = msndfile.read('test_files/test.wav');
+test_flac = msndfile.read('test_files/test.flac');
+
+assertEqual(test_wav, ref_data.in_wav);
+assertEqual(test_flac, ref_data.in_wav);
 
 function test_raw_empty_args(~)
 % verify that msndread raises an error when called with insufficient arguments
