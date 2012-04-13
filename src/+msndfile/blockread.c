@@ -114,7 +114,7 @@ void mexFunction(int nlhs, mxArray *plhs[],
         if( sf_input_file == NULL ) {
             free(sf_file_info);
             sf_file_info = NULL;
-            mexErrMsgTxt("Could not open audio file.");
+            mexErrMsgTxt(sf_strerror(sf_input_file));
         }
 
         file_info = create_file_info(sf_in_fname, sf_file_info, sf_input_file);

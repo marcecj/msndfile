@@ -99,9 +99,8 @@ void mexFunction(int nlhs, mxArray *plhs[],
     sf_input_file = sf_open(sf_in_fname, SFM_READ, &sf_file_info);
     free(sf_in_fname);
 
-    if( sf_input_file == NULL ) {
-        mexErrMsgTxt("Could not open audio file.");
-    }
+    if( sf_input_file == NULL )
+        mexErrMsgTxt(sf_strerror(sf_input_file));
 
     /*
      * If the second argument is 'size', then only return the dimensions of the
