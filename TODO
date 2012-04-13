@@ -20,3 +20,6 @@ Misc:
 - maybe add support for "fmt" option to blockread
 - support leaving out the file extension for non-WAV files, i.e. when there is
   only one file type in use, and print an error in ambiguous cases
+- improve error handling and messages (e.g., prefix libsndfile errors with "libsndfile: ")
+    - maybe support internationalization? might be difficult to port, though
+    - return error codes and handle all errors in the main functions?
