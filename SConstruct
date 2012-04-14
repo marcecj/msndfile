@@ -27,10 +27,9 @@ AddOption('--force-mingw',
           help='Force the use of mingw on Windows platforms.'
          )
 
-do_force_mingw = GetOption('forcemingw')
 
 # the Matlab tool automatically sets various environment variables
-if os.name == 'nt' and do_force_mingw:
+if os.name == 'nt' and GetOption('forcemingw'):
     env = Environment(tools = ['mingw', 'filesystem', 'zip', 'packaging', 'matlab'],
                       variables = env_vars)
 else:
@@ -118,7 +117,7 @@ msndfile_dbg = env.SConscript(dirs='src',
                               exports     = "env",
                               duplicate   = False)
 
-if cur_platform == 'win32' and not do_force_mingw:
+if cur_platform == 'win32' and 'msvs' in env['TOOLS']:
     msndfile_vs = env.MSVSProject(
         target      = "msndfile" + env['MSVSPROJECTSUFFIX'],
         buildtarget = ["msndfile", "msndfile-dbg"],
