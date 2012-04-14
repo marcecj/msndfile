@@ -100,7 +100,7 @@ if not (GetOption('clean') or GetOption('help')):
 
     # we use the types defined in stdint.h, which not all versions of Visual
     # Studio have
-    if not conf.CheckHeader('stdint.h', language='c'):
+    if not conf.CheckCHeader('stdint.h'):
         exit("You need the stdint header!")
 
     env = conf.Finish()
