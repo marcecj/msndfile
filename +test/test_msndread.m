@@ -16,15 +16,16 @@ function test_no_args(~)
 
 assertExceptionThrown(@msndfile.read, '');
 
-function test_filename(~)
+function test_filename(ref_data)
 % verify that file names without a suffix will have ".wav" appended and that an
 % appropriate errors are thrown
 
 assertExceptionThrown(@() msndfile.read('test_files/bla'), '');
 assertExceptionThrown(@() msndfile.read('test_files/bla.wav'), '');
-msndfile.read('test_files/test');
-msndfile.read('test_files/test.wav');
-msndfile.read('test_files/test.flac');
+msndfile.read('test_files/test'); % should default to test.wav file
+msndfile.read('test_files/only_wav/test');
+msndfile.read('test_files/only_raw/test', [], [], ref_data.file_info);
+msndfile.read('test_files/only_flac/test');
 
 function test_read(ref_data)
 % verify that data is read correctly

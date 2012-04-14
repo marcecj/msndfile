@@ -45,13 +45,25 @@ The msndfile suite currently has the following features:
 Compatibility with `wavread`
 ----------------------------
 
-Due to the fact that msndfile can read file types other than WAV, it is
-sometimes necessary to pass the file name 'with' file type extension, so that
-calls like `msndfile.read('some_file')` are not possible _unless_ `some_file` is
-a WAV file.  I hope to be able to change this, so that in situations where you
-only have one file type (say you converted an entire WAV archive to FLAC and
-removed the WAVs), file names in the Matlab code do not have to be changed,
-but it is not a priority now.
+While `msndfile` supports reading files without the file type extension, i.e.
+
+---------------------------
+>> msndfile.read('some_file');
+---------------------------
+
+works, it only works if the following conditions are met:
+
+- There may be no ambiguity with regards to which file is meant, unless one of
+  the files with the same basename is a WAV file.  For example: if you try to
+  read `some_file` and there are two files, `some_file.aiff` and `some_file.flac`,
+  msndfile will abort with an error.  However, if there is also a file
+  `some_file.wav`, msndfile will read that.
+- The format must be what the libsndfile documentation refers to as "simple".
+  These "simple formats" are: AIF{F,C}, AU, CAF, FLAC, VOX, Ogg and WAV.
+  Additionaly, RAW files are supported, even though RAW is not a "simple format".
+
+For other, more "exotic" file types, it is therefor necessary to provide the
+file type extension.
 
 Furthermore, msndfile may differ in behaviour a bit if a file is not a WAV file.  In
 these cases, the following differences to `wavread` hold:
