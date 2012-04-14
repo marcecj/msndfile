@@ -1,4 +1,8 @@
+#ifndef NOT_HAVE_STDINT_H
 #include <stdint.h>
+#else
+#include "stdint_compat.h"
+#endif
 #include <string.h>
 #include <mex.h>
 #include <sndfile.h>

@@ -104,7 +104,7 @@ else:
     exit("Oops, not a supported platform.")
 
 #
-# platform independent environment configuration
+# check the system for required features
 #
 
 if not (GetOption('clean') or GetOption('help')):
@@ -117,7 +117,11 @@ if not (GetOption('clean') or GetOption('help')):
     # msndfile uses the types defined in stdint.h, which not all versions of
     # Visual Studio have
     if not conf.CheckCHeader('stdint.h'):
-        exit("You need the stdint.h header!")
+        if cur_platform == 'win32':
+            # use a compat header on Windows for older Visual Compilers
+            env.Append(CPPDEFINES="NOT_HAVE_STDINT_H")
+        else:
+            exit("You need the stdint.h header!")
 
     env = conf.Finish()
 
