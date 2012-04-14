@@ -1,9 +1,9 @@
 # vim:ft=python
 import os
 
-Import("env", "do_debug")
+Import("env")
 
-if do_debug:
+if env['do_debug']:
     env = env.Clone()
 
     if env['PLATFORM'] == "win32" and 'mingw' not in env['TOOLS']:
@@ -11,14 +11,12 @@ if do_debug:
     else:
         env.MergeFlags("-g -O0")
 
-pkg_dir = "+msndfile"
-
-utils_obj     = env.SharedObject("utils.c", srcdir=pkg_dir)
-msndread      = env.Mex(["read.c", "read_utils.c", utils_obj], srcdir=pkg_dir)
+utils_obj     = env.SharedObject("utils.c", srcdir=env['pkg_dir'])
+msndread      = env.Mex(["read.c", "read_utils.c", utils_obj], srcdir=env['pkg_dir'])
 msndblockread = env.Mex(["blockread.c", "audio_files.c", utils_obj],
-                        srcdir=pkg_dir)
+                        srcdir=env['pkg_dir'])
 
-mfiles = env.Glob(pkg_dir + os.sep + '*.m', source=False)
+mfiles = env.Glob(env['pkg_dir'] + os.sep + '*.m', source=False)
 target = msndread + msndblockread
 
 Return("target", "mfiles")

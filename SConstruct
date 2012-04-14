@@ -43,6 +43,9 @@ asciidoc = env.Builder(action = ['asciidoc -o ${TARGET} ${SOURCE}'],
                        single_source = True)
 env['BUILDERS']['AsciiDoc'] = asciidoc
 
+# The matlab package directory
+env['pkg_dir'] = "+msndfile"
+
 cur_platform = env['PLATFORM']
 
 # OS dependent stuff, we assume a GCC-compatible compiler on Unix like platforms
@@ -103,16 +106,16 @@ if not (GetOption('clean') or GetOption('help')):
 
     env = conf.Finish()
 
-do_debug = False
+env['do_debug'] = False
 msndfile, mfiles = env.SConscript(dirs='src',
                           variant_dir = "build",
-                          exports     = ["env", "do_debug"],
+                          exports     = "env",
                           duplicate   = False)
 
-do_debug = True
+env['do_debug'] = True
 msndfile_dbg = env.SConscript(dirs='src',
                               variant_dir = "debug",
-                              exports     = ["env", "do_debug"],
+                              exports     = "env",
                               duplicate   = False)
 
 if cur_platform == 'win32' and not do_force_mingw:
@@ -138,7 +141,7 @@ if cur_platform == 'win32':
     pkg_src.append(env.File('Win' + os.sep +
                         env['SHLIBPREFIX'] + sndfile_lib + env['SHLIBSUFFIX']))
 
-msndfile_inst = env.Install(os.sep.join([env['DESTDIR'], "+msndfile"]),
+msndfile_inst = env.Install(os.sep.join([env['DESTDIR'], env['pkg_dir']]),
                             pkg_src)
 sndfile_pkg = env.Package(
     NAME        = "msndfile",
