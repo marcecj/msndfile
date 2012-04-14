@@ -101,7 +101,7 @@ if not (GetOption('clean') or GetOption('help')):
     # we use the types defined in stdint.h, which not all versions of Visual
     # Studio have
     if not conf.CheckCHeader('stdint.h'):
-        exit("You need the stdint header!")
+        exit("You need the stdint.h header!")
 
     env = conf.Finish()
 
@@ -174,6 +174,7 @@ The following options may be set:
     --force-mingw   ->  Force the use of mingw (Windows only).
 
 The following environment variables can be overridden by passing them *after*
-the call to scons, i.e. "scons CC=gcc":"""
+the call to scons, e.g., "scons CC=gcc":
+"""
 + env_vars.GenerateHelpText(env)
 )
