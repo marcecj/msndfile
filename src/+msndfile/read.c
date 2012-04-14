@@ -16,7 +16,7 @@ static SNDFILE* sf_input_file=NULL;
 /* function for clearing memory after Matlab ends */
 void clear_memory(void)
 {
-    if( sf_input_file != NULL )
+    if( sf_input_file )
         sf_close(sf_input_file);
 }
 
@@ -37,7 +37,7 @@ void mexFunction(int nlhs, mxArray *plhs[],
 
     /* If a file was not closed properly last run, attempt to close it
      * again.  If it still fails, abort. */
-    if( sf_input_file != NULL ) {
+    if( sf_input_file ) {
         if( !sf_close(sf_input_file) )
             sf_input_file = NULL;
         else
@@ -49,14 +49,14 @@ void mexFunction(int nlhs, mxArray *plhs[],
 
     /* get input filename */
     sf_in_fname = (char*)calloc(str_size, sizeof(char));
-    if( sf_in_fname == NULL ) {
+    if( !sf_in_fname ) {
         free(sf_in_fname);
         mexErrMsgTxt("calloc error!");
     }
     mxGetString(prhs[0], sf_in_fname, str_size);
 
     sf_in_fname = gen_filename(sf_in_fname);
-    if( sf_in_fname == NULL )
+    if( !sf_in_fname )
         mexErrMsgTxt("No file extension specified and no WAV file found.");
 
     /* "format" needs to be set to 0 before a file is opened for reading,
@@ -99,7 +99,7 @@ void mexFunction(int nlhs, mxArray *plhs[],
     sf_input_file = sf_open(sf_in_fname, SFM_READ, &sf_file_info);
     free(sf_in_fname);
 
-    if( sf_input_file == NULL )
+    if( !sf_input_file )
         mexErrMsgTxt(sf_strerror(sf_input_file));
 
     /*
@@ -113,7 +113,7 @@ void mexFunction(int nlhs, mxArray *plhs[],
         const short cmd_size = mxGetN(prhs[1])+1;
 
         char *cmd_str = (char*)malloc(cmd_size*sizeof(char));
-        if( cmd_str == NULL )
+        if( !cmd_str )
             mexErrMsgTxt("malloc error!");
 
         if( mxGetString(prhs[1], cmd_str, cmd_size) == 1 ) {
@@ -233,7 +233,7 @@ return_to_matlab:
         get_opts(&sf_file_info, sf_input_file, plhs[3]);
     }
 
-    if( sf_input_file != NULL ) {
+    if( sf_input_file ) {
         if( !sf_close(sf_input_file) )
             /* sf_close() doesn't set the pointer to NULL, and Matlab doesn't
              * like that (it prints "too many files open" errors), even though

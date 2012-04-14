@@ -117,7 +117,7 @@ void get_opts(SF_INFO* sf_file_info, SNDFILE* sf_input_file, mxArray* opts)
     {
         const char* info_data = sf_get_string(sf_input_file, i);
 
-        if (info_data != NULL)
+        if (info_data)
         {
             const int j = sf_str_to_index(i);
 

@@ -42,7 +42,7 @@ void mexFunction(int nlhs, mxArray *plhs[],
         mexErrMsgTxt("Argument error: command may not be empty.");
 
     cmd_str = (char*)malloc(cmd_size*sizeof(char));
-    if( cmd_str == NULL )
+    if( !cmd_str )
         mexErrMsgTxt("malloc error!");
 
     if( mxGetString(prhs[0], cmd_str, cmd_size) == 1 ) {
@@ -67,7 +67,7 @@ void mexFunction(int nlhs, mxArray *plhs[],
     {
         /* get input filename */
         sf_in_fname = (char*)calloc(str_size, sizeof(char));
-        if( sf_in_fname == NULL )
+        if( !sf_in_fname )
             mexErrMsgTxt("calloc error!");
 
         mxGetString(prhs[1], sf_in_fname, str_size);
@@ -81,14 +81,14 @@ void mexFunction(int nlhs, mxArray *plhs[],
         SNDFILE* sf_input_file     = NULL;
         SF_INFO* sf_file_info      = NULL;
 
-        if( lookup_file_info(file_list, sf_in_fname) != NULL ) {
+        if( lookup_file_info(file_list, sf_in_fname) ) {
             free(sf_in_fname);
             mexErrMsgTxt("File already open!");
         }
 
         /* initialize sf_file_info struct pointer */
         sf_file_info = (SF_INFO*)malloc(sizeof(SF_INFO));
-        if( sf_file_info == NULL ) {
+        if( !sf_file_info ) {
             free(sf_in_fname);
             mexErrMsgTxt("Could not allocate SF_INFO* instance");
         }
@@ -111,7 +111,7 @@ void mexFunction(int nlhs, mxArray *plhs[],
 
         sf_input_file = sf_open(sf_in_fname, SFM_READ, sf_file_info);
 
-        if( sf_input_file == NULL ) {
+        if( !sf_input_file ) {
             free(sf_file_info);
             sf_file_info = NULL;
             mexErrMsgTxt(sf_strerror(sf_input_file));
@@ -144,7 +144,7 @@ void mexFunction(int nlhs, mxArray *plhs[],
          */
         file_info = lookup_file_info(file_list, sf_in_fname);
 
-        if( file_info == NULL )
+        if( !file_info )
             mexErrMsgTxt("File not open!");
 
         if( nrhs < 3 )
