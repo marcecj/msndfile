@@ -15,11 +15,16 @@ the following build targets:
 """
 )
 
+#
+# environment variables and options
+#
+
 # modifiable environment variables
 env_vars = Variables()
 env_vars.Add('CC', 'The C compiler')
 env_vars.Add('DESTDIR', 'The install destination', os.curdir)
 
+# force mingw on Windows
 AddOption('--force-mingw',
           dest='forcemingw',
           default=False,
@@ -27,6 +32,9 @@ AddOption('--force-mingw',
           help='Force the use of mingw on Windows platforms.'
          )
 
+#
+# set the environment and extra builders
+#
 
 # the Matlab tool automatically sets various environment variables
 if os.name == 'nt' and GetOption('forcemingw'):
@@ -36,7 +44,7 @@ else:
     env = Environment(tools = ['default', 'packaging', 'matlab'],
                       variables = env_vars)
 
-# define an AsciiDoc builder
+# define a simple AsciiDoc builder
 asciidoc = env.Builder(action = ['asciidoc -o ${TARGET} ${SOURCE}'],
                        suffix = '.html',
                        single_source = True)
@@ -45,9 +53,13 @@ env['BUILDERS']['AsciiDoc'] = asciidoc
 # The matlab package directory
 env['pkg_dir'] = "+msndfile"
 
+#
+# platform dependent environment configuration
+#
+
 cur_platform = env['PLATFORM']
 
-# OS dependent stuff, we assume a GCC-compatible compiler on Unix like platforms
+# assume a GCC-compatible compiler on Unix like platforms
 if cur_platform in ("posix", "darwin"):
 
     env.Append(CCFLAGS   = "-DNDEBUG -ansi -O2 -pedantic -Wall -Wextra",
@@ -91,19 +103,30 @@ else:
 
     exit("Oops, not a supported platform.")
 
+#
+# platform independent environment configuration
+#
+
 if not (GetOption('clean') or GetOption('help')):
     conf = env.Configure()
 
-    # look for libsndfile plus header and exit if either one isn't found
+    # look for libsndfile plus header and exit if neither is found
     if not conf.CheckLibWithHeader(sndfile_lib, 'sndfile.h', 'c'):
         exit("You need to install libsndfile(-dev)!")
 
-    # we use the types defined in stdint.h, which not all versions of Visual
-    # Studio have
+    # msndfile uses the types defined in stdint.h, which not all versions of
+    # Visual Studio have
     if not conf.CheckCHeader('stdint.h'):
         exit("You need the stdint.h header!")
 
     env = conf.Finish()
+
+#
+# compilation targets
+#
+# These are: msndfile, a debug variant, the corresponding m-Files, and a visual
+# studio project (if the current platform is Windows and MinGW is not used).
+#
 
 env['do_debug'] = False
 msndfile, mfiles = env.SConscript(dirs='src',
@@ -132,7 +155,9 @@ if cur_platform == 'win32' and 'msvs' in env['TOOLS']:
 
     Help("    vsproj       -> create a visual studio project file")
 
+#
 # package the software
+#
 
 # define the package sources and corresponding install targets
 pkg_src = msndfile + mfiles
@@ -148,13 +173,15 @@ sndfile_pkg = env.Package(
     PACKAGETYPE = "zip"
 )
 
+#
+# miscellanea
+#
+
 # create an alias for building the documentation, but only if the asciidoc
 # binary could be found
 if env.WhereIs('asciidoc') is not None:
     docs = env.AsciiDoc(['README', 'INSTALL', 'LICENSE'])
-
     Alias('doc', docs)
-
     Help("    doc          -> compiles documentation to HTML")
 else:
     print "asciidoc not found! Cannot build documentation."
@@ -166,6 +193,7 @@ Alias("msndfile", msndfile)
 Alias("msndfile-dbg", msndfile_dbg)
 Alias("all", msndfile + sndfile_pkg)
 
+# set the default target
 Default(msndfile)
 
 Help(
