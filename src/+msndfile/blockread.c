@@ -151,21 +151,7 @@ void mexFunction(int nlhs, mxArray *plhs[],
             mexErrMsgTxt("Missing argument: no range specified!");
 
         if( !mxIsEmpty(prhs[2]) && mxIsDouble(prhs[2]))
-        {
-            const double *start_end_idx = mxGetPr(prhs[2]);
-            const int    range_size     = mxGetN(prhs[2]);
-
-            if( range_size == 2 ) {
-                num_frames = (sf_count_t)(start_end_idx[1] - start_end_idx[0] + 1);
-
-                if( sf_seek(file_info->file, start_end_idx[0]-1, SEEK_SET) < 0 )
-                    mexErrMsgTxt("Invalid range!");
-            }
-            else if( range_size == 1 )
-                num_frames = (sf_count_t)(start_end_idx[0]);
-            else
-                mexErrMsgTxt("Range can be a row vector with 1 or 2 elements.");
-        }
+            num_frames = get_num_frames(file_info->info, file_info->file, prhs[2]);
         else
             num_frames = file_info->info->frames;
 

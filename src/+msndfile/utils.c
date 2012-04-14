@@ -296,6 +296,31 @@ void get_file_info(SF_INFO* sf_file_info, char* sf_in_fname, const mxArray *cons
     }
 }
 
+/* get the number of frames to be read and check for valid ranges */
+int get_num_frames(const SF_INFO* const sf_file_info, SNDFILE* sf_input_file, const mxArray *const arg)
+{
+    const double *start_end_idx = mxGetPr(arg);
+    const int    range_size     = mxGetN(arg);
+    int          num_frames     = 0;
+
+    if( range_size == 2 ) {
+        num_frames = (sf_count_t)(start_end_idx[1] - start_end_idx[0] + 1);
+
+        if( sf_seek(sf_input_file, start_end_idx[0]-1, SEEK_SET) < 0
+                || start_end_idx[1] > sf_file_info->frames )
+            mexErrMsgTxt("Invalid range!");
+    }
+    else if( range_size == 1 ) {
+        num_frames = (sf_count_t)(start_end_idx[0]);
+        if( num_frames > sf_file_info->frames )
+            mexErrMsgTxt("num_frames too large!");
+    }
+    else
+        mexErrMsgTxt("Range can be a row vector with 1 or 2 elements.");
+
+    return num_frames;
+}
+
 /* check the fmt argument and return true or false */
 int get_fmt(const char* const args)
 {

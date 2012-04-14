@@ -99,6 +99,25 @@ assertExceptionThrown(@() msndfile.blockread('read', 'test_files/test.wav', bloc
 msndfile.blockread('close', 'test_files/test.flac');
 assertExceptionThrown(@() msndfile.blockread('read', 'test_files/test.flac', block_size), '');
 
+% test if invalid ranges throw an error
+msndfile.blockread('open', 'test_files/test.wav');
+msndfile.blockread('read', 'test_files/test.wav', [1 ref_data.file_size(1)]);
+assertExceptionThrown(@() msndfile.blockread('read', 'test_files/test.wav', [0 ref_data.file_size(1)]), '');
+assertExceptionThrown(@() msndfile.blockread('read', 'test_files/test.wav', [-1 ref_data.file_size(1)]), '');
+assertExceptionThrown(@() msndfile.blockread('read', 'test_files/test.wav', [1 ref_data.file_size(1)+1]), '');
+assertExceptionThrown(@() msndfile.blockread('read', 'test_files/test.wav', [1 ref_data.file_size(1)+1]), '');
+
+% close and reopen to guarantee that the file is at position 1
+msndfile.blockread('close', 'test_files/test.wav');
+msndfile.blockread('open', 'test_files/test.wav');
+msndfile.blockread('read', 'test_files/test.wav', ref_data.file_size(1));
+
+assertExceptionThrown(@() msndfile.blockread('read', 'test_files/test.wav', -1), 'MATLAB:nomem');
+assertExceptionThrown(@() msndfile.blockread('read', 'test_files/test.wav', 0), '');
+msndfile.blockread('close', 'test_files/test.wav');
+msndfile.blockread('open', 'test_files/test.wav');
+assertExceptionThrown(@() msndfile.blockread('read', 'test_files/test.wav', ref_data.file_size(1)+1), '');
+
 function test_read_only_blocksize(ref_data)
 % test passing only the block size instead of the full range
 

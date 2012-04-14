@@ -11,6 +11,8 @@ ref_data.file_info.channels     = 2;
 ref_data.file_info.format       = 'RAW';
 ref_data.file_info.sampleformat = 'PCM_16';
 
+ref_data.file_size = wavread('test_files/test.wav', 'size');
+
 function test_no_args(~)
 % verify that msndread raises an error when called without input arguments
 
@@ -83,19 +85,27 @@ end
 assertEqual(in_blockwise, ref_data.in_wav(1:num_samples,:));
 assertEqual(in_raw_blockwise, ref_data.in_wav(1:num_samples,:));
 
+% test if invalid ranges throw an error
+msndfile.read('test_files/test.wav', [1 ref_data.file_size(1)]);
+assertExceptionThrown(@() msndfile.read('test_files/test.wav', [0 ref_data.file_size(1)]), '');
+assertExceptionThrown(@() msndfile.read('test_files/test.wav', [-1 ref_data.file_size(1)]), '');
+assertExceptionThrown(@() msndfile.read('test_files/test.wav', [1 ref_data.file_size(1)+1]), '');
+msndfile.read('test_files/test.wav', ref_data.file_size(1));
+assertExceptionThrown(@() msndfile.read('test_files/test.wav', -1), 'MATLAB:nomem');
+assertExceptionThrown(@() msndfile.read('test_files/test.wav', 0), '');
+assertExceptionThrown(@() msndfile.read('test_files/test.wav', ref_data.file_size(1)+1), '');
+
 function test_input_size(ref_data)
 % test 'size' input argument
 
-file_size_ref = wavread('test_files/test.wav', 'size');
-
 file_size = msndfile.read('test_files/test.wav', 'size');
-assertEqual(file_size_ref, file_size);
+assertEqual(ref_data.file_size, file_size);
 
 file_size = msndfile.read('test_files/test.raw', 'size', [], ref_data.file_info);
-assertEqual(file_size_ref, file_size);
+assertEqual(ref_data.file_size, file_size);
 
 file_size = msndfile.read('test_files/test.flac', 'size');
-assertEqual(file_size_ref, file_size);
+assertEqual(ref_data.file_size, file_size);
 
 function test_input_fmt(ref_data)
 % test fmt input argument

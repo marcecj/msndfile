@@ -54,6 +54,9 @@ void transpose_data(void* output, void* input, int num_frames, int num_chns, mxC
  * SF_INFO struct */
 void get_file_info(SF_INFO* sf_file_info, char* sf_in_fname, const mxArray *const  args);
 
+/* get the number of frames to be read and check for valid ranges */
+int get_num_frames(const SF_INFO* const sf_file_info, SNDFILE* sf_input_file, const mxArray *const arg);
+
 /* check the fmt argument and return true or false */
 int get_fmt(const char* const args);
 

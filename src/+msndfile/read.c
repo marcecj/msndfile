@@ -146,21 +146,7 @@ void mexFunction(int nlhs, mxArray *plhs[],
     if( nrhs > 1
             && !mxIsEmpty(prhs[1])
             && mxIsDouble(prhs[1]))
-    {
-        double *start_end_idx = mxGetPr(prhs[1]);
-        int    range_size     = mxGetN(prhs[1]);
-
-        if( range_size == 2 ) {
-            num_frames = (sf_count_t)(start_end_idx[1] - start_end_idx[0] + 1);
-
-            if( sf_seek(sf_input_file, start_end_idx[0]-1, SEEK_SET) < 0 )
-                mexErrMsgTxt("Invalid range!");
-        }
-        else if( range_size == 1 )
-            num_frames = (sf_count_t)(start_end_idx[0]);
-        else
-            mexErrMsgTxt("Range can be a row vector with 1 or 2 elements.");
-    }
+        num_frames = get_num_frames(&sf_file_info, sf_input_file, prhs[1]);
     else
         num_frames = sf_file_info.frames;
 
