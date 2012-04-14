@@ -149,8 +149,8 @@ if cur_platform == 'win32' and 'msvs' in env['TOOLS']:
         target      = "msndfile" + env['MSVSPROJECTSUFFIX'],
         buildtarget = ["msndfile", "msndfile-dbg"],
         runfile     = os.sep.join([env['MATLAB']['ROOT'], "bin", "matlab.exe"]),
-        srcs        = Glob(os.sep.join(["src", "*.c"]), strings=True),
-        localincs   = Glob(os.sep.join(["src", "*.h"]), strings=True),
+        srcs        = Glob(os.sep.join(["src", env['pkg_dir'], "*.c"]), strings=True),
+        localincs   = Glob(os.sep.join(["src", env['pkg_dir'], "*.h"]), strings=True),
         incs        = os.sep.join(["Win", "sndfile.h"]),
         variant     = ["Release", "Debug"]
     )
