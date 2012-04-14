@@ -28,46 +28,49 @@ int lookup_val(const FMT_TABLE *const array, const char *const name)
  */
 
 /* returns the number of simple formats + RAW */
-int get_num_formats()
+unsigned int get_num_formats()
 {
-    int format_count;
+    int num_formats;
 
-    sf_command(0, SFC_GET_SIMPLE_FORMAT_COUNT, &format_count, sizeof(int));
+    sf_command(0, SFC_GET_SIMPLE_FORMAT_COUNT, &num_formats, sizeof(int));
 
-    /* SFC_GET_SIMPLE_FORMAT returns the highest valid format ID, so increment
-     * by 1 to get a standard C count; furthermore, .raw is missing */
-    return format_count+2;
+    /* SFC_GET_SIMPLE_FORMAT returns the highest valid format ID (i.e., 0 <=
+     * format <= ID) , so increment by 1 to get a standard C count (0 <= format
+     * < ID); furthermore, RAW is missing, as it is not a simple format, but we
+     * handle it anyway, so another +1 */
+    return num_formats+2;
 }
 
 /* returns a list of file extensions to simple formats + RAW */
 char** get_format_extensions()
 {
     int i;
-    const int format_count = get_num_formats();
-    char** file_exts = (char**)calloc(format_count, sizeof(char*));
+    const int num_formats = get_num_formats();
+    char** file_exts = (char**)malloc(num_formats*sizeof(char*));
     SF_FORMAT_INFO format_info;
 
-    for( i = 0; i < format_count-1; i++ ) {
+    /* handle the libsndfile simple formats */
+    for( i = 0; i < num_formats-1; i++ ) {
         format_info.format = i;
 
         sf_command(0, SFC_GET_SIMPLE_FORMAT, &format_info, sizeof(SF_FORMAT_INFO));
 
-        file_exts[i] = (char*)calloc(strlen(format_info.extension)+1, sizeof(char));
+        file_exts[i] = (char*)malloc((strlen(format_info.extension)+1)*sizeof(char));
         file_exts[i] = strcpy(file_exts[i], format_info.extension);
     }
 
-    /* for some reason, .raw is not returned */
-    file_exts[format_count-1] = (char*)calloc(4, sizeof(char));
-    file_exts[format_count-1] = strcpy(file_exts[i], "raw");
+    /* RAW is not a simple format, but we want to handle it */
+    file_exts[num_formats-1] = (char*)malloc(4*sizeof(char));
+    file_exts[num_formats-1] = strcpy(file_exts[i], "raw");
 
     return file_exts;
 }
 
 /* helper function for gen_filename(): return whether a file extension was
  * already checked */
-int ext_already_checked(char** extensions, const char* ext, int num_ext)
+unsigned int ext_already_checked(char** extensions, const char* ext, const unsigned int num_ext)
 {
-    int i;
+    size_t i;
     for( i = 0; i < num_ext; i++ )
         if( strcmp(extensions[i], ext) == 0 )
             return 1;
@@ -80,52 +83,65 @@ int ext_already_checked(char** extensions, const char* ext, int num_ext)
  * fails, NULL is returned */
 char* gen_filename(char* fname)
 {
-    const size_t N = strlen(fname);
-    FILE* audio_file = NULL;
+    const size_t N           = strlen(fname);
     const size_t num_formats = get_num_formats();
-    size_t num_read_exts = 0;
-    int num_files = 0; /* file name ambiguity if num_files>1 */
+    char** file_exts         = NULL;
+    char** read_exts         = NULL;
+    char* tmp_fname          = NULL;
+    FILE* audio_file         = NULL;
+    size_t num_read_exts     = 0;
+    size_t num_files         = 0; /* file name ambiguity if num_files>1 */
     size_t i;
-    char** file_exts = get_format_extensions();
-    char** read_exts = NULL;
-    char* tmp_fname = NULL;
 
     /* if the file name has a suffix, the file name is OK */
-    if( strrchr(fname, '.') != NULL )
+    if( strrchr(fname, '.') )
         goto get_filename_cleanup;
 
     /*
-     * append ".wav" and check if such a file exists
+     * For each file type extension, append it to the original file name and
+     * check if such a file exists.  In the case of multiple candidates, default
+     * to WAV.  If no WAV file exists, return NULL.
      */
+
+    file_exts = get_format_extensions();
 
     for( i = 0; i < num_formats; i++ ) {
         const char* cur_ext  = file_exts[i];
         const size_t ext_len = strlen(cur_ext)+1; /* '.' + extension */
         const size_t new_len = N+ext_len+1;
 
-        if( ext_already_checked(read_exts, cur_ext, num_read_exts) ) {
+        /* get_format_extensions() returns duplicate entries, so check here if
+         * the extension has already been tried; if not, append the current
+         * extension to the list of checked extensions */
+        if( ext_already_checked(read_exts, cur_ext, num_read_exts) )
             continue;
-        } else {
+        else {
             read_exts = (char**)realloc(read_exts, (num_read_exts+1)*sizeof(char*));
             read_exts[num_read_exts] = (char*)malloc(ext_len*sizeof(char));
-            read_exts[num_read_exts] = (char*)memcpy(read_exts[num_read_exts], cur_ext, ext_len);
+            read_exts[num_read_exts] = strcpy(read_exts[num_read_exts], cur_ext);
             num_read_exts++;
         }
 
-        tmp_fname = (char*)calloc(N+ext_len+1, sizeof(char));
+        tmp_fname = (char*)calloc(new_len, sizeof(char));
+
+        /* copy the original N chars from fname into tmp_fname */
         tmp_fname = strncpy(tmp_fname, fname, N);
+
+        /* append the file type extension */
         tmp_fname = strcat(tmp_fname, ".");
         tmp_fname = strcat(tmp_fname, cur_ext);
 
+        /* try to open the file; overwrite the original file name if successful,
+         * continue otherwise */
         audio_file = fopen(tmp_fname, "r");
-        if( audio_file == NULL ) {
+        if( !audio_file ) {
             free(tmp_fname);
             continue;
         } else {
             fclose(audio_file);
             num_files++;
             fname = (char*)realloc(fname, new_len*sizeof(char));
-            fname = memcpy(fname, tmp_fname, new_len);
+            fname = strcpy(fname, tmp_fname);
         }
 
         free(tmp_fname);
@@ -135,13 +151,17 @@ char* gen_filename(char* fname)
     }
 
 get_filename_cleanup:
-    for( i = 0; i < num_read_exts; i++ )
-        free(read_exts[i]);
-    free(read_exts);
+    if( read_exts ) {
+        for( i = 0; i < num_read_exts; i++ )
+            free(read_exts[i]);
+        free(read_exts);
+    }
 
-    for( i = 0; i < num_formats; i++ )
-        free(file_exts[i]);
-    free(file_exts);
+    if( file_exts ) {
+        for( i = 0; i < num_formats; i++ )
+            free(file_exts[i]);
+        free(file_exts);
+    }
 
     return fname;
 }

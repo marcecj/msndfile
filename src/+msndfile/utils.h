@@ -27,14 +27,14 @@ int lookup_val(const FMT_TABLE *const array, const char *const name);
  */
 
 /* returns the number of simple formats + RAW */
-int get_num_formats();
+unsigned int get_num_formats();
 
 /* returns a list of file extensions to simple formats + RAW */
 char** get_format_extensions();
 
 /* helper function for gen_filename(): return whether a file extension was
  * already checked */
-int ext_already_checked(char** extensions, const char* ext, int num_ext);
+unsigned int ext_already_checked(char** extensions, const char* ext, const unsigned int num_ext);
 
 /* function to get a valid file name; for wavread() compatibility, if the file
  * name does not have a suffix, file_name+".wav" is attempted, and if that
