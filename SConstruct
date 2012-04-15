@@ -15,16 +15,13 @@ the following build targets:
 """
 )
 
-#
-# environment variables and options
-#
+## environment variables and options
 
 # modifiable environment variables
 env_vars = Variables()
 env_vars.Add('CC', 'The C compiler')
 env_vars.Add('DESTDIR', 'The install destination', os.curdir)
 
-# force mingw on Windows
 AddOption('--force-mingw',
           dest='forcemingw',
           default=False,
@@ -32,9 +29,7 @@ AddOption('--force-mingw',
           help='Force the use of mingw on Windows platforms.'
          )
 
-#
-# set the environment and extra builders
-#
+## set the environment and extra builders
 
 # the Matlab tool automatically sets various environment variables
 if os.name == 'nt' and GetOption('forcemingw'):
@@ -53,19 +48,15 @@ env['BUILDERS']['AsciiDoc'] = asciidoc
 # The matlab package directory
 env['pkg_dir'] = "+msndfile"
 
-#
-# platform dependent environment configuration
-#
-
-cur_platform = env['PLATFORM']
+## platform dependent environment configuration
 
 # assume a GCC-compatible compiler on Unix like platforms
-if cur_platform in ("posix", "darwin"):
+if env['PLATFORM'] in ("posix", "darwin"):
 
     env.Append(CCFLAGS   = "-DNDEBUG -ansi -O2 -pedantic -Wall -Wextra",
                LINKFLAGS = "-Wl,-O1 -Wl,--no-copy-dt-needed-entries -Wl,--as-needed")
 
-    # Activate optimizations in GCC 4.5
+    # activate optimizations in GCC 4.5
     if env['CC'] == 'gcc' and env['CCVERSION'] >= '4.5':
         env.Append(CCFLAGS=[
             "-ftree-vectorize",
@@ -89,7 +80,7 @@ if cur_platform in ("posix", "darwin"):
 
     sndfile_lib = "sndfile"
 
-elif cur_platform == "win32":
+elif env['PLATFORM'] == "win32":
 
     # enforce searching in the top-level Win directory
     win_path = os.sep.join([os.path.abspath(os.path.curdir), 'Win'])
@@ -103,21 +94,16 @@ else:
 
     exit("Oops, not a supported platform.")
 
-#
-# check the system for required features
-#
+## check the system for required features
 
 if not (GetOption('clean') or GetOption('help')):
     conf = env.Configure()
 
-    # look for libsndfile plus header and exit if neither is found
     if not conf.CheckLibWithHeader(sndfile_lib, 'sndfile.h', 'c'):
         exit("You need to install libsndfile(-dev)!")
 
-    # msndfile uses the types defined in stdint.h, which not all versions of
-    # Visual Studio have
     if not conf.CheckCHeader('stdint.h'):
-        if cur_platform == 'win32':
+        if env['PLATFORM'] == 'win32':
             # use a compat header on Windows for older Visual Compilers
             env.Append(CPPDEFINES="NOT_HAVE_STDINT_H")
         else:
@@ -125,12 +111,11 @@ if not (GetOption('clean') or GetOption('help')):
 
     env = conf.Finish()
 
+## compilation targets
 #
-# compilation targets
-#
-# These are: msndfile, a debug variant, the corresponding m-Files, and a visual
-# studio project (if the current platform is Windows and MinGW is not used).
-#
+# These are: msndfile (build and debug variants), the corresponding m-Files, and
+# a visual studio project (if the current platform is Windows and MinGW is not
+# used).
 
 env['do_debug'] = False
 msndfile, mfiles = env.SConscript(dirs='src',
@@ -144,7 +129,7 @@ msndfile_dbg = env.SConscript(dirs='src',
                               exports     = "env",
                               duplicate   = False)
 
-if cur_platform == 'win32' and 'msvs' in env['TOOLS']:
+if env['PLATFORM'] == 'win32' and 'msvs' in env['TOOLS']:
     msndfile_vs = env.MSVSProject(
         target      = "msndfile" + env['MSVSPROJECTSUFFIX'],
         buildtarget = ["msndfile", "msndfile-dbg"],
@@ -159,27 +144,24 @@ if cur_platform == 'win32' and 'msvs' in env['TOOLS']:
 
     Help("    vsproj       -> create a visual studio project file")
 
-#
-# package the software
-#
+## package the software
 
 # define the package sources and corresponding install targets
 pkg_src = msndfile + mfiles
-if cur_platform == 'win32':
+if env['PLATFORM'] == 'win32':
     pkg_src.append(env.File('Win' + os.sep +
                         env['SHLIBPREFIX'] + sndfile_lib + env['SHLIBSUFFIX']))
 
 msndfile_inst = env.Install(os.sep.join([env['DESTDIR'], env['pkg_dir']]),
                             pkg_src)
+
 sndfile_pkg = env.Package(
     NAME        = "msndfile",
     VERSION     = "0.1",
     PACKAGETYPE = "zip"
 )
 
-#
-# miscellanea
-#
+## miscellanea
 
 # create an alias for building the documentation, but only if the asciidoc
 # binary could be found
