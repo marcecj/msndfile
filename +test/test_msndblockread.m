@@ -112,7 +112,11 @@ msndfile.blockread('close', 'test_files/test.wav');
 msndfile.blockread('open', 'test_files/test.wav');
 msndfile.blockread('read', 'test_files/test.wav', ref_data.file_size(1));
 
-assertExceptionThrown(@() msndfile.blockread('read', 'test_files/test.wav', -1), 'MATLAB:nomem');
+if verLessThan('matlab', '7.1')
+    assertExceptionThrown(@() msndfile.blockread('read', 'test_files/test.wav', -1), 'MATLAB:p32bitsize');
+else
+    assertExceptionThrown(@() msndfile.blockread('read', 'test_files/test.wav', -1), 'MATLAB:nomem');
+end
 assertExceptionThrown(@() msndfile.blockread('read', 'test_files/test.wav', 0), '');
 msndfile.blockread('close', 'test_files/test.wav');
 msndfile.blockread('open', 'test_files/test.wav');

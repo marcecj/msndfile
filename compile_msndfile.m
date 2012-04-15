@@ -7,13 +7,18 @@ have_stdint_h = false;
 %% compile
 %
 
-win_flags = '';
-if ~have_stdint_h
-    win_flags = '-DNOT_HAVE_STDINT_H';
+mex_opts = '';
+if ~verLessThan('matlab', '7.1')
+    mex_opts = [mex_opts ' -largeArrayDims'];
 end
 
-% needed with GCC >= 4.5, otherwise Matlab crashes
-extra_flags = '-fno-reorder-blocks';
+if (strcmp(computer, 'PCWIN') || strcmp(computer, 'PCWIN64')) && ~have_stdint_h
+    extra_flags = '-DNOT_HAVE_STDINT_H';
+else
+    % needed with GCC >= 4.5, otherwise Matlab crashes
+    extra_flags = '-fno-reorder-blocks';
+end
+
 src_dir     = 'src/+msndfile';
 out_dir     = 'build/+msndfile';
 
@@ -25,23 +30,21 @@ src2 = [src_dir '/blockread.c ' ...
         src_dir '/audio_files.c'];
 
 if strcmp(computer, 'PCWIN') || strcmp(computer, 'PCWIN64')
-    cmd1 = ['mex -LWin -l''sndfile-1'' -IWin ' win_flags ' ' src1 ' -outdir ''' out_dir ''''];
-    cmd2 = ['mex -LWin -l''sndfile-1'' -IWin ' win_flags ' ' src2 ' -outdir ''' out_dir ''''];
+    cmd1 = ['mex ' mex_opts ' -LWin -l''sndfile-1'' -IWin ' win_flags ' ' src1 ' -outdir ''' out_dir ''''];
+    cmd2 = ['mex ' mex_opts ' -LWin -l''sndfile-1'' -IWin ' win_flags ' ' src2 ' -outdir ''' out_dir ''''];
 elseif strcmp(computer, 'GLNX86') || strcmp(computer, 'GLNXA64')
-    cmd1 = ['mex -lsndfile ' src1 ' -outdir ' out_dir ' CFLAGS=''\$CFLAGS''' extra_flags];
-    cmd2 = ['mex -lsndfile ' src2 ' -outdir ' out_dir ' CFLAGS=''\$CFLAGS''' extra_flags];
+    cmd1 = ['mex ' mex_opts ' -lsndfile ' src1 ' -outdir ' out_dir ' CFLAGS="\$CFLAGS ' extra_flags '"'];
+    cmd2 = ['mex ' mex_opts ' -lsndfile ' src2 ' -outdir ' out_dir ' CFLAGS="\$CFLAGS ' extra_flags '"'];
 elseif strcmp(computer, 'MACI') || strcmp(computer, 'MACI')
-    cmd1 = ['mex -lsndfile ' src1 ' -outdir ' out_dir ' CFLAGS=''\$CFLAGS ''' extra_flags];
-    cmd2 = ['mex -lsndfile ' src2 ' -outdir ' out_dir ' CFLAGS=''\$CFLAGS ''' extra_flags];
+    cmd1 = ['mex ' mex_opts ' -lsndfile ' src1 ' -outdir ' out_dir ' CFLAGS="\$CFLAGS ' extra_flags '"'];
+    cmd2 = ['mex ' mex_opts ' -lsndfile ' src2 ' -outdir ' out_dir ' CFLAGS="\$CFLAGS ' extra_flags '"'];
 end
 
 if ~exist(out_dir, 'dir')
     mkdir('.', out_dir);
 end
 
-disp(cmd1);
 eval(cmd1);
-disp(cmd2);
 eval(cmd2);
 
 if strcmp(computer, 'PCWIN') || strcmp(computer, 'PCWIN64')
