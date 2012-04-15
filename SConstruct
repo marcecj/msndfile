@@ -157,7 +157,7 @@ msndfile_inst = env.Install(os.sep.join([env['DESTDIR'], env['pkg_dir']]),
 
 sndfile_pkg = env.Package(
     NAME        = "msndfile",
-    VERSION     = "0.1",
+    VERSION     = "1.0",
     PACKAGETYPE = "zip"
 )
 
