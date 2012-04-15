@@ -6,19 +6,25 @@
 
 % needed with GCC >= 4.5, otherwise Matlab crashes
 extra_flags = '-fno-reorder-blocks';
-out_dir     = 'build';
+src_dir     = 'src/+msndfile';
+out_dir     = 'build/+msndfile';
+
+src1 = [src_dir '/read.c ' ...
+        src_dir '/utils.c ' ...
+        src_dir '/read_utils.c'];
+src2 = [src_dir '/blockread.c ' ...
+        src_dir '/utils.c ' ...
+        src_dir '/audio_files.c'];
 
 if strcmp(computer, 'PCWIN') || strcmp(computer, 'PCWIN64')
-    cmd1 = ['mex -LWin -l''sndfile-1'' -Iinclude -IWin src/msndread.c src/utils.c -outdir ''' out_dir '''']
-    cmd2 = ['mex -LWin -l''sndfile-1'' -Iinclude -IWin src/msndblockread.c src/utils.c -outdir ''' out_dir '''']
+    cmd1 = ['mex -LWin -l''sndfile-1'' -IWin ' src1 ' -outdir ''' out_dir '''']
+    cmd2 = ['mex -LWin -l''sndfile-1'' -IWin ' src2 ' -outdir ''' out_dir '''']
 elseif strcmp(computer, 'GLNX86') || strcmp(computer, 'GLNXA64')
-    default_flags = '-LLinux -lsndfile -Iinclude';
-    cmd1 = ['mex ' default_flags ' src/msndread.c src/utils.c -outdir ' out_dir ' CFLAGS=''\$CFLAGS''' extra_flags];
-    cmd2 = ['mex ' default_flags ' src/msndblockread.c src/utils.c -outdir ''' out_dir ''' CFLAGS=''\$CFLAGS ''' extra_flags];
+    cmd1 = ['mex -lsndfile ' src1 ' -outdir ' out_dir ' CFLAGS=''\$CFLAGS''' extra_flags];
+    cmd2 = ['mex -lsndfile ' src2 ' -outdir ' out_dir ' CFLAGS=''\$CFLAGS''' extra_flags];
 elseif strcmp(computer, 'MACI') || strcmp(computer, 'MACI')
-    default_flags = '-LMac -lsndfile -Iinclude';
-    cmd1 = ['mex ' default_flags ' src/msndread.c src/utils.c -outdir ''' out_dir ''' CFLAGS=''\$CFLAGS ''' extra_flags];
-    cmd2 = ['mex ' default_flags ' src/msndblockread.c src/utils.c -outdir ''' out_dir ''' CFLAGS=''\$CFLAGS ''' extra_flags];
+    cmd1 = ['mex -lsndfile ' src1 ' -outdir ' out_dir ' CFLAGS=''\$CFLAGS ''' extra_flags];
+    cmd2 = ['mex -lsndfile ' src2 ' -outdir ' out_dir ' CFLAGS=''\$CFLAGS ''' extra_flags];
 end
 
 if ~exist(out_dir, 'dir')
@@ -26,25 +32,3 @@ if ~exist(out_dir, 'dir')
 end
 
 eval(cmd1); eval(cmd2);
-
-%
-%% install
-%
-
-inst_dir = '+msndfile';
-
-if ~exist(inst_dir, 'dir')
-    mkdir('.', inst_dir);
-end
-
-sources = {'msndread', 'msndblockread'};
-targets = {'read', 'blockread'};
-for kk=1:length(targets)
-    copyfile(fullfile(out_dir, [sources{kk} '.' mexext]), ...
-             fullfile(inst_dir, [targets{kk} '.' mexext]))
-    copyfile(fullfile('src', [sources{kk} '.m']), ...
-             fullfile(inst_dir, [targets{kk} '.m']))
-end
-
-eval(cmd1);
-eval(cmd2);
