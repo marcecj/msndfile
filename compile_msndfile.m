@@ -67,6 +67,7 @@ eval(cmd2);
 
 install_dir = [inst_prefix '/' pkg_dir];
 copyfile(out_dir, install_dir);
+copyfile([src_dir '/*.m'], install_dir);
 
 if strcmp(computer, 'PCWIN') || strcmp(computer, 'PCWIN64')
     disp('Copying libsndfile...');
