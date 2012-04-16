@@ -22,7 +22,7 @@ if ~verLessThan('matlab', '7.1')
     mex_opts = [mex_opts ' -largeArrayDims'];
 end
 
-if (strcmp(computer, 'PCWIN') || strcmp(computer, 'PCWIN64')) && ~have_stdint_h
+if ispc && ~have_stdint_h
     extra_flags = '-DNOT_HAVE_STDINT_H';
 else
     % needed with GCC >= 4.5, otherwise Matlab crashes
@@ -47,13 +47,13 @@ src2 = [src_dir '/blockread.c ' ...
         src_dir '/utils.c ' ...
         src_dir '/audio_files.c'];
 
-if strcmp(computer, 'PCWIN') || strcmp(computer, 'PCWIN64')
+if ispc
     cmd1 = ['mex ' mex_opts ' -LWin -l''sndfile-1'' -IWin ' extra_flags ' ' src1 ' -outdir ''' out_dir ''''];
     cmd2 = ['mex ' mex_opts ' -LWin -l''sndfile-1'' -IWin ' extra_flags ' ' src2 ' -outdir ''' out_dir ''''];
-elseif strcmp(computer, 'GLNX86') || strcmp(computer, 'GLNXA64')
+elseif isunix
     cmd1 = ['mex ' mex_opts ' -lsndfile ' src1 ' -outdir ' out_dir ' CFLAGS="\$CFLAGS ' extra_flags '"'];
     cmd2 = ['mex ' mex_opts ' -lsndfile ' src2 ' -outdir ' out_dir ' CFLAGS="\$CFLAGS ' extra_flags '"'];
-elseif strcmp(computer, 'MACI') || strcmp(computer, 'MACI')
+elseif ismac
     cmd1 = ['mex ' mex_opts ' -lsndfile ' src1 ' -outdir ' out_dir ' CFLAGS="\$CFLAGS ' extra_flags '"'];
     cmd2 = ['mex ' mex_opts ' -lsndfile ' src2 ' -outdir ' out_dir ' CFLAGS="\$CFLAGS ' extra_flags '"'];
 end
@@ -65,11 +65,15 @@ end
 eval(cmd1);
 eval(cmd2);
 
+%
+%% install
+%
+
 install_dir = [inst_prefix '/' pkg_dir];
 copyfile(out_dir, install_dir);
 copyfile([src_dir '/*.m'], install_dir);
 
-if strcmp(computer, 'PCWIN') || strcmp(computer, 'PCWIN64')
+if ispc
     disp('Copying libsndfile...');
     copyfile('Win/libsndfile-1.dll', [inst_prefix '/' pkg_dir]);
 end
