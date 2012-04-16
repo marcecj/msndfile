@@ -5,8 +5,6 @@ close all;
 
 do_perf_tests = false;
 
-addpath('build');
-
 disp('Test file used in all tests: test.wav (also as RAW and FLAC)')
 
 runtests('test', '-verbose');

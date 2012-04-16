@@ -139,5 +139,7 @@ Testing
 To run the test scripts, call `test_msndfile.m` from MATLAB.  This will test
 `msndfile.read` and `msndfile.blockread`.  Performance tests are deactivated by default.
 To run them, too, set `do_perf_tests` to `true` in `test_msndfile.m`.
+If you use SCons, you must run the `install` target first and make sure DESTDIR
+is in Matlab's path.
 
 // vim:ft=asciidoc
