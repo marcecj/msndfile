@@ -52,8 +52,21 @@ file_info.samplerate   = 44100;
 assertExceptionThrown(@() msndfile.read('test_files/test.raw', [], [], file_info), '');
 file_info.channels     = 2;
 assertExceptionThrown(@() msndfile.read('test_files/test.raw', [], [], file_info), '');
+
+% only now is file_info complete
+file_info.sampleformat = 'PCM_16';
+[in_sig, fs] = msndfile.read('test_files/test.raw', [], [], file_info);
+
+% reset file_info
+file_info = [];
+
+file_info.samplerate   = 44100;
+file_info.channels     = 2;
 file_info.format       = 'RAW';
 assertExceptionThrown(@() msndfile.read('test_files/test.raw', [], [], file_info), '');
+file_info.endianness   = 'FILE';
+assertExceptionThrown(@() msndfile.read('test_files/test.raw', [], [], file_info), '');
+% only now is file_info complete
 file_info.sampleformat = 'PCM_16';
 [in_sig, fs] = msndfile.read('test_files/test.raw', [], [], file_info);
 
