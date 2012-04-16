@@ -100,7 +100,7 @@ if not (GetOption('clean') or GetOption('help')):
     conf = env.Configure()
 
     if not conf.CheckLibWithHeader(sndfile_lib, 'sndfile.h', 'c'):
-        exit("You need to install libsndfile(-dev)!")
+        exit("error: you need to install libsndfile(-dev)")
 
     if conf.CheckCHeader('stdint.h'):
         env.Append(CPPDEFINES="HAVE_STDINT_H")
@@ -174,7 +174,7 @@ if env.WhereIs('asciidoc') is not None:
     Alias('doc', docs)
     Help("    doc          -> compiles documentation to HTML")
 else:
-    print "asciidoc not found! Cannot build documentation."
+    print "info: asciidoc not found, cannot build documentation"
 
 # define some useful aliases
 Alias("makezip", sndfile_pkg)
