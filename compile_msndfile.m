@@ -26,8 +26,8 @@ extra_flags = '';
 if ispc && have_stdint_h
     extra_flags = '-DHAVE_STDINT_H';
 elseif ~ispc
-    % needed with GCC >= 4.5, otherwise Matlab crashes
-    extra_flags = '-fno-reorder-blocks';
+    % assume stdint.h; needed with GCC >= 4.5, otherwise Matlab crashes
+    extra_flags = '-DHAVE_STDINT_H -fno-reorder-blocks';
 end
 
 src_dir     = 'src/+msndfile';
