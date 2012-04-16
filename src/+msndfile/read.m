@@ -1,26 +1,33 @@
-function [OutData,fs,NBits,Opts] = msndread(file_name, idx_range, fmt, file_info)
-%MSNDREAD Read audio files using the libsndfile C library.
+function [OutData,fs,NBits,Opts] = read(file_name, idx_range, fmt, file_info)
+%MSNDFILE.READ Read audio files using the libsndfile C library.
 %
-% OUTDATA = MSNDREAD(FILE_NAME) will read the file specified by FILE_NAME and
-% returns the signal OUTDATA.
+% OUTDATA = MSNDFILE.READ(FILE_NAME) will read the file specified by FILE_NAME
+% and returns the signal OUTDATA.  The file type extension in FILE_NAME may be
+% left out only if it introduces no ambiguity or if there is a WAV file whose
+% basename is FILE_NAME.
 %
-% OUTDATA = MSNDREAD(FILE_NAME, N) returns the first N samples.  OUTDATA =
-% MSNDREAD(FILE_NAME, [START END]) will read the samples in the range
+% OUTDATA = MSNDFILE.READ(FILE_NAME, N) returns the first N samples.  OUTDATA =
+% MSNDFILE.READ(FILE_NAME, [START END]) will read the samples in the range
 % START...END.
 %
-% If FILE_NAME is a RAW audio file, then a third input argument, FILE_INFO, must
-% be specified (see section "The file_info struct" below).
+% OUTDATA = MSNDFILE.READ(FILE_NAME, ..., fmt) returns the data with the data
+% type specified by fmt.  Supported values are "double" (default) and "native"
+% (returns the raw audio data, e.g., 16 bit integers).
 %
-% SIZE = MSNDREAD(FILE_NAME, 'size') returns a two-element row vector SIZE
+% If FILE_NAME is a RAW audio file, then a fourth input argument, FILE_INFO,
+% must be specified (see section "The file_info struct" below).
+%
+% SIZE = MSNDFILE.READ(FILE_NAME, 'size') returns a two-element row vector SIZE
 % containing the number of samples per channel and the number of channels.
 %
-% [..., FS] = MSNDREAD(...) returns the sampling rate FS.
+% [..., FS] = MSNDFILE.READ(...) returns the sampling rate FS.
 %
-% [..., NBITS] = MSNDREAD(...) returns the bit rate NBITS.
+% [..., NBITS] = MSNDFILE.READ(...) returns the bit rate NBITS.
 %
-% [..., OPTS] = MSNDREAD(...) returns the a struct OPTS, which may contain
+% [..., OPTS] = MSNDFILE.READ(...) returns a struct OPTS, which may contain
 % structs as fields that give more information about the file, such as format
-% details and meta-data (artist, album, etc.).
+% details and meta-data (artist, album, etc.).  These structs are either "fmt"
+% or "bext" (Broadcast Wave Format only)
 %
 % Input parameters
 % ----------------
@@ -60,9 +67,7 @@ function [OutData,fs,NBits,Opts] = msndread(file_name, idx_range, fmt, file_info
 %
 % Following is a list of valid values for the format specifiers "format",
 % "sampleformat" and "endianness".  The descriptions are taken from the official
-% libsndfile API documentation (see http://www.mega-nerd.com/libsndfile).  Note
-% that the "format" field is (as mentioned above) currently ignored.  It is
-% intended to be utilised for future write support.
+% libsndfile API documentation (see http://www.mega-nerd.com/libsndfile).
 %
 %     Valid values for "format" are:
 %

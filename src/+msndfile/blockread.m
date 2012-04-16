@@ -1,19 +1,19 @@
-function OutData = msndblockread(cmd, file_name, idx_range, file_info)
-%MSNDBLOCKREAD Read audio files block-wise using the libsndfile C library.
+function OutData = blockread(cmd, file_name, idx_range, file_info)
+%MSNDFILE.BLOCKREAD Read audio files block-wise using the libsndfile C library.
 %
-% MSNDBLOCKREAD('open', FILE_NAME) will open the file specified by FILE_NAME for
-% reading.
+% MSNDFILE.BLOCKREAD('open', FILE_NAME) will open the file specified by
+% FILE_NAME for reading.
 %
-% OUTDATA = MSNDREAD('read', FILE_NAME, [A B]) returns the samples in the range
-% A...B.  OUTDATA = MSNDREAD(FILE_NAME, N) will read the next N samples,
-% starting from wherever left off.  For example, if no samples have been read
-% yet, the first N samples are read.
+% OUTDATA = MSNDFILE.BLOCKREAD('read', FILE_NAME, [A B]) returns the samples in the range
+% A...B.  OUTDATA = MSNDFILE.BLOCKREAD(FILE_NAME, N) will read the next N samples,
+% starting from wherever was left off.  For example, if no samples have been
+% read yet, the first N samples are read.
 %
 % If FILE_NAME is a RAW audio file, then a fourth input argument, FILE_INFO,
 % must be specified (see section "The file_info struct" below).
 %
-% MSNDBLOCKREAD('close', FILE_NAME) will close an open file specified by
-% FILE_NAME. MSNDBLOCKREAD('closeall') closes all open files.
+% MSNDFILE.BLOCKREAD('close', FILE_NAME) will close an open file specified by
+% FILE_NAME. MSNDFILE.BLOCKREAD('closeall') closes all open files.
 %
 % Input parameters
 % ----------------
@@ -22,8 +22,8 @@ function OutData = msndblockread(cmd, file_name, idx_range, file_info)
 %                   "close", or "closeall" (see section "Commands" below).
 %      file_name:   The audio file name (a string).
 %      idx_range:   A row vector defining the range of samples to be read. If it
-%                   only has one element, the file will read from the current
-%                   position up to the specified index.
+%                   only has one element, the next idx_range samples will be
+%                   read from the current position.
 %      file_info:   (RAW files only) A struct containing the file information
 %                   (see section "The file_info struct" below).
 %
@@ -35,7 +35,7 @@ function OutData = msndblockread(cmd, file_name, idx_range, file_info)
 % Commands
 % --------
 %
-% The following are valid commands to MSNDBLOCKREAD:
+% The following are valid commands to MSNDFILE.BLOCKREAD:
 %
 %   open:       Opens the audio file. Several files may be opened at once,
 %               however each individual file may only be opened once.

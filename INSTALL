@@ -2,9 +2,12 @@ Installing msndfile
 ===================
 
 There are two ways to compile msndfile.  The easy way is to call the m-file
-`compile_msndfile.m` from Matlab.  There is also a more flexible build system
-based on SCons available, that can also generate a Visual Studio IDE project
-file.  For details on both methods, see their relevant subsections.
+`compile_msndfile.m` from Matlab.  This is probably the way to go if you only
+want to 'use' msndfile.  There is also a more flexible build system based on
+SCons available, that can also generate a Visual Studio IDE project file and can
+be integrated into other IDEs like Eclipse.  You will most likely want to use
+this if you want to 'work on' msndfile.  For details on both methods, see their
+relevant subsections.
 
 Prerequisites
 -------------
@@ -19,9 +22,9 @@ The basic dependencies of msndfile are:
   Test Framework] (aka MTest; needed only for the test suite)
 
 The `stdint.h` header is available in Visual Studio 2010 and up.  Otherwise, all
-somewhat recent compilers should support it (especially those that support C99).
-If your compiler does not have `stdint.h` and you cannot use one that does, you
-could find a copy and place it in the `Win` subdirectory.
+somewhat recent compilers/libc's should support it (especially those that
+support C99).  If `stdint.h` is not available, a compatibility header
+(`stdint_compat.h`) is used instead.
 
 To obtain libsndfile, you may try the following steps:
 
@@ -67,7 +70,7 @@ Using the SCons based build system
 ----------------------------------
 
 The SCons based build system is in general more robust and flexibel than calling
-Mex in compile_msndfile.m.  It uses an extension that properly presets a few
+Mex in `compile_msndfile.m`.  It uses an extension that properly presets some
 environment variables, though it slows compilation down the first time it is run
 because it starts a Matlab subprocess to obtain them.
 
@@ -77,9 +80,12 @@ Anyway, to use SCons, call it from the command line like so:
 $ scons [--interactive] [options] [target]
 --------------------------------------
 
-As to why I wrote a complicated SCons build system in the first place, well...
-Apart from the usual features of real build systems (proper dependency tracking,
-parallel builds, etc.) it can do the following things:
+As to why I wrote a complicated SCons footnote:[A CMake based build system was
+also attempted, but CMake proved difficult to extend, at least in comparison
+with SCons.] build system in the first place, well...  Apart from the usual
+features of real build systems (proper dependency tracking, parallel builds,
+platform dependent configuration à la autoconf, etc.) it can do the following
+things:
 
 - create a Visual Studio solution file with Release and Debug Variants
 - create a ZIP file for distribution
@@ -108,13 +114,11 @@ automatically with SCons.
 Linux
 ~~~~~
 
-Just open a terminal and type
+Just open a terminal, navigate to the top-level project directory, and type
 
 -----------------
-    $ scons
+$ scons
 -----------------
-
-while in the top-level project directory.
 
 Windows
 ~~~~~~~
@@ -123,7 +127,7 @@ You can launch the batch file `start_scons.bat`, which launches scons and keeps
 the terminal window open.  It is expected that SCons is in your $PATH.
 
 Under Windows, the build system has an additional `vsproj` target.  This creates
-a MS Visual Studio Solution file with msndfile as a project.  For other IDEs,
+an MS Visual Studio Solution file with msndfile as a project.  For other IDEs,
 see http://www.scons.org/wiki/IDEIntegration[].  Also, there is an option to
 force the use of MinGW in case it is installed along with Visual Studio.
 
@@ -136,10 +140,13 @@ IDE of choice (see http://www.scons.org/wiki/IDEIntegration[]).
 Testing
 -------
 
-To run the test scripts, call `test_msndfile.m` from MATLAB.  This will test
-`msndfile.read` and `msndfile.blockread`.  Performance tests are deactivated by default.
-To run them, too, set `do_perf_tests` to `true` in `test_msndfile.m`.
-If you use SCons, you must run the `install` target first and make sure DESTDIR
+Msndfile comes with a comprehensive test suite (based on
+http://www.mathworks.com/matlabcentral/fileexchange/22846[MTest]) that is run by
+executing `test_msndfile.m` from MATLAB.  There are also performance evaluation
+scripts, however they take several minutes and so are not run by default.  To
+run them, too, set `do_perf_tests` to `true` in `test_msndfile.m`.
+
+NOTE: If you use SCons, you must run the `install` target first and make sure DESTDIR
 is in Matlab's path.
 
 // vim:ft=asciidoc
