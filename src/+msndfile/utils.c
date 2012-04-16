@@ -1,4 +1,4 @@
-#ifndef NOT_HAVE_STDINT_H
+#ifdef HAVE_STDINT_H
 #include <stdint.h>
 #else
 #include "stdint_compat.h"
