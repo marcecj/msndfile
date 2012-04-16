@@ -22,9 +22,10 @@ if ~verLessThan('matlab', '7.1')
     mex_opts = [mex_opts ' -largeArrayDims'];
 end
 
+extra_flags = '';
 if ispc && have_stdint_h
     extra_flags = '-DHAVE_STDINT_H';
-else
+elseif ~ispc
     % needed with GCC >= 4.5, otherwise Matlab crashes
     extra_flags = '-fno-reorder-blocks';
 end
