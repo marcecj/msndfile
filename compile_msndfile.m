@@ -30,8 +30,8 @@ src2 = [src_dir '/blockread.c ' ...
         src_dir '/audio_files.c'];
 
 if strcmp(computer, 'PCWIN') || strcmp(computer, 'PCWIN64')
-    cmd1 = ['mex ' mex_opts ' -LWin -l''sndfile-1'' -IWin ' win_flags ' ' src1 ' -outdir ''' out_dir ''''];
-    cmd2 = ['mex ' mex_opts ' -LWin -l''sndfile-1'' -IWin ' win_flags ' ' src2 ' -outdir ''' out_dir ''''];
+    cmd1 = ['mex ' mex_opts ' -LWin -l''sndfile-1'' -IWin ' extra_flags ' ' src1 ' -outdir ''' out_dir ''''];
+    cmd2 = ['mex ' mex_opts ' -LWin -l''sndfile-1'' -IWin ' extra_flags ' ' src2 ' -outdir ''' out_dir ''''];
 elseif strcmp(computer, 'GLNX86') || strcmp(computer, 'GLNXA64')
     cmd1 = ['mex ' mex_opts ' -lsndfile ' src1 ' -outdir ' out_dir ' CFLAGS="\$CFLAGS ' extra_flags '"'];
     cmd2 = ['mex ' mex_opts ' -lsndfile ' src2 ' -outdir ' out_dir ' CFLAGS="\$CFLAGS ' extra_flags '"'];
