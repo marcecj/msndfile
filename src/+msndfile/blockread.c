@@ -160,11 +160,6 @@ void mexFunction(int nlhs, mxArray *plhs[],
         sf_count_t  num_frames=0;
         int         sndfile_err; /* libsndfile error status */
 
-        /*
-         * allocate the strings corresponding to the names of the major formats,
-         * format subtypes and the endianness as per the libsndfile documentation
-         */
-
         if( !(file_info = lookup_file_info(file_list, sf_in_fname)) )
             mexErrMsgTxt("File not open!");
 
