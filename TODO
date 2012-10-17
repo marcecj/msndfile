@@ -18,7 +18,6 @@ Misc:
 -----
 
 - maybe add support for "fmt" option to blockread
-- add "seek" command to blockread
 - improve error handling and messages (e.g., prefix libsndfile errors with "libsndfile: ")
     - maybe support internationalization? might be difficult to port, though
     - return error codes and handle all errors in the main functions?

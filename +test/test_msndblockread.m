@@ -31,6 +31,35 @@ assertExceptionThrown(@() msndfile.blockread('open', 'test_files/test.wav'), '')
 assertExceptionThrown(@() msndfile.blockread('open', 'test_files/test.flac'), '');
 assertExceptionThrown(@() msndfile.blockread('open', 'test_files/test.raw', ref_data.file_info), '');
 
+function test_seek(ref_data)
+
+file_len = ref_data.file_size(1);
+
+msndfile.blockread('open', 'test_files/test.wav');
+
+% Invalid sample positions should raise errors
+assertExceptionThrown(@() msndfile.blockread('seek', 'test_files/test.wav', -1), '');
+assertExceptionThrown(@() msndfile.blockread('seek', 'test_files/test.wav', 0), '');
+assertExceptionThrown(@() msndfile.blockread('seek', 'test_files/test.wav', file_len+1), '');
+assertExceptionThrown(@() msndfile.blockread('seek', 'test_files/test.wav', file_len+2), '');
+
+% These indices should be fine
+msndfile.blockread('seek', 'test_files/test.wav', 1);
+msndfile.blockread('seek', 'test_files/test.wav', file_len);
+
+% Read 100 random samples and compare with wavread() to verify that "seek"
+% actually seeks to the correct position.
+for k=1:100
+    pos = randi([0 file_len], 1);
+
+    msndfile.blockread('seek', 'test_files/test.wav', pos);
+
+    data1 = msndfile.blockread('read', 'test_files/test.wav', 1);
+    data2 = wavread('test_files/test.wav', [pos pos]);
+
+    assertEqual(data1, data2);
+end
+
 function test_close(ref_data)
 % test close command
 

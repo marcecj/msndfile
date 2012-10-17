@@ -13,6 +13,7 @@
 enum {
     CMD_OPEN=0,
     CMD_READ,
+    CMD_SEEK,
     CMD_CLOSE,
     CMD_CLOSEALL
 };
@@ -54,6 +55,8 @@ void mexFunction(int nlhs, mxArray *plhs[],
         cmd_id = CMD_OPEN;
     else if( strcmp(cmd_str, "read") == 0 )
         cmd_id = CMD_READ;
+    else if( strcmp(cmd_str, "seek") == 0 )
+        cmd_id = CMD_SEEK;
     else if( strcmp(cmd_str, "close") == 0 )
         cmd_id = CMD_CLOSE;
     else if( strcmp(cmd_str, "closeall") == 0 )
@@ -119,6 +122,26 @@ void mexFunction(int nlhs, mxArray *plhs[],
 
         file_info = create_file_info(sf_in_fname, sf_file_info, sf_input_file);
         file_list = store_file_info(file_list, file_info);
+    }
+    else if( cmd_id == CMD_SEEK )
+    {
+        AUDIO_FILE_INFO* file_info = NULL;
+        double *seek_idx;
+
+        if( !(file_info = lookup_file_info(file_list, sf_in_fname)) )
+            mexErrMsgTxt("File not open!");
+
+        if( nrhs < 3 )
+            mexErrMsgTxt("Missing argument: no frame index specified!");
+
+        if( mxIsEmpty(prhs[2]) && !mxIsDouble(prhs[2]))
+            mexErrMsgTxt("Frame index is empty!");
+
+        seek_idx = mxGetPr(prhs[2]);
+
+        if( seek_idx[0] > file_info->info->frames
+                || sf_seek(file_info->file, seek_idx[0]-1, SEEK_SET) < 0 )
+            mexErrMsgTxt("Invalid frame index!");
     }
     else if( cmd_id == CMD_CLOSE )
     {
