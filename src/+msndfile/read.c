@@ -48,15 +48,13 @@ void mexFunction(int nlhs, mxArray *plhs[],
         mexErrMsgTxt("Missing argument: you need to pass a file name.");
 
     /* get input filename */
-    sf_in_fname = (char*)calloc(str_size, sizeof(char));
-    if( !sf_in_fname ) {
+    if( !(sf_in_fname = (char*)calloc(str_size, sizeof(char))) ) {
         free(sf_in_fname);
         mexErrMsgTxt("calloc error!");
     }
     mxGetString(prhs[0], sf_in_fname, str_size);
 
-    sf_in_fname = gen_filename(sf_in_fname);
-    if( !sf_in_fname )
+    if( !(sf_in_fname = gen_filename(sf_in_fname)) )
         mexErrMsgTxt("No file extension specified and no WAV file found.");
 
     /* "format" needs to be set to 0 before a file is opened for reading,
@@ -183,8 +181,7 @@ void mexFunction(int nlhs, mxArray *plhs[],
     free(data);
 
     /* rudimentary way of dealing with libsndfile errors */
-    sndfile_err = sf_error(sf_input_file);
-    if( sndfile_err != SF_ERR_NO_ERROR ) {
+    if( (sndfile_err = sf_error(sf_input_file)) != SF_ERR_NO_ERROR ) {
         mexWarnMsgTxt("libsndfile error!");
         mexErrMsgTxt(sf_error_number(sndfile_err));
     }

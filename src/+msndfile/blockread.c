@@ -42,8 +42,7 @@ void mexFunction(int nlhs, mxArray *plhs[],
     if( mxIsEmpty(prhs[0]) || !mxIsChar(prhs[0]))
         mexErrMsgTxt("Argument error: command may not be empty.");
 
-    cmd_str = (char*)malloc(cmd_size*sizeof(char));
-    if( !cmd_str )
+    if( !(cmd_str = (char*)malloc(cmd_size*sizeof(char))) )
         mexErrMsgTxt("malloc error!");
 
     if( mxGetString(prhs[0], cmd_str, cmd_size) == 1 ) {
@@ -165,9 +164,8 @@ void mexFunction(int nlhs, mxArray *plhs[],
          * allocate the strings corresponding to the names of the major formats,
          * format subtypes and the endianness as per the libsndfile documentation
          */
-        file_info = lookup_file_info(file_list, sf_in_fname);
 
-        if( !file_info )
+        if( !(file_info = lookup_file_info(file_list, sf_in_fname)) )
             mexErrMsgTxt("File not open!");
 
         if( nrhs < 3 )
@@ -217,8 +215,7 @@ void mexFunction(int nlhs, mxArray *plhs[],
         }
 
         /* rudimentary way of dealing with libsndfile errors */
-        sndfile_err = sf_error(file_info->file);
-        if( sndfile_err != SF_ERR_NO_ERROR ) {
+        if( (sndfile_err = sf_error(file_info->file)) != SF_ERR_NO_ERROR ) {
             mexWarnMsgTxt("libsndfile error!");
             mexErrMsgTxt(sf_error_number(sndfile_err));
         }

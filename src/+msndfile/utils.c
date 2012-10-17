@@ -137,8 +137,7 @@ char* gen_filename(char* fname)
 
         /* try to open the file; overwrite the original file name if successful,
          * continue otherwise */
-        audio_file = fopen(tmp_fname, "r");
-        if( !audio_file ) {
+        if( !(audio_file = fopen(tmp_fname, "r")) ) {
             free(tmp_fname);
             continue;
         } else {
@@ -250,16 +249,14 @@ void get_file_info(SF_INFO* sf_file_info, char* sf_in_fname, const mxArray *cons
      * get the sample rate and the number of channels
      */
 
-    tmp_ptr = mxGetField(args, 0, "samplerate" );
-    if( tmp_ptr )
+    if( (tmp_ptr = mxGetField(args, 0, "samplerate" )) )
         sf_file_info->samplerate = (int)*mxGetPr(tmp_ptr);
     else {
         free(sf_in_fname);
         mexErrMsgTxt("Field 'samplerate' not set.");
     }
 
-    tmp_ptr = mxGetField(args, 0, "channels" );
-    if( tmp_ptr )
+    if( (tmp_ptr = mxGetField(args, 0, "channels" )) )
         sf_file_info->channels = (int)*mxGetPr(tmp_ptr);
     else {
         free(sf_in_fname);
@@ -271,12 +268,10 @@ void get_file_info(SF_INFO* sf_file_info, char* sf_in_fname, const mxArray *cons
      */
 
     /* format name should be set to RAW when reading RAW files */
-    tmp_ptr = mxGetField(args, 0, "format" );
-    if( tmp_ptr )
+    if( (tmp_ptr = mxGetField(args, 0, "format" )) )
         mxGetString(tmp_ptr, maj_fmt_name, FMT_STR_SIZE);
 
-    tmp_ptr = mxGetField(args, 0, "sampleformat" );
-    if( tmp_ptr )
+    if( (tmp_ptr = mxGetField(args, 0, "sampleformat" )) )
         mxGetString(tmp_ptr, sub_fmt_name, FMT_STR_SIZE);
     else {
         free(sf_in_fname);
@@ -284,8 +279,7 @@ void get_file_info(SF_INFO* sf_file_info, char* sf_in_fname, const mxArray *cons
     }
 
     /* endianness_name does not need to be set */
-    tmp_ptr = mxGetField(args, 0, "endianness" );
-    if( tmp_ptr )
+    if( (tmp_ptr = mxGetField(args, 0, "endianness" )) )
         mxGetString(tmp_ptr, endianness_name, mxGetN(tmp_ptr)+1);
 
     sf_file_info->format = lookup_val(&maj_fmts, maj_fmt_name)

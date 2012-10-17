@@ -28,8 +28,7 @@ AUDIO_FILES* store_file_info(AUDIO_FILES *array, AUDIO_FILE_INFO *file_info)
 {
     /* create a new AUDIO_FILES* array if it does not exist */
     if( !array ) {
-        array = (AUDIO_FILES*)malloc(sizeof(AUDIO_FILES));
-        if( !array )
+        if( !(array = (AUDIO_FILES*)malloc(sizeof(AUDIO_FILES))) )
             return NULL;
         array->num_files = 0;
         array->files = (AUDIO_FILE_INFO**)malloc(sizeof(AUDIO_FILE_INFO*));
