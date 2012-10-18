@@ -1,9 +1,3 @@
-Before v1.0:
------------
-
-- find out what those Valgrind warnings for lines 202 and 205 in
-  src/+msndfile/blockread.c are about
-
 Before v1.1:
 ------------
 
