@@ -4,10 +4,10 @@ function OutData = blockread(cmd, file_name, idx_range, file_info)
 % MSNDFILE.BLOCKREAD('open', FILE_NAME) will open the file specified by
 % FILE_NAME for reading.
 %
-% OUTDATA = MSNDFILE.BLOCKREAD('read', FILE_NAME, [A B]) returns the samples in the range
-% A...B.  OUTDATA = MSNDFILE.BLOCKREAD(FILE_NAME, N) will read the next N samples,
-% starting from wherever was left off.  For example, if no samples have been
-% read yet, the first N samples are read.
+% OUTDATA = MSNDFILE.BLOCKREAD('read', FILE_NAME, [A B]) returns the samples in
+% the range A...B.  OUTDATA = MSNDFILE.BLOCKREAD(FILE_NAME, N) will read the
+% next N samples, starting from wherever was left off.  For example, if no
+% samples have been read yet, the first N samples are read.
 %
 % If FILE_NAME is a RAW audio file, then a fourth input argument, FILE_INFO,
 % must be specified (see section "The file_info struct" below).
