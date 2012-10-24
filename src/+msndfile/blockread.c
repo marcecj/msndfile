@@ -14,6 +14,7 @@ enum {
     CMD_OPEN=0,
     CMD_READ,
     CMD_SEEK,
+    CMD_TELL,
     CMD_CLOSE,
     CMD_CLOSEALL
 };
@@ -56,6 +57,8 @@ void mexFunction(int nlhs, mxArray *plhs[],
         cmd_id = CMD_READ;
     else if( strcmp(cmd_str, "seek") == 0 )
         cmd_id = CMD_SEEK;
+    else if( strcmp(cmd_str, "tell") == 0 )
+        cmd_id = CMD_TELL;
     else if( strcmp(cmd_str, "close") == 0 )
         cmd_id = CMD_CLOSE;
     else if( strcmp(cmd_str, "closeall") == 0 )
@@ -141,6 +144,22 @@ void mexFunction(int nlhs, mxArray *plhs[],
         if( seek_idx[0] > file_info->info->frames
                 || sf_seek(file_info->file, seek_idx[0]-1, SEEK_SET) < 0 )
             mexErrMsgTxt("Invalid frame index!");
+    }
+    else if( cmd_id == CMD_TELL )
+    {
+        AUDIO_FILE_INFO* file_info = NULL;
+        double *cur_pos;
+
+        if( !(file_info = lookup_file_info(file_list, sf_in_fname)) )
+            mexErrMsgTxt("File not open!");
+
+        plhs[0] = mxCreateDoubleMatrix((int)1, 1, mxREAL);
+        cur_pos = mxGetPr(plhs[0]);
+
+        if( (*cur_pos = sf_seek(file_info->file, 0, SEEK_CUR)) < 0 )
+            mexErrMsgTxt("Error getting current position!");
+
+        (*cur_pos)++;
     }
     else if( cmd_id == CMD_CLOSE )
     {

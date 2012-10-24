@@ -60,6 +60,35 @@ for k=1:100
     assertEqual(data1, data2);
 end
 
+function test_tell(ref_data)
+
+file_len = ref_data.file_size(1);
+
+msndfile.blockread('open', 'test_files/test.wav');
+
+% verify that the current position is unaltered after seek errors
+assertEqual(1, msndfile.blockread('tell', 'test_files/test.wav'));
+assertExceptionThrown(@() msndfile.blockread('seek', 'test_files/test.wav', 0), '');
+assertEqual(1, msndfile.blockread('tell', 'test_files/test.wav'));
+assertExceptionThrown(@() msndfile.blockread('seek', 'test_files/test.wav', file_len+1), '');
+assertEqual(1, msndfile.blockread('tell', 'test_files/test.wav'));
+
+% simple "tell" checks
+msndfile.blockread('seek', 'test_files/test.wav', file_len);
+assertEqual(file_len, msndfile.blockread('tell', 'test_files/test.wav'));
+msndfile.blockread('seek', 'test_files/test.wav', 1);
+assertEqual(1, msndfile.blockread('tell', 'test_files/test.wav'));
+
+% seek to 100 random positions and verify that "tell" correctly reports the
+% position we seeked to
+for k=1:100
+    pos = randi([0 file_len], 1);
+
+    msndfile.blockread('seek', 'test_files/test.wav', pos);
+
+    assertEqual(pos, msndfile.blockread('tell', 'test_files/test.wav'));
+end
+
 function test_close(ref_data)
 % test close command
 

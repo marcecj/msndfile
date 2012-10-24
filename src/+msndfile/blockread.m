@@ -15,6 +15,9 @@ function OutData = blockread(cmd, file_name, idx_range, file_info)
 % MSNDFILE.BLOCKREAD('seek', FILE_NAME, N) will seek to the position N in an
 % open file specified by FILE_NAME.
 %
+% MSNDFILE.BLOCKREAD('tell', FILE_NAME) will return the current position in the
+% open file specified by FILE_NAME.
+%
 % MSNDFILE.BLOCKREAD('close', FILE_NAME) will close an open file specified by
 % FILE_NAME. MSNDFILE.BLOCKREAD('closeall') closes all open files.
 %
@@ -22,8 +25,8 @@ function OutData = blockread(cmd, file_name, idx_range, file_info)
 % ----------------
 %
 %      cmd:         The command (a string). Must be one of "open", "read",
-%                   "seek", "close", or "closeall" (see section "Commands"
-%                   below).
+%                   "seek", "tell", "close", or "closeall" (see section
+%                   "Commands" below).
 %      file_name:   The audio file name (a string).
 %      idx_range:   A row vector defining the range of samples to be read. If it
 %                   only has one element, the next idx_range samples will be
@@ -45,6 +48,7 @@ function OutData = blockread(cmd, file_name, idx_range, file_info)
 %               however each individual file may only be opened once.
 %   read:       Reads data from an open file.
 %   seek:       Seeks to a specified position in an open file.
+%   tell:       Returns the current position in an open file.
 %   close:      Closes an open file.
 %   closeall:   Closes all currently open files.
 %
