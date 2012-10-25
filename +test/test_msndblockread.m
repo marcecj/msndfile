@@ -27,9 +27,9 @@ msndfile.blockread('open', 'test_files/test.wav');
 msndfile.blockread('open', 'test_files/test.flac');
 msndfile.blockread('open', 'test_files/test.raw', ref_data.file_info);
 
-assertExceptionThrown(@() msndfile.blockread('open', 'test_files/test.wav'), '');
-assertExceptionThrown(@() msndfile.blockread('open', 'test_files/test.flac'), '');
-assertExceptionThrown(@() msndfile.blockread('open', 'test_files/test.raw', ref_data.file_info), '');
+assertExceptionThrown(@() msndfile.blockread('open', 'test_files/test.wav'), 'msndfile:argerror');
+assertExceptionThrown(@() msndfile.blockread('open', 'test_files/test.flac'), 'msndfile:argerror');
+assertExceptionThrown(@() msndfile.blockread('open', 'test_files/test.raw', ref_data.file_info), 'msndfile:argerror');
 
 function test_seek(ref_data)
 
@@ -38,10 +38,10 @@ file_len = ref_data.file_size(1);
 msndfile.blockread('open', 'test_files/test.wav');
 
 % Invalid sample positions should raise errors
-assertExceptionThrown(@() msndfile.blockread('seek', 'test_files/test.wav', -1), '');
-assertExceptionThrown(@() msndfile.blockread('seek', 'test_files/test.wav', 0), '');
-assertExceptionThrown(@() msndfile.blockread('seek', 'test_files/test.wav', file_len+1), '');
-assertExceptionThrown(@() msndfile.blockread('seek', 'test_files/test.wav', file_len+2), '');
+assertExceptionThrown(@() msndfile.blockread('seek', 'test_files/test.wav', -1), 'msndfile:argerror');
+assertExceptionThrown(@() msndfile.blockread('seek', 'test_files/test.wav', 0), 'msndfile:argerror');
+assertExceptionThrown(@() msndfile.blockread('seek', 'test_files/test.wav', file_len+1), 'msndfile:argerror');
+assertExceptionThrown(@() msndfile.blockread('seek', 'test_files/test.wav', file_len+2), 'msndfile:argerror');
 
 % These indices should be fine
 msndfile.blockread('seek', 'test_files/test.wav', 1);
@@ -68,9 +68,9 @@ msndfile.blockread('open', 'test_files/test.wav');
 
 % verify that the current position is unaltered after seek errors
 assertEqual(1, msndfile.blockread('tell', 'test_files/test.wav'));
-assertExceptionThrown(@() msndfile.blockread('seek', 'test_files/test.wav', 0), '');
+assertExceptionThrown(@() msndfile.blockread('seek', 'test_files/test.wav', 0), 'msndfile:argerror');
 assertEqual(1, msndfile.blockread('tell', 'test_files/test.wav'));
-assertExceptionThrown(@() msndfile.blockread('seek', 'test_files/test.wav', file_len+1), '');
+assertExceptionThrown(@() msndfile.blockread('seek', 'test_files/test.wav', file_len+1), 'msndfile:argerror');
 assertEqual(1, msndfile.blockread('tell', 'test_files/test.wav'));
 
 % simple "tell" checks
@@ -101,11 +101,11 @@ msndfile.blockread('close', 'test_files/test.flac');
 msndfile.blockread('close', 'test_files/test.raw', ref_data.file_info);
 
 % should not throw an exception
-warning('off', 'blockread:filenotopen');
+warning('off', 'msndfile:filenotopen');
 msndfile.blockread('close', 'test_files/test.wav');
 msndfile.blockread('close', 'test_files/test.flac');
 msndfile.blockread('close', 'test_files/test.raw', ref_data.file_info);
-warning('on', 'blockread:filenotopen');
+warning('on', 'msndfile:filenotopen');
 
 function test_closeall(ref_data)
 % test read command
@@ -116,16 +116,16 @@ msndfile.blockread('open', 'test_files/test.raw', ref_data.file_info);
 
 msndfile.blockread('closeall');
 
-assertExceptionThrown(@() msndfile.blockread('read', 'test_files/test.wav', ref_data.block_size), '');
-assertExceptionThrown(@() msndfile.blockread('read', 'test_files/test.flac', ref_data.block_size), '');
-assertExceptionThrown(@() msndfile.blockread('read', 'test_files/test.raw', ref_data.block_size, ref_data.file_info), '');
+assertExceptionThrown(@() msndfile.blockread('read', 'test_files/test.wav', ref_data.block_size), 'msndfile:filenotopen');
+assertExceptionThrown(@() msndfile.blockread('read', 'test_files/test.flac', ref_data.block_size), 'msndfile:filenotopen');
+assertExceptionThrown(@() msndfile.blockread('read', 'test_files/test.raw', ref_data.block_size, ref_data.file_info), 'msndfile:filenotopen');
 
 % should not throw an exception
-warning('off', 'blockread:filenotopen');
+warning('off', 'msndfile:filenotopen');
 msndfile.blockread('close', 'test_files/test.wav');
 msndfile.blockread('close', 'test_files/test.flac');
 msndfile.blockread('close', 'test_files/test.raw', ref_data.file_info);
-warning('on', 'blockread:filenotopen');
+warning('on', 'msndfile:filenotopen');
 
 function test_read(ref_data)
 % test read command
@@ -151,19 +151,19 @@ assertEqual(in_blockwise2, in_wav(1:num_samples,:));
 
 % close the WAV file and try to read from it
 msndfile.blockread('close', 'test_files/test.wav');
-assertExceptionThrown(@() msndfile.blockread('read', 'test_files/test.wav', block_size), '');
+assertExceptionThrown(@() msndfile.blockread('read', 'test_files/test.wav', block_size), 'msndfile:filenotopen');
 
 % close the FLAC file and try to read from it
 msndfile.blockread('close', 'test_files/test.flac');
-assertExceptionThrown(@() msndfile.blockread('read', 'test_files/test.flac', block_size), '');
+assertExceptionThrown(@() msndfile.blockread('read', 'test_files/test.flac', block_size), 'msndfile:filenotopen');
 
 % test if invalid ranges throw an error
 msndfile.blockread('open', 'test_files/test.wav');
 msndfile.blockread('read', 'test_files/test.wav', [1 ref_data.file_size(1)]);
-assertExceptionThrown(@() msndfile.blockread('read', 'test_files/test.wav', [0 ref_data.file_size(1)]), '');
-assertExceptionThrown(@() msndfile.blockread('read', 'test_files/test.wav', [-1 ref_data.file_size(1)]), '');
-assertExceptionThrown(@() msndfile.blockread('read', 'test_files/test.wav', [1 ref_data.file_size(1)+1]), '');
-assertExceptionThrown(@() msndfile.blockread('read', 'test_files/test.wav', [1 ref_data.file_size(1)+1]), '');
+assertExceptionThrown(@() msndfile.blockread('read', 'test_files/test.wav', [0 ref_data.file_size(1)]), 'msndfile:argerror');
+assertExceptionThrown(@() msndfile.blockread('read', 'test_files/test.wav', [-1 ref_data.file_size(1)]), 'msndfile:argerror');
+assertExceptionThrown(@() msndfile.blockread('read', 'test_files/test.wav', [1 ref_data.file_size(1)+1]), 'msndfile:argerror');
+assertExceptionThrown(@() msndfile.blockread('read', 'test_files/test.wav', [1 ref_data.file_size(1)+1]), 'msndfile:argerror');
 
 % close and reopen to guarantee that the file is at position 1
 msndfile.blockread('close', 'test_files/test.wav');
@@ -178,7 +178,7 @@ end
 assertExceptionThrown(@() msndfile.blockread('read', 'test_files/test.wav', 0), '');
 msndfile.blockread('close', 'test_files/test.wav');
 msndfile.blockread('open', 'test_files/test.wav');
-assertExceptionThrown(@() msndfile.blockread('read', 'test_files/test.wav', ref_data.file_size(1)+1), '');
+assertExceptionThrown(@() msndfile.blockread('read', 'test_files/test.wav', ref_data.file_size(1)+1), 'msndfile:argerror');
 
 function test_read_only_blocksize(ref_data)
 % test passing only the block size instead of the full range
@@ -227,7 +227,7 @@ assertEqual(in_blockwise3, in_wav);
 
 msndfile.blockread('close', 'test_files/test.raw');
 
-assertExceptionThrown(@() msndfile.blockread('read', 'test_files/test.raw', [kk kk+block_size-1]), '');
+assertExceptionThrown(@() msndfile.blockread('read', 'test_files/test.raw', [kk kk+block_size-1]), 'msndfile:filenotopen');
 
 in_blockwise1(:) = 0;
 in_blockwise2(:) = 0;
@@ -243,6 +243,6 @@ assertEqual(in_blockwise2, in_wav);
 
 msndfile.blockread('closeall');
 
-assertExceptionThrown(@() msndfile.blockread('read', 'test_files/test.wav', [kk kk+block_size-1]), '');
-assertExceptionThrown(@() msndfile.blockread('read', 'test_files/test.flac', [kk kk+block_size-1]), '');
-assertExceptionThrown(@() msndfile.blockread('read', 'test_files/test.raw', [kk kk+block_size-1]), '');
+assertExceptionThrown(@() msndfile.blockread('read', 'test_files/test.wav', [kk kk+block_size-1]), 'msndfile:filenotopen');
+assertExceptionThrown(@() msndfile.blockread('read', 'test_files/test.flac', [kk kk+block_size-1]), 'msndfile:filenotopen');
+assertExceptionThrown(@() msndfile.blockread('read', 'test_files/test.raw', [kk kk+block_size-1]), 'msndfile:filenotopen');

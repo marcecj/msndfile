@@ -269,14 +269,14 @@ void get_file_info(SF_INFO* sf_file_info, char* sf_in_fname, const mxArray *cons
         sf_file_info->samplerate = (int)*mxGetPr(tmp_ptr);
     else {
         free(sf_in_fname);
-        mexErrMsgTxt("Field 'samplerate' not set.");
+        mexErrMsgIdAndTxt("msndfile:argerror", "Field 'samplerate' not set.");
     }
 
     if( (tmp_ptr = mxGetField(args, 0, "channels" )) != NULL )
         sf_file_info->channels = (int)*mxGetPr(tmp_ptr);
     else {
         free(sf_in_fname);
-        mexErrMsgTxt("Field 'channels' not set.");
+        mexErrMsgIdAndTxt("msndfile:argerror", "Field 'channels' not set.");
     }
 
     /*
@@ -291,7 +291,7 @@ void get_file_info(SF_INFO* sf_file_info, char* sf_in_fname, const mxArray *cons
         mxGetString(tmp_ptr, sub_fmt_name, FMT_STR_SIZE);
     else {
         free(sf_in_fname);
-        mexErrMsgTxt("Field 'sampleformat' not set.");
+        mexErrMsgIdAndTxt("msndfile:argerror", "Field 'sampleformat' not set.");
     }
 
     /* endianness_name does not need to be set */
@@ -306,7 +306,7 @@ void get_file_info(SF_INFO* sf_file_info, char* sf_in_fname, const mxArray *cons
     if( !sf_format_check(sf_file_info) ) {
         mexPrintf("Format '%x' invalid.\n", sf_file_info->format);
         free(sf_in_fname);
-        mexErrMsgTxt("Invalid format specified.");
+        mexErrMsgIdAndTxt("msndfile:argerror", "Invalid format specified.");
     }
 }
 
@@ -322,15 +322,16 @@ int get_num_frames(const SF_INFO* const sf_file_info, SNDFILE* sf_input_file, co
 
         if( sf_seek(sf_input_file, start_end_idx[0]-1, SEEK_SET) < 0
                 || start_end_idx[1] > sf_file_info->frames )
-            mexErrMsgTxt("Invalid range!");
+            mexErrMsgIdAndTxt("msndfile:argerror", "Invalid range!");
     }
     else if( range_size == 1 ) {
         num_frames = (sf_count_t)(start_end_idx[0]);
         if( num_frames > sf_file_info->frames )
-            mexErrMsgTxt("num_frames too large!");
+            mexErrMsgIdAndTxt("msndfile:argerror", "num_frames too large!");
     }
     else
-        mexErrMsgTxt("Range can be a row vector with 1 or 2 elements.");
+        mexErrMsgIdAndTxt("msndfile:argerror",
+                          "Range can be a row vector with 1 or 2 elements.");
 
     return num_frames;
 }

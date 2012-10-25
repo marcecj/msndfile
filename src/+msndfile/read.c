@@ -1,3 +1,4 @@
+#include <errno.h>
 #include <string.h>
 #include <mex.h>
 #include <matrix.h>
@@ -39,16 +40,17 @@ void mexFunction(int nlhs, mxArray *plhs[],
         if( (status = sf_close(sf_input_file)) == 0 )
             sf_input_file = NULL;
         else
-            mexErrMsgTxt(sf_error_number(status));
+            mexErrMsgIdAndTxt("msndfile:sndfile", sf_error_number(status));
     }
 
     if( nrhs < 1 )
-        mexErrMsgTxt("Missing argument: you need to pass a file name.");
+        mexErrMsgIdAndTxt("msndfile:argerror",
+                          "Missing argument: you need to pass a file name.");
 
     /* get input filename */
     if( (sf_in_fname = (char*)calloc(str_size, sizeof(char))) == NULL ) {
         free(sf_in_fname);
-        mexErrMsgTxt("calloc error!");
+        mexErrMsgIdAndTxt("msndfile:system", strerror(errno));
     }
     mxGetString(prhs[0], sf_in_fname, str_size);
 
@@ -65,7 +67,8 @@ void mexFunction(int nlhs, mxArray *plhs[],
     {
         if( !mxIsStruct(prhs[3]) ) {
             free(sf_in_fname);
-            mexErrMsgTxt("The fourth argument has to be a struct! (see help text)");
+            mexErrMsgIdAndTxt("msndfile:argerror",
+                              "The fourth argument has to be a struct! (see help text)");
         }
 
         get_file_info(&sf_file_info, sf_in_fname, prhs[3]);
@@ -80,13 +83,15 @@ void mexFunction(int nlhs, mxArray *plhs[],
         if( !mxIsChar(prhs[2]) ) {
             free(sf_in_fname);
             free(fmt);
-            mexErrMsgTxt("The third argument has to be a string! (see help text)");
+            mexErrMsgIdAndTxt("msndfile:argerror",
+                              "The third argument has to be a string! (see help text)");
         }
 
         if( mxGetString(prhs[2], fmt, fmt_len) == 1 ) {
             free(sf_in_fname);
             free(fmt);
-            mexErrMsgTxt("Error getting 'fmt' string.");
+            mexErrMsgIdAndTxt("msndfile:argerror",
+                              "Error getting 'fmt' string.");
         }
 
         do_read_raw = get_fmt(fmt);
@@ -97,7 +102,7 @@ void mexFunction(int nlhs, mxArray *plhs[],
     free(sf_in_fname);
 
     if( sf_input_file == NULL )
-        mexErrMsgTxt(sf_strerror(sf_input_file));
+        mexErrMsgIdAndTxt("msndfile:sndfile", sf_strerror(sf_input_file));
 
     /*
      * If the second argument is 'size', then only return the dimensions of the
@@ -111,11 +116,12 @@ void mexFunction(int nlhs, mxArray *plhs[],
         char *cmd_str;
 
         if( (cmd_str = (char*)malloc(cmd_size*sizeof(char))) == NULL )
-            mexErrMsgTxt("malloc error!");
+            mexErrMsgIdAndTxt("msndfile:system", strerror(errno));
 
         if( mxGetString(prhs[1], cmd_str, cmd_size) == 1 ) {
             free(cmd_str);
-            mexErrMsgTxt("Error getting command string.");
+            mexErrMsgIdAndTxt("msndfile:argerror",
+                              "Error getting command string.");
         }
 
         if( strcmp(cmd_str, "size") == 0 ) {
@@ -134,7 +140,7 @@ void mexFunction(int nlhs, mxArray *plhs[],
             do_read_raw = get_fmt(cmd_str);
         } else {
             free(cmd_str);
-            mexErrMsgTxt("Unknown command.");
+            mexErrMsgIdAndTxt("msndfile:argerror", "Unknown command.");
         }
 
         free(cmd_str);
@@ -164,14 +170,16 @@ void mexFunction(int nlhs, mxArray *plhs[],
         const size_t nbytes = num_frames*num_chns*get_bits(&sf_file_info)/8;
         if( sf_read_raw(sf_input_file, data, nbytes) <= 0 ) {
             free(data);
-            mexErrMsgTxt("Error reading bytes from input file: 0 bytes read!");
+            mexErrMsgIdAndTxt("msndfile:sndfile",
+                              "Error reading frames from input file: 0 frames read!");
         }
     }
     else
     {
         if( sf_readf_double(sf_input_file, data, num_frames) <= 0 ) {
             free(data);
-            mexErrMsgTxt("Error reading frames from input file: 0 frames read!");
+            mexErrMsgIdAndTxt("msndfile:sndfile",
+                              "Error reading frames from input file: 0 frames read!");
         }
     }
 
@@ -181,7 +189,7 @@ void mexFunction(int nlhs, mxArray *plhs[],
 
     /* rudimentary way of dealing with libsndfile errors */
     if( sf_error(sf_input_file) != SF_ERR_NO_ERROR )
-        mexErrMsgTxt(sf_strerror(sf_input_file));
+        mexErrMsgIdAndTxt("msndfile:sndfile", sf_strerror(sf_input_file));
 
 return_to_matlab:
 
@@ -223,6 +231,6 @@ return_to_matlab:
              * this pointer is overwritten every call anyway */
             sf_input_file = NULL;
         else
-            mexErrMsgTxt(sf_error_number(status));
+            mexErrMsgIdAndTxt("msndfile:sndfile", sf_error_number(status));
     }
 }

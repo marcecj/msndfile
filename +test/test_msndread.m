@@ -16,14 +16,15 @@ ref_data.file_size = wavread('test_files/test.wav', 'size');
 function test_no_args(~)
 % verify that msndread raises an error when called without input arguments
 
-assertExceptionThrown(@msndfile.read, '');
+assertExceptionThrown(@msndfile.read, 'msndfile:argerror');
 
 function test_filename(ref_data)
 % verify that file names without a suffix will have ".wav" appended and that an
 % appropriate errors are thrown
 
-assertExceptionThrown(@() msndfile.read('test_files/bla'), '');
-assertExceptionThrown(@() msndfile.read('test_files/bla.wav'), '');
+% non-existent files should through exceptions
+assertExceptionThrown(@() msndfile.read('test_files/bla'), 'msndfile:sndfile');
+assertExceptionThrown(@() msndfile.read('test_files/bla.wav'), 'msndfile:sndfile');
 
 warning('off', 'msndfile:ambiguousname');
 msndfile.read('test_files/test'); % should default to test.wav file
@@ -48,17 +49,17 @@ assertEqual(test_flac, ref_data.in_wav);
 function test_raw_empty_args(~)
 % verify that msndread raises an error when called with insufficient arguments
 
-assertExceptionThrown(@() msndfile.read('test_files/test.raw', []), '');
-assertExceptionThrown(@() msndfile.read('test_files/test.raw', [], []), '');
-assertExceptionThrown(@() msndfile.read('test_files/test.raw', [], [], []), '');
+assertExceptionThrown(@() msndfile.read('test_files/test.raw', []), 'msndfile:sndfile');
+assertExceptionThrown(@() msndfile.read('test_files/test.raw', [], []), 'msndfile:sndfile');
+assertExceptionThrown(@() msndfile.read('test_files/test.raw', [], [], []), 'msndfile:sndfile');
 
 function test_raw_incomplete_file_info(~)
 % verify that msndread raises an error when file_info is incomplete
 
 file_info.samplerate   = 44100;
-assertExceptionThrown(@() msndfile.read('test_files/test.raw', [], [], file_info), '');
+assertExceptionThrown(@() msndfile.read('test_files/test.raw', [], [], file_info), 'msndfile:argerror');
 file_info.channels     = 2;
-assertExceptionThrown(@() msndfile.read('test_files/test.raw', [], [], file_info), '');
+assertExceptionThrown(@() msndfile.read('test_files/test.raw', [], [], file_info), 'msndfile:argerror');
 
 % only now is file_info complete
 file_info.sampleformat = 'PCM_16';
@@ -70,9 +71,9 @@ file_info = [];
 file_info.samplerate   = 44100;
 file_info.channels     = 2;
 file_info.format       = 'RAW';
-assertExceptionThrown(@() msndfile.read('test_files/test.raw', [], [], file_info), '');
+assertExceptionThrown(@() msndfile.read('test_files/test.raw', [], [], file_info), 'msndfile:argerror');
 file_info.endianness   = 'FILE';
-assertExceptionThrown(@() msndfile.read('test_files/test.raw', [], [], file_info), '');
+assertExceptionThrown(@() msndfile.read('test_files/test.raw', [], [], file_info), 'msndfile:argerror');
 % only now is file_info complete
 file_info.sampleformat = 'PCM_16';
 [in_sig, fs] = msndfile.read('test_files/test.raw', [], [], file_info);
@@ -107,9 +108,9 @@ assertEqual(in_raw_blockwise, ref_data.in_wav(1:num_samples,:));
 
 % test if invalid ranges throw an error
 msndfile.read('test_files/test.wav', [1 ref_data.file_size(1)]);
-assertExceptionThrown(@() msndfile.read('test_files/test.wav', [0 ref_data.file_size(1)]), '');
-assertExceptionThrown(@() msndfile.read('test_files/test.wav', [-1 ref_data.file_size(1)]), '');
-assertExceptionThrown(@() msndfile.read('test_files/test.wav', [1 ref_data.file_size(1)+1]), '');
+assertExceptionThrown(@() msndfile.read('test_files/test.wav', [0 ref_data.file_size(1)]), 'msndfile:argerror');
+assertExceptionThrown(@() msndfile.read('test_files/test.wav', [-1 ref_data.file_size(1)]), 'msndfile:argerror');
+assertExceptionThrown(@() msndfile.read('test_files/test.wav', [1 ref_data.file_size(1)+1]), 'msndfile:argerror');
 msndfile.read('test_files/test.wav', ref_data.file_size(1));
 
 if verLessThan('matlab', '7.1')
@@ -117,8 +118,8 @@ if verLessThan('matlab', '7.1')
 else
     assertExceptionThrown(@() msndfile.read('test_files/test.wav', -1), 'MATLAB:nomem');
 end
-assertExceptionThrown(@() msndfile.read('test_files/test.wav', 0), '');
-assertExceptionThrown(@() msndfile.read('test_files/test.wav', ref_data.file_size(1)+1), '');
+assertExceptionThrown(@() msndfile.read('test_files/test.wav', 0), 'msndfile:sndfile');
+assertExceptionThrown(@() msndfile.read('test_files/test.wav', ref_data.file_size(1)+1), 'msndfile:argerror');
 
 function test_input_size(ref_data)
 % test 'size' input argument

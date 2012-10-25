@@ -1,3 +1,4 @@
+#include <errno.h>
 #include <string.h>
 #include <mex.h>
 #include <sndfile.h>
@@ -36,17 +37,17 @@ void mexFunction(int nlhs, mxArray *plhs[],
     mexAtExit(&clear_static_vars);
 
     if( nrhs < 1 || !mxIsChar(prhs[0]))
-        mexErrMsgTxt("Missing argument: you need to pass a command (see help).");
+        mexErrMsgIdAndTxt("msndfile:argerror", "Missing argument: you need to pass a command (see help).");
 
     if( mxIsEmpty(prhs[0]) || !mxIsChar(prhs[0]))
-        mexErrMsgTxt("Argument error: command may not be empty.");
+        mexErrMsgIdAndTxt("msndfile:argerror", "Argument error: command may not be empty.");
 
     if( (cmd_str = (char*)malloc(cmd_size*sizeof(char))) == NULL )
-        mexErrMsgTxt("malloc error!");
+        mexErrMsgIdAndTxt("msndfile:argerror", strerror(errno));
 
     if( mxGetString(prhs[0], cmd_str, cmd_size) == 1 ) {
         free(cmd_str);
-        mexErrMsgTxt("Error getting command string.");
+        mexErrMsgIdAndTxt("msndfile:argerror", "Error getting command string.");
     }
 
     if(      strcmp(cmd_str, "open") == 0 )     cmd_id = CMD_OPEN;
@@ -58,19 +59,19 @@ void mexFunction(int nlhs, mxArray *plhs[],
     free(cmd_str);
 
     if( cmd_id == -1 )
-        mexErrMsgTxt("Unknown command.");
+        mexErrMsgIdAndTxt("msndfile:argerror", "Unknown command.");
 
     if( nrhs > 1 && mxIsChar(prhs[1]) && cmd_id != CMD_CLOSEALL )
     {
         /* get input filename */
         sf_in_fname = (char*)calloc(str_size, sizeof(char));
         if( !sf_in_fname )
-            mexErrMsgTxt("calloc error!");
+            mexErrMsgIdAndTxt("msndfile:system", strerror(errno));
 
         mxGetString(prhs[1], sf_in_fname, str_size);
     }
     else if( cmd_id != CMD_CLOSEALL )
-        mexErrMsgTxt("Missing argument: you need to pass a file name.");
+        mexErrMsgIdAndTxt("msndfile:argerror", "Missing argument: you need to pass a file name.");
 
     if( cmd_id == CMD_OPEN )
     {
@@ -80,13 +81,13 @@ void mexFunction(int nlhs, mxArray *plhs[],
 
         if( lookup_file_info(file_list, sf_in_fname) != NULL ) {
             free(sf_in_fname);
-            mexErrMsgTxt("File already open!");
+            mexErrMsgIdAndTxt("msndfile:argerror", "File already open!");
         }
 
         /* initialize sf_file_info struct pointer */
         if( (sf_file_info = (SF_INFO*)malloc(sizeof(SF_INFO))) == NULL ) {
             free(sf_in_fname);
-            mexErrMsgTxt("Could not allocate SF_INFO* instance");
+            mexErrMsgIdAndTxt("msndfile:system", strerror(errno));
         }
 
         /* "format" needs to be set to 0 before a file is opened for reading,
@@ -98,7 +99,7 @@ void mexFunction(int nlhs, mxArray *plhs[],
             if( !mxIsStruct(prhs[2]) ) {
                 free(sf_in_fname);
                 free(sf_file_info);
-                mexErrMsgTxt("The second argument has to be a struct! (see help text)");
+                mexErrMsgIdAndTxt("msndfile:argerror", "The second argument has to be a struct! (see help text)");
             }
 
             get_file_info(sf_file_info, sf_in_fname, prhs[2]);
@@ -106,7 +107,7 @@ void mexFunction(int nlhs, mxArray *plhs[],
 
         if( (sf_input_file = sf_open(sf_in_fname, SFM_READ, sf_file_info)) == NULL ) {
             free(sf_file_info);
-            mexErrMsgTxt(sf_strerror(sf_input_file));
+            mexErrMsgIdAndTxt("msndfile:sndfile", sf_strerror(sf_input_file));
         }
 
         file_info = create_file_info(sf_in_fname, sf_file_info, sf_input_file);
@@ -118,19 +119,19 @@ void mexFunction(int nlhs, mxArray *plhs[],
         double *seek_idx;
 
         if( (file_info = lookup_file_info(file_list, sf_in_fname)) == NULL )
-            mexErrMsgTxt("File not open!");
+            mexErrMsgIdAndTxt("msndfile:filenotopen", "File not open!");
 
         if( nrhs < 3 )
-            mexErrMsgTxt("Missing argument: no frame index specified!");
+            mexErrMsgIdAndTxt("msndfile:argerror", "Missing argument: no frame index specified!");
 
         if( mxIsEmpty(prhs[2]) && !mxIsDouble(prhs[2]))
-            mexErrMsgTxt("Frame index is empty!");
+            mexErrMsgIdAndTxt("msndfile:argerror", "Frame index is empty!");
 
         seek_idx = mxGetPr(prhs[2]);
 
         if( seek_idx[0] > file_info->info->frames
                 || sf_seek(file_info->file, seek_idx[0]-1, SEEK_SET) == -1 )
-            mexErrMsgTxt("Invalid frame index!");
+            mexErrMsgIdAndTxt("msndfile:argerror", "Invalid frame index!");
     }
     else if( cmd_id == CMD_TELL )
     {
@@ -138,13 +139,13 @@ void mexFunction(int nlhs, mxArray *plhs[],
         double *cur_pos;
 
         if( (file_info = lookup_file_info(file_list, sf_in_fname)) == NULL )
-            mexErrMsgTxt("File not open!");
+            mexErrMsgIdAndTxt("msndfile:filenotopen", "File not open!");
 
         plhs[0] = mxCreateDoubleMatrix((int)1, 1, mxREAL);
         cur_pos = mxGetPr(plhs[0]);
 
         if( (*cur_pos = sf_seek(file_info->file, 0, SEEK_CUR)) == -1 )
-            mexErrMsgTxt("Error getting current position!");
+            mexErrMsgIdAndTxt("msndfile:sndfile", sf_error_number(*cur_pos));
 
         (*cur_pos)++;
     }
@@ -167,10 +168,10 @@ void mexFunction(int nlhs, mxArray *plhs[],
         int         sndfile_err; /* libsndfile error status */
 
         if( (file_info = lookup_file_info(file_list, sf_in_fname)) == NULL )
-            mexErrMsgTxt("File not open!");
+            mexErrMsgIdAndTxt("msndfile:filenotopen", "File not open!");
 
         if( nrhs < 3 )
-            mexErrMsgTxt("Missing argument: no range specified!");
+            mexErrMsgIdAndTxt("msndfile:argerror", "Missing argument: no range specified!");
 
         if( !mxIsEmpty(prhs[2]) && mxIsDouble(prhs[2]))
             num_frames = get_num_frames(file_info->info, file_info->file, prhs[2]);
@@ -217,7 +218,7 @@ void mexFunction(int nlhs, mxArray *plhs[],
 
         /* rudimentary way of dealing with libsndfile errors */
         if( (sndfile_err = sf_error(file_info->file)) != SF_ERR_NO_ERROR )
-            mexErrMsgTxt(sf_error_number(sndfile_err));
+            mexErrMsgIdAndTxt("msndfile:sndfile", sf_error_number(sndfile_err));
     }
 
     /* free memory */
