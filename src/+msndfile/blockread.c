@@ -147,7 +147,8 @@ void mexFunction(int nlhs, mxArray *plhs[],
     }
     else if( cmd_id == CMD_CLOSE )
     {
-        file_list = remove_file_info(file_list, sf_in_fname);
+        if( remove_file_info(file_list, sf_in_fname) == -1 )
+            mexErrMsgIdAndTxt("msndfile:blockread:filenotopen", "File not open.");
     }
     else if( cmd_id == CMD_CLOSEALL )
     {

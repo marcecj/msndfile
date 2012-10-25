@@ -71,32 +71,31 @@ AUDIO_FILE_INFO* lookup_file_info(AUDIO_FILES *file_list, const char *const name
 }
 
 /* remove an AUDIO_FILE_INFO structure from an AUDIO_FILES linked list */
-AUDIO_FILES* remove_file_info(AUDIO_FILES *file_list, const char *const name)
+int remove_file_info(AUDIO_FILES *file_list, const char *const name)
 {
     AUDIO_FILE_INFO *ptr=NULL, *prev=NULL;
 
-    if( file_list == NULL || file_list->first == NULL ) {
-        mexErrMsgIdAndTxt("msndfile:blockread:filenotopen", "File not open.");
-        return NULL;
-    }
+    /* there are no open files */
+    if( file_list == NULL )
+        return -1;
 
-    for( ptr=file_list->first, prev=ptr; ptr != NULL; prev=ptr, ptr=ptr->next ) {
-        if( strcmp(name, ptr->name) == 0 ) {
-            prev->next = ptr->next;
-            /* Special case: if the ptr is at the first element, we need to
-             * update the pointer to the first element. */
-            if( ptr == file_list->first )
-                file_list->first = ptr->next;
-
-            destroy_file_info(ptr);
+    for( ptr=file_list->first, prev=ptr; ptr != NULL; prev=ptr, ptr=ptr->next )
+        if( strcmp(name, ptr->name) == 0 )
             break;
-        }
-    }
 
+    /* the file is not open */
     if( ptr == NULL )
-        mexErrMsgIdAndTxt("msndfile:blockread:filenotopen", "File not open.");
+        return -1;
 
-    return file_list;
+    prev->next = ptr->next;
+    /* Special case: if the ptr is at the first element, we need to
+     * update the pointer to the first element. */
+    if( ptr == file_list->first )
+        file_list->first = ptr->next;
+
+    destroy_file_info(ptr);
+
+    return 0;
 }
 
 /* deallocate an AUDIO_FILE_INFO structure */

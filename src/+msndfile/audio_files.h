@@ -33,7 +33,7 @@ AUDIO_FILES* store_file_info(AUDIO_FILES* file_list, AUDIO_FILE_INFO* file_info)
 AUDIO_FILE_INFO* lookup_file_info(AUDIO_FILES* file_list, const char *const name);
 
 /* remove an AUDIO_FILE_INFO structure from an AUDIO_FILES linked list */
-AUDIO_FILES* remove_file_info(AUDIO_FILES* file_list, const char *const name);
+int remove_file_info(AUDIO_FILES* file_list, const char *const name);
 
 /* deallocate an AUDIO_FILE_INFO structure */
 void destroy_file_info(AUDIO_FILE_INFO* file_info);
