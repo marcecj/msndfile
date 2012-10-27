@@ -24,10 +24,17 @@ function test_filename(ref_data)
 
 assertExceptionThrown(@() msndfile.read('test_files/bla'), '');
 assertExceptionThrown(@() msndfile.read('test_files/bla.wav'), '');
+
+warning('off', 'msndfile:ambiguousname');
 msndfile.read('test_files/test'); % should default to test.wav file
+warning('on', 'msndfile:ambiguousname');
 msndfile.read('test_files/only_wav/test');
 msndfile.read('test_files/only_raw/test', [], [], ref_data.file_info);
 msndfile.read('test_files/only_flac/test');
+
+% ambiguous file names should through exceptions
+assertExceptionThrown(@() msndfile.read('test_files/no_wav/test'), ...
+                      'msndfile:ambiguousname');
 
 function test_read(ref_data)
 % verify that data is read correctly

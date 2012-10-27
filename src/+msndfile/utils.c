@@ -4,6 +4,7 @@
 #include "stdint_compat.h"
 #endif
 #include <string.h>
+#include <stdio.h>
 #include <mex.h>
 #include <sndfile.h>
 #include "utils.h"
@@ -146,7 +147,8 @@ char* gen_filename(char* fname)
         fname = strcpy(fname, tmp_fname);
         free(tmp_fname);
 
-        if( num_files > 1 && strcmp(&fname[strlen(fname)-3], "wav") == 0)
+        /* break as soon as a WAV file is found */
+        if( strcmp(cur_ext, "wav") == 0)
             break;
     }
 
@@ -161,6 +163,23 @@ get_filename_cleanup:
         for( i = 0; i < num_formats; i++ )
             free(file_exts[i]);
         free(file_exts);
+    }
+
+    /* multiple candidates were found, but no WAV file */
+    if( num_files > 1 && strcmp(&fname[strlen(fname)-3], "wav") != 0 ) {
+        free(fname);
+        fname = NULL;
+    }
+
+    if( num_files > 1 && fname != NULL ) {
+        const char msg_fmt[] = "Defaulted to file name \"%s\".";
+        const size_t msg_len = strlen(fname) + strlen(msg_fmt) - 1;
+        char* message = (char*)malloc(msg_len*sizeof(char));
+
+        sprintf(message, msg_fmt, fname);
+        mexWarnMsgIdAndTxt("msndfile:ambiguousname", message);
+
+        free(message);
     }
 
     return fname;
