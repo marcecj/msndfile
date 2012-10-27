@@ -181,10 +181,8 @@ void mexFunction(int nlhs, mxArray *plhs[],
     free(data);
 
     /* rudimentary way of dealing with libsndfile errors */
-    if( (sndfile_err = sf_error(sf_input_file)) != SF_ERR_NO_ERROR ) {
-        mexWarnMsgTxt("libsndfile error!");
+    if( (sndfile_err = sf_error(sf_input_file)) != SF_ERR_NO_ERROR )
         mexErrMsgTxt(sf_error_number(sndfile_err));
-    }
 
 return_to_matlab:
 

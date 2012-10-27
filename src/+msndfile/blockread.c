@@ -229,10 +229,8 @@ void mexFunction(int nlhs, mxArray *plhs[],
         }
 
         /* rudimentary way of dealing with libsndfile errors */
-        if( (sndfile_err = sf_error(file_info->file)) != SF_ERR_NO_ERROR ) {
-            mexWarnMsgTxt("libsndfile error!");
+        if( (sndfile_err = sf_error(file_info->file)) != SF_ERR_NO_ERROR )
             mexErrMsgTxt(sf_error_number(sndfile_err));
-        }
     }
 
     /* free memory */
