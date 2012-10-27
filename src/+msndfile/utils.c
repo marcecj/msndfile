@@ -97,7 +97,7 @@ char* gen_filename(char* fname)
     size_t i;
 
     /* if the file name (probably) has a suffix, the file name is OK */
-    if( strrchr(fname, '.') )
+    if( strrchr(fname, '.') != NULL )
         goto get_filename_cleanup;
 
     /*
@@ -134,7 +134,7 @@ char* gen_filename(char* fname)
         tmp_fname = strcat(tmp_fname, cur_ext);
 
         /* try to open the file; continue with next extension on failure */
-        if( !(audio_file = fopen(tmp_fname, "r")) ) {
+        if( (audio_file = fopen(tmp_fname, "r")) == NULL ) {
             free(tmp_fname);
             continue;
         }
@@ -246,14 +246,14 @@ void get_file_info(SF_INFO* sf_file_info, char* sf_in_fname, const mxArray *cons
      * get the sample rate and the number of channels
      */
 
-    if( (tmp_ptr = mxGetField(args, 0, "samplerate" )) )
+    if( (tmp_ptr = mxGetField(args, 0, "samplerate" )) != NULL )
         sf_file_info->samplerate = (int)*mxGetPr(tmp_ptr);
     else {
         free(sf_in_fname);
         mexErrMsgTxt("Field 'samplerate' not set.");
     }
 
-    if( (tmp_ptr = mxGetField(args, 0, "channels" )) )
+    if( (tmp_ptr = mxGetField(args, 0, "channels" )) != NULL )
         sf_file_info->channels = (int)*mxGetPr(tmp_ptr);
     else {
         free(sf_in_fname);
@@ -265,10 +265,10 @@ void get_file_info(SF_INFO* sf_file_info, char* sf_in_fname, const mxArray *cons
      */
 
     /* format name should be set to RAW when reading RAW files */
-    if( (tmp_ptr = mxGetField(args, 0, "format" )) )
+    if( (tmp_ptr = mxGetField(args, 0, "format" )) != NULL )
         mxGetString(tmp_ptr, maj_fmt_name, FMT_STR_SIZE);
 
-    if( (tmp_ptr = mxGetField(args, 0, "sampleformat" )) )
+    if( (tmp_ptr = mxGetField(args, 0, "sampleformat" )) != NULL )
         mxGetString(tmp_ptr, sub_fmt_name, FMT_STR_SIZE);
     else {
         free(sf_in_fname);
@@ -276,7 +276,7 @@ void get_file_info(SF_INFO* sf_file_info, char* sf_in_fname, const mxArray *cons
     }
 
     /* endianness_name does not need to be set */
-    if( (tmp_ptr = mxGetField(args, 0, "endianness" )) )
+    if( (tmp_ptr = mxGetField(args, 0, "endianness" )) != NULL )
         mxGetString(tmp_ptr, endianness_name, mxGetN(tmp_ptr)+1);
 
     sf_file_info->format = lookup_val(&maj_fmts, maj_fmt_name)
@@ -321,9 +321,9 @@ int get_fmt(const char* const args)
 {
     int do_read_raw = 0;
 
-    if( !strcmp(args, "native") )
+    if( strcmp(args, "native") == 0 )
         do_read_raw = 1;
-    else if( !strcmp(args, "double") )
+    else if( strcmp(args, "double") == 0 )
         do_read_raw = 0;
     else
         mexWarnMsgTxt("Bad 'fmt' argument: defaulting to 'double'.");

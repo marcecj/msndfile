@@ -41,7 +41,7 @@ void mexFunction(int nlhs, mxArray *plhs[],
     if( mxIsEmpty(prhs[0]) || !mxIsChar(prhs[0]))
         mexErrMsgTxt("Argument error: command may not be empty.");
 
-    if( !(cmd_str = (char*)malloc(cmd_size*sizeof(char))) )
+    if( (cmd_str = (char*)malloc(cmd_size*sizeof(char))) == NULL )
         mexErrMsgTxt("malloc error!");
 
     if( mxGetString(prhs[0], cmd_str, cmd_size) == 1 ) {
@@ -78,14 +78,13 @@ void mexFunction(int nlhs, mxArray *plhs[],
         SNDFILE* sf_input_file     = NULL;
         SF_INFO* sf_file_info      = NULL;
 
-        if( lookup_file_info(file_list, sf_in_fname) ) {
+        if( lookup_file_info(file_list, sf_in_fname) != NULL ) {
             free(sf_in_fname);
             mexErrMsgTxt("File already open!");
         }
 
         /* initialize sf_file_info struct pointer */
-        sf_file_info = (SF_INFO*)malloc(sizeof(SF_INFO));
-        if( !sf_file_info ) {
+        if( (sf_file_info = (SF_INFO*)malloc(sizeof(SF_INFO))) == NULL ) {
             free(sf_in_fname);
             mexErrMsgTxt("Could not allocate SF_INFO* instance");
         }
@@ -105,9 +104,7 @@ void mexFunction(int nlhs, mxArray *plhs[],
             get_file_info(sf_file_info, sf_in_fname, prhs[2]);
         }
 
-        sf_input_file = sf_open(sf_in_fname, SFM_READ, sf_file_info);
-
-        if( !sf_input_file ) {
+        if( (sf_input_file = sf_open(sf_in_fname, SFM_READ, sf_file_info)) == NULL ) {
             free(sf_file_info);
             mexErrMsgTxt(sf_strerror(sf_input_file));
         }
@@ -120,7 +117,7 @@ void mexFunction(int nlhs, mxArray *plhs[],
         AUDIO_FILE_INFO* file_info = NULL;
         double *seek_idx;
 
-        if( !(file_info = lookup_file_info(file_list, sf_in_fname)) )
+        if( (file_info = lookup_file_info(file_list, sf_in_fname)) == NULL )
             mexErrMsgTxt("File not open!");
 
         if( nrhs < 3 )
@@ -132,7 +129,7 @@ void mexFunction(int nlhs, mxArray *plhs[],
         seek_idx = mxGetPr(prhs[2]);
 
         if( seek_idx[0] > file_info->info->frames
-                || sf_seek(file_info->file, seek_idx[0]-1, SEEK_SET) < 0 )
+                || sf_seek(file_info->file, seek_idx[0]-1, SEEK_SET) == -1 )
             mexErrMsgTxt("Invalid frame index!");
     }
     else if( cmd_id == CMD_TELL )
@@ -140,13 +137,13 @@ void mexFunction(int nlhs, mxArray *plhs[],
         AUDIO_FILE_INFO* file_info = NULL;
         double *cur_pos;
 
-        if( !(file_info = lookup_file_info(file_list, sf_in_fname)) )
+        if( (file_info = lookup_file_info(file_list, sf_in_fname)) == NULL )
             mexErrMsgTxt("File not open!");
 
         plhs[0] = mxCreateDoubleMatrix((int)1, 1, mxREAL);
         cur_pos = mxGetPr(plhs[0]);
 
-        if( (*cur_pos = sf_seek(file_info->file, 0, SEEK_CUR)) < 0 )
+        if( (*cur_pos = sf_seek(file_info->file, 0, SEEK_CUR)) == -1 )
             mexErrMsgTxt("Error getting current position!");
 
         (*cur_pos)++;
@@ -169,7 +166,7 @@ void mexFunction(int nlhs, mxArray *plhs[],
         sf_count_t  num_frames=0;
         int         sndfile_err; /* libsndfile error status */
 
-        if( !(file_info = lookup_file_info(file_list, sf_in_fname)) )
+        if( (file_info = lookup_file_info(file_list, sf_in_fname)) == NULL )
             mexErrMsgTxt("File not open!");
 
         if( nrhs < 3 )

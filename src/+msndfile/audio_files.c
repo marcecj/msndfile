@@ -29,15 +29,15 @@ AUDIO_FILE_INFO* create_file_info(const char *const name, SF_INFO* sf_file_info,
 AUDIO_FILES* store_file_info(AUDIO_FILES *array, AUDIO_FILE_INFO *file_info)
 {
     /* create a new AUDIO_FILES* array if it does not exist */
-    if( !array ) {
-        if( !(array = (AUDIO_FILES*)malloc(sizeof(AUDIO_FILES))) )
+    if( array == NULL ) {
+        if( (array = (AUDIO_FILES*)malloc(sizeof(AUDIO_FILES))) == NULL )
             return NULL;
         array->num_files = 0;
         array->files = (AUDIO_FILE_INFO**)malloc(sizeof(AUDIO_FILE_INFO*));
     }
 
     /* if the file name is not stored yet, append it to the array */
-    if( !lookup_file_info(array, file_info->name) ) {
+    if( lookup_file_info(array, file_info->name) == NULL ) {
         if( array->num_files > 0 )
             array->files = (AUDIO_FILE_INFO**)realloc(array->files, (array->num_files+1)*sizeof(AUDIO_FILE_INFO*));
         array->num_files++;
@@ -54,7 +54,7 @@ AUDIO_FILE_INFO* lookup_file_info(const AUDIO_FILES *const array, const char *co
 {
     int i;
 
-    if( !array )
+    if( array == NULL )
         return NULL;
 
     for(i = 0; i < array->num_files; i++)
@@ -69,7 +69,7 @@ AUDIO_FILES* remove_file_info(AUDIO_FILES *array, const char *const name)
 {
     int i=0;
 
-    if( !array ) {
+    if( array == NULL ) {
         mexWarnMsgIdAndTxt("blockread:filenotopen", "File not open.");
         return array;
     }
@@ -103,7 +103,7 @@ AUDIO_FILE_INFO* destroy_file_info(AUDIO_FILE_INFO* file_info)
 {
     int status;
 
-    if( !file_info )
+    if( file_info == NULL )
         mexWarnMsgTxt("File already removed! This is odd.");
 
     free(file_info->name);
