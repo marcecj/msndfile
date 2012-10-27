@@ -14,7 +14,7 @@ AUDIO_FILE_INFO* create_file_info(const char *const name, SF_INFO* sf_file_info,
     AUDIO_FILE_INFO* file_info;
 
     if((file_info = (AUDIO_FILE_INFO*)malloc(sizeof(AUDIO_FILE_INFO))) == NULL)
-        return file_info;
+        return NULL;
 
     file_info->info = sf_file_info;
     file_info->file = file;

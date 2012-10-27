@@ -7,8 +7,6 @@
 
 /*
  * This is a simple mex-File using libsndfile for reading in audio files
- *
- * TODO: this needs more testing
  */
 
 static SNDFILE* sf_input_file=NULL;
@@ -196,6 +194,7 @@ return_to_matlab:
         *fs = (double)sf_file_info.samplerate;
     }
 
+    /* return bit rate if requested */
     if( nlhs > 2 ) {
         double *nbits;
 
@@ -205,6 +204,7 @@ return_to_matlab:
         *nbits = (double)get_bits(&sf_file_info);
     }
 
+    /* return fmt struct if requested */
     if( nlhs > 3 ) {
         const mwSize ndims[] = {1, 1};
         const char* fields[] = {"fmt",};

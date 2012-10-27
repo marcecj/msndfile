@@ -6,8 +6,6 @@
 
 /*
  * This is a simple mex-File using libsndfile for reading in audio files
- *
- * TODO: this needs more testing
  */
 
 enum {
@@ -38,7 +36,7 @@ void mexFunction(int nlhs, mxArray *plhs[],
     mexAtExit(&clear_static_vars);
 
     if( nrhs < 1 || !mxIsChar(prhs[0]))
-        mexErrMsgTxt("Missing argument: you need to pass a command (either 'open', 'read', or 'close').");
+        mexErrMsgTxt("Missing argument: you need to pass a command (see help).");
 
     if( mxIsEmpty(prhs[0]) || !mxIsChar(prhs[0]))
         mexErrMsgTxt("Argument error: command may not be empty.");
@@ -51,18 +49,12 @@ void mexFunction(int nlhs, mxArray *plhs[],
         mexErrMsgTxt("Error getting command string.");
     }
 
-    if( strcmp(cmd_str, "open") == 0 )
-        cmd_id = CMD_OPEN;
-    else if( strcmp(cmd_str, "read") == 0 )
-        cmd_id = CMD_READ;
-    else if( strcmp(cmd_str, "seek") == 0 )
-        cmd_id = CMD_SEEK;
-    else if( strcmp(cmd_str, "tell") == 0 )
-        cmd_id = CMD_TELL;
-    else if( strcmp(cmd_str, "close") == 0 )
-        cmd_id = CMD_CLOSE;
-    else if( strcmp(cmd_str, "closeall") == 0 )
-        cmd_id = CMD_CLOSEALL;
+    if(      strcmp(cmd_str, "open") == 0 )     cmd_id = CMD_OPEN;
+    else if( strcmp(cmd_str, "read") == 0 )     cmd_id = CMD_READ;
+    else if( strcmp(cmd_str, "seek") == 0 )     cmd_id = CMD_SEEK;
+    else if( strcmp(cmd_str, "tell") == 0 )     cmd_id = CMD_TELL;
+    else if( strcmp(cmd_str, "close") == 0 )    cmd_id = CMD_CLOSE;
+    else if( strcmp(cmd_str, "closeall") == 0 ) cmd_id = CMD_CLOSEALL;
     free(cmd_str);
 
     if( cmd_id == -1 )
@@ -107,7 +99,6 @@ void mexFunction(int nlhs, mxArray *plhs[],
             if( !mxIsStruct(prhs[2]) ) {
                 free(sf_in_fname);
                 free(sf_file_info);
-                sf_file_info = NULL;
                 mexErrMsgTxt("The second argument has to be a struct! (see help text)");
             }
 
@@ -118,7 +109,6 @@ void mexFunction(int nlhs, mxArray *plhs[],
 
         if( !sf_input_file ) {
             free(sf_file_info);
-            sf_file_info = NULL;
             mexErrMsgTxt(sf_strerror(sf_input_file));
         }
 

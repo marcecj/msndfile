@@ -91,13 +91,12 @@ char* gen_filename(char* fname)
     const size_t num_formats = get_num_formats();
     char** file_exts         = NULL;
     char** read_exts         = NULL;
-    char* tmp_fname          = NULL;
     FILE* audio_file         = NULL;
     size_t num_read_exts     = 0;
     size_t num_files         = 0; /* file name ambiguity if num_files>1 */
     size_t i;
 
-    /* if the file name has a suffix, the file name is OK */
+    /* if the file name (probably) has a suffix, the file name is OK */
     if( strrchr(fname, '.') )
         goto get_filename_cleanup;
 
@@ -110,43 +109,41 @@ char* gen_filename(char* fname)
     file_exts = get_format_extensions();
 
     for( i = 0; i < num_formats; i++ ) {
+        char* tmp_fname      = NULL;
         const char* cur_ext  = file_exts[i];
         const size_t ext_len = strlen(cur_ext)+1; /* '.' + extension */
         const size_t new_len = N+ext_len+1;
 
         /* get_format_extensions() returns duplicate entries, so check here if
-         * the extension has already been tried; if not, append the current
-         * extension to the list of checked extensions */
+         * the extension has already been tried */
         if( ext_already_checked(read_exts, cur_ext, num_read_exts) )
             continue;
-        else {
-            read_exts = (char**)realloc(read_exts, (num_read_exts+1)*sizeof(char*));
-            read_exts[num_read_exts] = (char*)malloc(ext_len*sizeof(char));
-            read_exts[num_read_exts] = strcpy(read_exts[num_read_exts], cur_ext);
-            num_read_exts++;
-        }
 
-        tmp_fname = (char*)calloc(new_len, sizeof(char));
+        /* append the current extension to the list of checked extensions */
+        read_exts = (char**)realloc(read_exts, (num_read_exts+1)*sizeof(char*));
+        read_exts[num_read_exts] = (char*)malloc(ext_len*sizeof(char));
+        read_exts[num_read_exts] = strcpy(read_exts[num_read_exts], cur_ext);
+        num_read_exts++;
 
         /* copy the original N chars from fname into tmp_fname */
+        tmp_fname = (char*)calloc(new_len, sizeof(char));
         tmp_fname = strncpy(tmp_fname, fname, N);
 
         /* append the file type extension */
         tmp_fname = strcat(tmp_fname, ".");
         tmp_fname = strcat(tmp_fname, cur_ext);
 
-        /* try to open the file; overwrite the original file name if successful,
-         * continue otherwise */
+        /* try to open the file; continue with next extension on failure */
         if( !(audio_file = fopen(tmp_fname, "r")) ) {
             free(tmp_fname);
             continue;
-        } else {
-            fclose(audio_file);
-            num_files++;
-            fname = (char*)realloc(fname, new_len*sizeof(char));
-            fname = strcpy(fname, tmp_fname);
         }
 
+        /*  overwrite the original file name */
+        fclose(audio_file); /* close temporary file */
+        num_files++;
+        fname = (char*)realloc(fname, new_len*sizeof(char));
+        fname = strcpy(fname, tmp_fname);
         free(tmp_fname);
 
         if( num_files > 1 && strcmp(&fname[strlen(fname)-3], "wav") == 0)
