@@ -163,24 +163,24 @@ void mexFunction(int nlhs, mxArray *plhs[],
     /* read the entire file in one go
      *
      * If we want the native file type (do_read_raw), then we need to use
-     * sf_read_raw() and pass it the number of *bytes* to be read.*/
+     * sf_read_raw() and pass it the number of *bytes* to be read.
+     *
+     * NOTE: Matlab 2010a returns the whole file when num_frames == 0, but warns
+     * that in the future, an empty matrix will be returned. This implements
+     * that future behaviour. */
     data = (double*)malloc((int)num_frames*num_chns*sizeof(double));
     if( do_read_raw )
     {
         const size_t nbytes = num_frames*num_chns*get_bits(&sf_file_info)/8;
-        if( sf_read_raw(sf_input_file, data, nbytes) <= 0 ) {
-            free(data);
-            mexErrMsgIdAndTxt("msndfile:sndfile",
+        if( sf_read_raw(sf_input_file, data, nbytes) == 0 )
+            mexWarnMsgIdAndTxt("msndfile:sndfile",
                               "Error reading frames from input file: 0 frames read!");
-        }
     }
     else
     {
-        if( sf_readf_double(sf_input_file, data, num_frames) <= 0 ) {
-            free(data);
-            mexErrMsgIdAndTxt("msndfile:sndfile",
+        if( sf_readf_double(sf_input_file, data, num_frames) == 0 )
+            mexWarnMsgIdAndTxt("msndfile:sndfile",
                               "Error reading frames from input file: 0 frames read!");
-        }
     }
 
     /* transpose returned data */

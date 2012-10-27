@@ -118,7 +118,9 @@ if verLessThan('matlab', '7.1')
 else
     assertExceptionThrown(@() msndfile.read('test_files/test.wav', -1), 'MATLAB:nomem');
 end
-assertExceptionThrown(@() msndfile.read('test_files/test.wav', 0), 'msndfile:sndfile');
+warning('off', 'msndfile:sndfile');
+assertTrue(isempty(msndfile.read('test_files/test.wav', 0)));
+warning('on', 'msndfile:sndfile');
 assertExceptionThrown(@() msndfile.read('test_files/test.wav', ref_data.file_size(1)+1), 'msndfile:argerror');
 
 function test_input_size(ref_data)

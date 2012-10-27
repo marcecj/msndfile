@@ -193,11 +193,8 @@ void mexFunction(int nlhs, mxArray *plhs[],
         }
 
         /* read the entire file in one go */
-        if( sf_readf_double(file_info->file, temp_array, num_frames) == 0 ) {
-            if( do_transpose )
-                free(temp_array);
-            mexErrMsgTxt("Error reading frames from input file: 0 frames read!");
-        }
+        if( sf_readf_double(file_info->file, temp_array, num_frames) == 0 )
+            mexWarnMsgIdAndTxt("msndfile:sndfile", "Error reading frames from input file: 0 frames read!");
 
         /*
          * transpose returned data

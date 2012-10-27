@@ -175,7 +175,9 @@ if verLessThan('matlab', '7.1')
 else
     assertExceptionThrown(@() msndfile.blockread('read', 'test_files/test.wav', -1), 'MATLAB:nomem');
 end
-assertExceptionThrown(@() msndfile.blockread('read', 'test_files/test.wav', 0), '');
+warning('off', 'msndfile:sndfile');
+assertTrue(isempty(msndfile.blockread('read', 'test_files/test.wav', 0)));
+warning('on', 'msndfile:sndfile');
 msndfile.blockread('close', 'test_files/test.wav');
 msndfile.blockread('open', 'test_files/test.wav');
 assertExceptionThrown(@() msndfile.blockread('read', 'test_files/test.wav', ref_data.file_size(1)+1), 'msndfile:argerror');
