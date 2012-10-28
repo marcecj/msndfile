@@ -23,7 +23,6 @@ void clear_memory(void)
 void mexFunction(int nlhs, mxArray *plhs[],
                  int nrhs, const mxArray *prhs[])
 {
-    int         sndfile_err; /* libsndfile error status */
     int         num_chns;
     const int   str_size = (nrhs > 0 ? mxGetN(prhs[0])+1 : 0); /* length of the input file name */
     char        *sf_in_fname; /* input file name */
@@ -38,10 +37,11 @@ void mexFunction(int nlhs, mxArray *plhs[],
     /* If a file was not closed properly last run, attempt to close it
      * again.  If it still fails, abort. */
     if( sf_input_file ) {
-        if( !sf_close(sf_input_file) )
+        int status;
+        if( (status = sf_close(sf_input_file)) == 0 )
             sf_input_file = NULL;
         else
-            mexErrMsgTxt("There was still a file open that could not be closed!");
+            mexErrMsgTxt(sf_error_number(status));
     }
 
     if( nrhs < 1 )
@@ -181,8 +181,8 @@ void mexFunction(int nlhs, mxArray *plhs[],
     free(data);
 
     /* rudimentary way of dealing with libsndfile errors */
-    if( (sndfile_err = sf_error(sf_input_file)) != SF_ERR_NO_ERROR )
-        mexErrMsgTxt(sf_error_number(sndfile_err));
+    if( sf_error(sf_input_file) != SF_ERR_NO_ERROR )
+        mexErrMsgTxt(sf_strerror(sf_input_file));
 
 return_to_matlab:
 
@@ -215,12 +215,13 @@ return_to_matlab:
     }
 
     if( sf_input_file ) {
-        if( !sf_close(sf_input_file) )
+        int status;
+        if( (status = sf_close(sf_input_file)) == 0 )
             /* sf_close() doesn't set the pointer to NULL, and Matlab doesn't
              * like that (it prints "too many files open" errors), even though
              * this pointer is overwritten every call anyway */
             sf_input_file = NULL;
         else
-            mexWarnMsgTxt("libsndfile could not close the file!");
+            mexErrMsgTxt(sf_error_number(status));
     }
 }

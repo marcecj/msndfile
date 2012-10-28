@@ -101,6 +101,8 @@ AUDIO_FILES* remove_file_info(AUDIO_FILES *array, const char *const name)
 /* deallocate an AUDIO_FILE_INFO structure */
 AUDIO_FILE_INFO* destroy_file_info(AUDIO_FILE_INFO* file_info)
 {
+    int status;
+
     if( !file_info )
         mexWarnMsgTxt("File already removed! This is odd.");
 
@@ -108,10 +110,13 @@ AUDIO_FILE_INFO* destroy_file_info(AUDIO_FILE_INFO* file_info)
     free(file_info->info);
 
     /* TODO: what to do here? */
-    if( !sf_close(file_info->file) )
+    if( (status = sf_close(file_info->file)) == 0 )
         file_info->file = NULL;
-    else
-        mexWarnMsgTxt("libsndfile could not close the file!");
+    else {
+        mexWarnMsgTxt("libsndfile could not close the file! Deallocating structure anyway.");
+        mexWarnMsgTxt(sf_error_number(status));
+    }
+
 
     free(file_info);
 
