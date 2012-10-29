@@ -187,6 +187,10 @@ void mexFunction(int nlhs, mxArray *plhs[],
         if( do_transpose ) {
             plhs[0]    = mxCreateDoubleMatrix((int)num_frames, num_chns, mxREAL);
             temp_array = (double*)malloc((int)num_frames*num_chns*sizeof(double));
+            if( temp_array == NULL ) {
+                mxFree(sf_in_fname);
+                mexErrMsgIdAndTxt("msndfile:system", strerror(errno));
+            }
         } else {
             plhs[0]    = mxCreateDoubleMatrix(num_chns, (int)num_frames, mxREAL);
             temp_array = mxGetPr(plhs[0]);

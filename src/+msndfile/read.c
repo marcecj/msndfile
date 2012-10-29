@@ -78,7 +78,12 @@ void mexFunction(int nlhs, mxArray *plhs[],
     if( nrhs >= 3 && !mxIsEmpty(prhs[2]) )
     {
         const short fmt_len = mxGetN(prhs[2])+1;
-        char* fmt = (char*)malloc(fmt_len*sizeof(char));
+        char* fmt;
+
+        if( (fmt = (char*)malloc(fmt_len*sizeof(char))) == NULL ) {
+            mxFree(sf_in_fname);
+            mexErrMsgIdAndTxt("msndfile:system", strerror(errno));
+        }
 
         if( !mxIsChar(prhs[2]) ) {
             free(sf_in_fname);
@@ -168,7 +173,9 @@ void mexFunction(int nlhs, mxArray *plhs[],
      * NOTE: Matlab 2010a returns the whole file when num_frames == 0, but warns
      * that in the future, an empty matrix will be returned. This implements
      * that future behaviour. */
-    data = (double*)malloc((int)num_frames*num_chns*sizeof(double));
+    if( (data = (double*)malloc((int)num_frames*num_chns*sizeof(double))) == NULL )
+        mexErrMsgIdAndTxt("msndfile:system", strerror(errno));
+
     if( do_read_raw )
     {
         const size_t nbytes = num_frames*num_chns*get_bits(&sf_file_info)/8;
