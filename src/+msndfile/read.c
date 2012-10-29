@@ -48,11 +48,7 @@ void mexFunction(int nlhs, mxArray *plhs[],
                           "Missing argument: you need to pass a file name.");
 
     /* get input filename */
-    if( (sf_in_fname = (char*)calloc(str_size, sizeof(char))) == NULL ) {
-        free(sf_in_fname);
-        mexErrMsgIdAndTxt("msndfile:system", strerror(errno));
-    }
-    mxGetString(prhs[0], sf_in_fname, str_size);
+    sf_in_fname = mxArrayToString(prhs[0]);
 
     if( (sf_in_fname = gen_filename(sf_in_fname)) == NULL )
         mexErrMsgIdAndTxt("msndfile:ambiguousname",
@@ -66,7 +62,7 @@ void mexFunction(int nlhs, mxArray *plhs[],
     if( nrhs >= 4 && !mxIsEmpty(prhs[3]) )
     {
         if( !mxIsStruct(prhs[3]) ) {
-            free(sf_in_fname);
+            mxFree(sf_in_fname);
             mexErrMsgIdAndTxt("msndfile:argerror",
                               "The fourth argument has to be a struct! (see help text)");
         }
@@ -86,14 +82,14 @@ void mexFunction(int nlhs, mxArray *plhs[],
         }
 
         if( !mxIsChar(prhs[2]) ) {
-            free(sf_in_fname);
+            mxFree(sf_in_fname);
             free(fmt);
             mexErrMsgIdAndTxt("msndfile:argerror",
                               "The third argument has to be a string! (see help text)");
         }
 
         if( mxGetString(prhs[2], fmt, fmt_len) == 1 ) {
-            free(sf_in_fname);
+            mxFree(sf_in_fname);
             free(fmt);
             mexErrMsgIdAndTxt("msndfile:argerror",
                               "Error getting 'fmt' string.");
@@ -104,7 +100,7 @@ void mexFunction(int nlhs, mxArray *plhs[],
     }
 
     sf_input_file = sf_open(sf_in_fname, SFM_READ, &sf_file_info);
-    free(sf_in_fname);
+    mxFree(sf_in_fname);
 
     if( sf_input_file == NULL )
         mexErrMsgIdAndTxt("msndfile:sndfile", sf_strerror(sf_input_file));

@@ -37,6 +37,13 @@ msndfile.read('test_files/only_flac/test');
 assertExceptionThrown(@() msndfile.read('test_files/no_wav/test'), ...
                       'msndfile:ambiguousname');
 
+% test multibyte file name support
+warning('off', 'msndfile:ambiguousname');
+msndfile.read('test_files/bläßgans');
+warning('on', 'msndfile:ambiguousname');
+msndfile.read('test_files/bläßgans.wav');
+msndfile.read('test_files/bläßgans.flac');
+
 function test_read(ref_data)
 % verify that data is read correctly
 

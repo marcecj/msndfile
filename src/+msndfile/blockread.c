@@ -29,7 +29,6 @@ void mexFunction(int nlhs, mxArray *plhs[],
                  int nrhs, const mxArray *prhs[])
 {
     const int   cmd_size = (nrhs > 0 ? mxGetN(prhs[0])+1 : 0); /* length of the command */
-    const int   str_size = (nrhs > 1 ? mxGetN(prhs[1])+1 : 0); /* length of the input file name */
     int         cmd_id = -1;
     char        *cmd_str;
     char        *sf_in_fname=NULL; /* input file name */
@@ -64,11 +63,7 @@ void mexFunction(int nlhs, mxArray *plhs[],
     if( nrhs > 1 && mxIsChar(prhs[1]) && cmd_id != CMD_CLOSEALL )
     {
         /* get input filename */
-        sf_in_fname = (char*)calloc(str_size, sizeof(char));
-        if( !sf_in_fname )
-            mexErrMsgIdAndTxt("msndfile:system", strerror(errno));
-
-        mxGetString(prhs[1], sf_in_fname, str_size);
+        sf_in_fname = mxArrayToString(prhs[1]);
     }
     else if( cmd_id != CMD_CLOSEALL )
         mexErrMsgIdAndTxt("msndfile:argerror", "Missing argument: you need to pass a file name.");
@@ -80,13 +75,13 @@ void mexFunction(int nlhs, mxArray *plhs[],
         SF_INFO* sf_file_info      = NULL;
 
         if( lookup_file_info(file_list, sf_in_fname) != NULL ) {
-            free(sf_in_fname);
+            mxFree(sf_in_fname);
             mexErrMsgIdAndTxt("msndfile:argerror", "File already open!");
         }
 
         /* initialize sf_file_info struct pointer */
         if( (sf_file_info = (SF_INFO*)malloc(sizeof(SF_INFO))) == NULL ) {
-            free(sf_in_fname);
+            mxFree(sf_in_fname);
             mexErrMsgIdAndTxt("msndfile:system", strerror(errno));
         }
 
@@ -97,7 +92,7 @@ void mexFunction(int nlhs, mxArray *plhs[],
         {
             /* handle RAW files */
             if( !mxIsStruct(prhs[2]) ) {
-                free(sf_in_fname);
+                mxFree(sf_in_fname);
                 free(sf_file_info);
                 mexErrMsgIdAndTxt("msndfile:argerror", "The second argument has to be a struct! (see help text)");
             }
@@ -106,7 +101,7 @@ void mexFunction(int nlhs, mxArray *plhs[],
         }
 
         if( (sf_input_file = sf_open(sf_in_fname, SFM_READ, sf_file_info)) == NULL ) {
-            free(sf_in_fname);
+            mxFree(sf_in_fname);
             free(sf_file_info);
             mexErrMsgIdAndTxt("msndfile:sndfile", sf_strerror(sf_input_file));
         }
@@ -224,5 +219,5 @@ void mexFunction(int nlhs, mxArray *plhs[],
     }
 
     /* free memory */
-    free(sf_in_fname);
+    mxFree(sf_in_fname);
 }

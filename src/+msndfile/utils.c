@@ -143,12 +143,12 @@ char* gen_filename(char* fname)
         /*  overwrite the original file name */
         fclose(audio_file); /* close temporary file */
         num_files++;
-        fname = (char*)realloc(fname, new_len*sizeof(char));
+        fname = (char*)mxRealloc(fname, new_len*sizeof(char));
         fname = strcpy(fname, tmp_fname);
         free(tmp_fname);
 
         /* break as soon as a WAV file is found */
-        if( strcmp(cur_ext, "wav") == 0)
+        if( strcmp(cur_ext, "wav") == 0 )
             break;
     }
 
@@ -167,7 +167,7 @@ get_filename_cleanup:
 
     /* multiple candidates were found, but no WAV file */
     if( num_files > 1 && strcmp(&fname[strlen(fname)-3], "wav") != 0 ) {
-        free(fname);
+        mxFree(fname);
         fname = NULL;
     }
 
@@ -268,14 +268,14 @@ void get_file_info(SF_INFO* sf_file_info, char* sf_in_fname, const mxArray *cons
     if( (tmp_ptr = mxGetField(args, 0, "samplerate" )) != NULL )
         sf_file_info->samplerate = (int)*mxGetPr(tmp_ptr);
     else {
-        free(sf_in_fname);
+        mxFree(sf_in_fname);
         mexErrMsgIdAndTxt("msndfile:argerror", "Field 'samplerate' not set.");
     }
 
     if( (tmp_ptr = mxGetField(args, 0, "channels" )) != NULL )
         sf_file_info->channels = (int)*mxGetPr(tmp_ptr);
     else {
-        free(sf_in_fname);
+        mxFree(sf_in_fname);
         mexErrMsgIdAndTxt("msndfile:argerror", "Field 'channels' not set.");
     }
 
@@ -290,7 +290,7 @@ void get_file_info(SF_INFO* sf_file_info, char* sf_in_fname, const mxArray *cons
     if( (tmp_ptr = mxGetField(args, 0, "sampleformat" )) != NULL )
         mxGetString(tmp_ptr, sub_fmt_name, FMT_STR_SIZE);
     else {
-        free(sf_in_fname);
+        mxFree(sf_in_fname);
         mexErrMsgIdAndTxt("msndfile:argerror", "Field 'sampleformat' not set.");
     }
 
@@ -305,7 +305,7 @@ void get_file_info(SF_INFO* sf_file_info, char* sf_in_fname, const mxArray *cons
     /* check format for validity */
     if( !sf_format_check(sf_file_info) ) {
         mexPrintf("Format '%x' invalid.\n", sf_file_info->format);
-        free(sf_in_fname);
+        mxFree(sf_in_fname);
         mexErrMsgIdAndTxt("msndfile:argerror", "Invalid format specified.");
     }
 }

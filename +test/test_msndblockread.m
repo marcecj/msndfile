@@ -248,3 +248,15 @@ msndfile.blockread('closeall');
 assertExceptionThrown(@() msndfile.blockread('read', 'test_files/test.wav', [kk kk+block_size-1]), 'msndfile:filenotopen');
 assertExceptionThrown(@() msndfile.blockread('read', 'test_files/test.flac', [kk kk+block_size-1]), 'msndfile:filenotopen');
 assertExceptionThrown(@() msndfile.blockread('read', 'test_files/test.raw', [kk kk+block_size-1]), 'msndfile:filenotopen');
+
+% test multibyte file name support; just do some regular stuff
+function test_multibyte(ref_data)
+
+fname = 'test_files/bläßgans.wav';
+msndfile.blockread('open', fname);
+assertExceptionThrown(@() msndfile.blockread('open', fname), 'msndfile:argerror');
+msndfile.blockread('read', fname, [1 ref_data.file_size(1)]);
+msndfile.blockread('close', fname);
+warning('off', 'msndfile:filenotopen');
+msndfile.blockread('close', fname);
+warning('on', 'msndfile:filenotopen');
