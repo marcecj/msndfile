@@ -106,6 +106,7 @@ void mexFunction(int nlhs, mxArray *plhs[],
         }
 
         if( (sf_input_file = sf_open(sf_in_fname, SFM_READ, sf_file_info)) == NULL ) {
+            free(sf_in_fname);
             free(sf_file_info);
             mexErrMsgIdAndTxt("msndfile:sndfile", sf_strerror(sf_input_file));
         }
