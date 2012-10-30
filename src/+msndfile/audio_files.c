@@ -113,8 +113,8 @@ AUDIO_FILE_INFO* destroy_file_info(AUDIO_FILE_INFO* file_info)
     if( (status = sf_close(file_info->file)) == 0 )
         file_info->file = NULL;
     else {
-        mexWarnMsgTxt("libsndfile could not close the file! Deallocating structure anyway.");
-        mexWarnMsgTxt(sf_error_number(status));
+        mexWarnMsgIdAndTxt("msndfile:sndfile", "libsndfile could not close the file! Deallocating structure anyway.");
+        mexWarnMsgIdAndTxt("msndfile:sndfile", sf_error_number(status));
     }
 
 
