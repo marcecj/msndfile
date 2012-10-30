@@ -76,7 +76,7 @@ void mexFunction(int nlhs, mxArray *plhs[],
 
         if( lookup_file_info(file_list, sf_in_fname) != NULL ) {
             mxFree(sf_in_fname);
-            mexErrMsgIdAndTxt("msndfile:argerror", "File already open!");
+            mexErrMsgIdAndTxt("msndfile:blockread:argerror", "File already open!");
         }
 
         /* initialize sf_file_info struct pointer */
@@ -115,7 +115,7 @@ void mexFunction(int nlhs, mxArray *plhs[],
         double *seek_idx;
 
         if( (file_info = lookup_file_info(file_list, sf_in_fname)) == NULL )
-            mexErrMsgIdAndTxt("msndfile:filenotopen", "File not open!");
+            mexErrMsgIdAndTxt("msndfile:blockread:filenotopen", "File not open!");
 
         if( nrhs < 3 )
             mexErrMsgIdAndTxt("msndfile:argerror", "Missing argument: no frame index specified!");
@@ -135,7 +135,7 @@ void mexFunction(int nlhs, mxArray *plhs[],
         double *cur_pos;
 
         if( (file_info = lookup_file_info(file_list, sf_in_fname)) == NULL )
-            mexErrMsgIdAndTxt("msndfile:filenotopen", "File not open!");
+            mexErrMsgIdAndTxt("msndfile:blockread:filenotopen", "File not open!");
 
         plhs[0] = mxCreateDoubleMatrix((int)1, 1, mxREAL);
         cur_pos = mxGetPr(plhs[0]);
@@ -164,7 +164,7 @@ void mexFunction(int nlhs, mxArray *plhs[],
         int         sndfile_err; /* libsndfile error status */
 
         if( (file_info = lookup_file_info(file_list, sf_in_fname)) == NULL )
-            mexErrMsgIdAndTxt("msndfile:filenotopen", "File not open!");
+            mexErrMsgIdAndTxt("msndfile:blockread:filenotopen", "File not open!");
 
         if( nrhs < 3 )
             mexErrMsgIdAndTxt("msndfile:argerror", "Missing argument: no range specified!");

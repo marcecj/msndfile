@@ -177,7 +177,7 @@ get_filename_cleanup:
         char* message = (char*)malloc(msg_len*sizeof(char));
 
         sprintf(message, msg_fmt, fname);
-        mexWarnMsgIdAndTxt("msndfile:ambiguousname", message);
+        mexWarnMsgIdAndTxt("msndfile:read:ambiguousname", message);
 
         free(message);
     }

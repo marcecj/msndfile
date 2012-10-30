@@ -51,7 +51,7 @@ void mexFunction(int nlhs, mxArray *plhs[],
     sf_in_fname = mxArrayToString(prhs[0]);
 
     if( (sf_in_fname = gen_filename(sf_in_fname)) == NULL )
-        mexErrMsgIdAndTxt("msndfile:ambiguousname",
+        mexErrMsgIdAndTxt("msndfile:read:ambiguousname",
                           "No file extension specified and no WAV file found.");
 
     /* "format" needs to be set to 0 before a file is opened for reading,

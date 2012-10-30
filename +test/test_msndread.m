@@ -26,25 +26,25 @@ function test_filename(ref_data)
 assertExceptionThrown(@() msndfile.read('test_files/bla'), 'msndfile:sndfile');
 assertExceptionThrown(@() msndfile.read('test_files/bla.wav'), 'msndfile:sndfile');
 
-warning('off', 'msndfile:ambiguousname');
+warning('off', 'msndfile:read:ambiguousname');
 msndfile.read('test_files/test'); % should default to test.wav file
-warning('on', 'msndfile:ambiguousname');
+warning('on', 'msndfile:read:ambiguousname');
 msndfile.read('test_files/only_wav/test');
 msndfile.read('test_files/only_raw/test', [], [], ref_data.file_info);
 msndfile.read('test_files/only_flac/test');
 
 % ambiguous file names should through exceptions
 assertExceptionThrown(@() msndfile.read('test_files/no_wav/test'), ...
-                      'msndfile:ambiguousname');
+                      'msndfile:read:ambiguousname');
 
 % UTF-8 encoded file name 'test_files/bläßgans'
 utf8_bytes = [98 108 195 164 195 159]; % bläß
 fname = ['test_files/' native2unicode(utf8_bytes, 'UTF-8') 'gans'];
 
 % test multibyte file name support
-warning('off', 'msndfile:ambiguousname');
+warning('off', 'msndfile:read:ambiguousname');
 msndfile.read(fname);
-warning('on', 'msndfile:ambiguousname');
+warning('on', 'msndfile:read:ambiguousname');
 msndfile.read([fname '.wav']);
 msndfile.read([fname '.flac']);
 

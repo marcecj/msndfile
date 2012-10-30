@@ -27,9 +27,9 @@ msndfile.blockread('open', 'test_files/test.wav');
 msndfile.blockread('open', 'test_files/test.flac');
 msndfile.blockread('open', 'test_files/test.raw', ref_data.file_info);
 
-assertExceptionThrown(@() msndfile.blockread('open', 'test_files/test.wav'), 'msndfile:argerror');
-assertExceptionThrown(@() msndfile.blockread('open', 'test_files/test.flac'), 'msndfile:argerror');
-assertExceptionThrown(@() msndfile.blockread('open', 'test_files/test.raw', ref_data.file_info), 'msndfile:argerror');
+assertExceptionThrown(@() msndfile.blockread('open', 'test_files/test.wav'), 'msndfile:blockread:argerror');
+assertExceptionThrown(@() msndfile.blockread('open', 'test_files/test.flac'), 'msndfile:blockread:argerror');
+assertExceptionThrown(@() msndfile.blockread('open', 'test_files/test.raw', ref_data.file_info), 'msndfile:blockread:argerror');
 
 function test_seek(ref_data)
 
@@ -101,11 +101,11 @@ msndfile.blockread('close', 'test_files/test.flac');
 msndfile.blockread('close', 'test_files/test.raw', ref_data.file_info);
 
 % should not throw an exception
-warning('off', 'msndfile:filenotopen');
+warning('off', 'msndfile:blockread:filenotopen');
 msndfile.blockread('close', 'test_files/test.wav');
 msndfile.blockread('close', 'test_files/test.flac');
 msndfile.blockread('close', 'test_files/test.raw', ref_data.file_info);
-warning('on', 'msndfile:filenotopen');
+warning('on', 'msndfile:blockread:filenotopen');
 
 function test_closeall(ref_data)
 % test read command
@@ -116,16 +116,16 @@ msndfile.blockread('open', 'test_files/test.raw', ref_data.file_info);
 
 msndfile.blockread('closeall');
 
-assertExceptionThrown(@() msndfile.blockread('read', 'test_files/test.wav', ref_data.block_size), 'msndfile:filenotopen');
-assertExceptionThrown(@() msndfile.blockread('read', 'test_files/test.flac', ref_data.block_size), 'msndfile:filenotopen');
-assertExceptionThrown(@() msndfile.blockread('read', 'test_files/test.raw', ref_data.block_size, ref_data.file_info), 'msndfile:filenotopen');
+assertExceptionThrown(@() msndfile.blockread('read', 'test_files/test.wav', ref_data.block_size), 'msndfile:blockread:filenotopen');
+assertExceptionThrown(@() msndfile.blockread('read', 'test_files/test.flac', ref_data.block_size), 'msndfile:blockread:filenotopen');
+assertExceptionThrown(@() msndfile.blockread('read', 'test_files/test.raw', ref_data.block_size, ref_data.file_info), 'msndfile:blockread:filenotopen');
 
 % should not throw an exception
-warning('off', 'msndfile:filenotopen');
+warning('off', 'msndfile:blockread:filenotopen');
 msndfile.blockread('close', 'test_files/test.wav');
 msndfile.blockread('close', 'test_files/test.flac');
 msndfile.blockread('close', 'test_files/test.raw', ref_data.file_info);
-warning('on', 'msndfile:filenotopen');
+warning('on', 'msndfile:blockread:filenotopen');
 
 function test_read(ref_data)
 % test read command
@@ -151,11 +151,11 @@ assertEqual(in_blockwise2, in_wav(1:num_samples,:));
 
 % close the WAV file and try to read from it
 msndfile.blockread('close', 'test_files/test.wav');
-assertExceptionThrown(@() msndfile.blockread('read', 'test_files/test.wav', block_size), 'msndfile:filenotopen');
+assertExceptionThrown(@() msndfile.blockread('read', 'test_files/test.wav', block_size), 'msndfile:blockread:filenotopen');
 
 % close the FLAC file and try to read from it
 msndfile.blockread('close', 'test_files/test.flac');
-assertExceptionThrown(@() msndfile.blockread('read', 'test_files/test.flac', block_size), 'msndfile:filenotopen');
+assertExceptionThrown(@() msndfile.blockread('read', 'test_files/test.flac', block_size), 'msndfile:blockread:filenotopen');
 
 % test if invalid ranges throw an error
 msndfile.blockread('open', 'test_files/test.wav');
@@ -229,7 +229,7 @@ assertEqual(in_blockwise3, in_wav);
 
 msndfile.blockread('close', 'test_files/test.raw');
 
-assertExceptionThrown(@() msndfile.blockread('read', 'test_files/test.raw', [kk kk+block_size-1]), 'msndfile:filenotopen');
+assertExceptionThrown(@() msndfile.blockread('read', 'test_files/test.raw', [kk kk+block_size-1]), 'msndfile:blockread:filenotopen');
 
 in_blockwise1(:) = 0;
 in_blockwise2(:) = 0;
@@ -245,9 +245,9 @@ assertEqual(in_blockwise2, in_wav);
 
 msndfile.blockread('closeall');
 
-assertExceptionThrown(@() msndfile.blockread('read', 'test_files/test.wav', [kk kk+block_size-1]), 'msndfile:filenotopen');
-assertExceptionThrown(@() msndfile.blockread('read', 'test_files/test.flac', [kk kk+block_size-1]), 'msndfile:filenotopen');
-assertExceptionThrown(@() msndfile.blockread('read', 'test_files/test.raw', [kk kk+block_size-1]), 'msndfile:filenotopen');
+assertExceptionThrown(@() msndfile.blockread('read', 'test_files/test.wav', [kk kk+block_size-1]), 'msndfile:blockread:filenotopen');
+assertExceptionThrown(@() msndfile.blockread('read', 'test_files/test.flac', [kk kk+block_size-1]), 'msndfile:blockread:filenotopen');
+assertExceptionThrown(@() msndfile.blockread('read', 'test_files/test.raw', [kk kk+block_size-1]), 'msndfile:blockread:filenotopen');
 
 % test multibyte file name support; just do some regular stuff
 function test_multibyte(ref_data)
@@ -257,9 +257,9 @@ utf8_bytes = [98 108 195 164 195 159]; % bläß
 fname = ['test_files/' native2unicode(utf8_bytes, 'UTF-8') 'gans.wav'];
 
 msndfile.blockread('open', fname);
-assertExceptionThrown(@() msndfile.blockread('open', fname), 'msndfile:argerror');
+assertExceptionThrown(@() msndfile.blockread('open', fname), 'msndfile:blockread:argerror');
 msndfile.blockread('read', fname, [1 ref_data.file_size(1)]);
 msndfile.blockread('close', fname);
-warning('off', 'msndfile:filenotopen');
+warning('off', 'msndfile:blockread:filenotopen');
 msndfile.blockread('close', fname);
-warning('on', 'msndfile:filenotopen');
+warning('on', 'msndfile:blockread:filenotopen');
