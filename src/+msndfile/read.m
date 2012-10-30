@@ -131,6 +131,36 @@ function [OutData,fs,NBits,Opts] = read(file_name, idx_range, fmt, file_info)
 %           LITTLE       Force little endian-ness.
 %           BIG          Force big endian-ness.
 %           CPU          Force CPU endian-ness.
+%
+% Errors and warnings
+% -------------------
+%
+% Under certain conditions, MSNDFILE.READ() will raise a warning or error.
+%
+% The errors specific to MSNDFILE.READ() are:
+%
+% - msndfile:read:ambiguousname
+%
+%   The file name (sans suffix) is ambiguous and no WAV file was found among the
+%   files found.  You should pass the full file name.
+%
+% The warnings specific to MSNDFILE.READ() are:
+%
+% - msndfile:read:ambiguousname
+%
+%   The file name (sans suffix) is ambiguous, but there was a WAV file among the
+%   files found.
+%
+% Generic errors used throughout msndfile:
+%
+% - msndfile:argerror   Too few or incorrect arguments were passed.
+% - msndfile:sndfile    A call to libsndfile failed fatally.
+% - msndfile:system     A system error (e.g., a failed memory allocation).
+%
+% Generic warnings used throughout msndfile:
+%
+% - msndfile:sndfile    A call to libsndfile failed non-fatally.
+
 
 % (c) Marc Joliet <marcec@gmx.de>
 %

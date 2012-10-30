@@ -134,6 +134,31 @@ function OutData = blockread(cmd, file_name, idx_range, file_info)
 %           LITTLE       Force little endian-ness.
 %           BIG          Force big endian-ness.
 %           CPU          Force CPU endian-ness.
+%
+% Errors and warnings
+% -------------------
+%
+% Under certain conditions, MSNDFILE.BLOCKREAD() will raise a warning or error.
+%
+% The errors specific to MSNDFILE.BLOCKREAD() are:
+%
+% - msndfile:blockread:filenotopen
+%
+%   An operation on an unopened file was attempted.  Open the file first.
+%
+% - msndfile:blockread:fileopen
+%
+%   An attempt was made to open an already opened file.
+%
+% Generic errors used throughout msndfile:
+%
+% - msndfile:argerror   Too few or incorrect arguments were passed.
+% - msndfile:sndfile    A call to libsndfile failed fatally.
+% - msndfile:system     A system error (e.g., a failed memory allocation).
+%
+% Generic warnings used throughout msndfile:
+%
+% - msndfile:sndfile    A call to libsndfile failed non-fatally.
 
 % (c) Marc Joliet <marcec@gmx.de>
 %
