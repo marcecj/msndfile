@@ -100,12 +100,10 @@ msndfile.blockread('close', 'test_files/test.wav');
 msndfile.blockread('close', 'test_files/test.flac');
 msndfile.blockread('close', 'test_files/test.raw', ref_data.file_info);
 
-% should not throw an exception
-warning('off', 'msndfile:blockread:filenotopen');
-msndfile.blockread('close', 'test_files/test.wav');
-msndfile.blockread('close', 'test_files/test.flac');
-msndfile.blockread('close', 'test_files/test.raw', ref_data.file_info);
-warning('on', 'msndfile:blockread:filenotopen');
+% should throw an exception
+assertExceptionThrown(@() msndfile.blockread('close', 'test_files/test.wav'), 'msndfile:blockread:filenotopen');
+assertExceptionThrown(@() msndfile.blockread('close', 'test_files/test.flac'), 'msndfile:blockread:filenotopen');
+assertExceptionThrown(@() msndfile.blockread('close', 'test_files/test.raw', ref_data.file_info), 'msndfile:blockread:filenotopen');
 
 function test_closeall(ref_data)
 % test read command
@@ -121,11 +119,9 @@ assertExceptionThrown(@() msndfile.blockread('read', 'test_files/test.flac', ref
 assertExceptionThrown(@() msndfile.blockread('read', 'test_files/test.raw', ref_data.block_size, ref_data.file_info), 'msndfile:blockread:filenotopen');
 
 % should not throw an exception
-warning('off', 'msndfile:blockread:filenotopen');
-msndfile.blockread('close', 'test_files/test.wav');
-msndfile.blockread('close', 'test_files/test.flac');
-msndfile.blockread('close', 'test_files/test.raw', ref_data.file_info);
-warning('on', 'msndfile:blockread:filenotopen');
+assertExceptionThrown(@() msndfile.blockread('close', 'test_files/test.wav'), 'msndfile:blockread:filenotopen');
+assertExceptionThrown(@() msndfile.blockread('close', 'test_files/test.flac'), 'msndfile:blockread:filenotopen');
+assertExceptionThrown(@() msndfile.blockread('close', 'test_files/test.raw', ref_data.file_info), 'msndfile:blockread:filenotopen');
 
 function test_read(ref_data)
 % test read command
@@ -260,6 +256,4 @@ msndfile.blockread('open', fname);
 assertExceptionThrown(@() msndfile.blockread('open', fname), 'msndfile:blockread:argerror');
 msndfile.blockread('read', fname, [1 ref_data.file_size(1)]);
 msndfile.blockread('close', fname);
-warning('off', 'msndfile:blockread:filenotopen');
-msndfile.blockread('close', fname);
-warning('on', 'msndfile:blockread:filenotopen');
+assertExceptionThrown(@() msndfile.blockread('close', fname), 'msndfile:blockread:filenotopen');

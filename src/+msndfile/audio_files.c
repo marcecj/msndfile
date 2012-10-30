@@ -70,7 +70,7 @@ AUDIO_FILES* remove_file_info(AUDIO_FILES *array, const char *const name)
     int i=0;
 
     if( array == NULL ) {
-        mexWarnMsgIdAndTxt("msndfile:blockread:filenotopen", "File not open.");
+        mexErrMsgIdAndTxt("msndfile:blockread:filenotopen", "File not open.");
         return array;
     }
 
@@ -93,7 +93,7 @@ AUDIO_FILES* remove_file_info(AUDIO_FILES *array, const char *const name)
             array->files = (AUDIO_FILE_INFO**)malloc(sizeof(AUDIO_FILE_INFO*));
     }
     else
-        mexWarnMsgIdAndTxt("msndfile:blockread:filenotopen", "File not open.");
+        mexErrMsgIdAndTxt("msndfile:blockread:filenotopen", "File not open.");
 
     return array;
 }
