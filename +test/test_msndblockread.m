@@ -27,9 +27,9 @@ msndfile.blockread('open', 'test_files/test.wav');
 msndfile.blockread('open', 'test_files/test.flac');
 msndfile.blockread('open', 'test_files/test.raw', ref_data.file_info);
 
-assertExceptionThrown(@() msndfile.blockread('open', 'test_files/test.wav'), 'msndfile:blockread:argerror');
-assertExceptionThrown(@() msndfile.blockread('open', 'test_files/test.flac'), 'msndfile:blockread:argerror');
-assertExceptionThrown(@() msndfile.blockread('open', 'test_files/test.raw', ref_data.file_info), 'msndfile:blockread:argerror');
+assertExceptionThrown(@() msndfile.blockread('open', 'test_files/test.wav'), 'msndfile:blockread:fileopen');
+assertExceptionThrown(@() msndfile.blockread('open', 'test_files/test.flac'), 'msndfile:blockread:fileopen');
+assertExceptionThrown(@() msndfile.blockread('open', 'test_files/test.raw', ref_data.file_info), 'msndfile:blockread:fileopen');
 
 function test_seek(ref_data)
 
@@ -253,7 +253,7 @@ utf8_bytes = [98 108 195 164 195 159]; % bläß
 fname = ['test_files/' native2unicode(utf8_bytes, 'UTF-8') 'gans.wav'];
 
 msndfile.blockread('open', fname);
-assertExceptionThrown(@() msndfile.blockread('open', fname), 'msndfile:blockread:argerror');
+assertExceptionThrown(@() msndfile.blockread('open', fname), 'msndfile:blockread:fileopen');
 msndfile.blockread('read', fname, [1 ref_data.file_size(1)]);
 msndfile.blockread('close', fname);
 assertExceptionThrown(@() msndfile.blockread('close', fname), 'msndfile:blockread:filenotopen');

@@ -76,7 +76,7 @@ void mexFunction(int nlhs, mxArray *plhs[],
 
         if( lookup_file_info(file_list, sf_in_fname) != NULL ) {
             mxFree(sf_in_fname);
-            mexErrMsgIdAndTxt("msndfile:blockread:argerror", "File already open!");
+            mexErrMsgIdAndTxt("msndfile:blockread:fileopen", "File already open!");
         }
 
         /* initialize sf_file_info struct pointer */
