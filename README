@@ -46,6 +46,9 @@ The msndfile suite currently has the following features:
 Compatibility with `wavread`
 ----------------------------
 
+Leaving off the file type extension
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
 While `msndfile` supports reading files without the file type extension, i.e.
 
 ---------------------------
@@ -66,13 +69,42 @@ works, the following conditions must be met:
 For other, more "exotic" file types, it is therefor necessary to provide the
 file type extension.
 
-Furthermore, msndfile may differ in behaviour a bit if a file is not a WAV file.  In
-these cases, the following differences to `wavread` hold:
+Differences when the file is not a WAV file
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+Msndfile may differ in behaviour a bit if a file is not a WAV file.  In these
+cases, the following differences to `wavread` hold:
 
 - The opts.fmt struct has no "wFormatTag" field if the file type is not a WAV
   file (which is completely logical).
 - Broadcast WAV files produce an additional opts.bext field.
 - The opts.info struct may contain fields unique to non-WAV formats.
+
+Warnings and errors
+~~~~~~~~~~~~~~~~~~~
+
+Msndfile will of course have its own unique warnings and errors, but might also
+print different warnings and errors in identical situations.  This might be less
+of a problem in situations where the error is a system error, in which case it
+seems that `wavread` and msndfile both print the system error (i.e.,
+`strerror(errno)`).
+
+More importantly, though, the error and warning IDs will be different, since
+msndfile uses its own ID component 'msndfile:', as per Matlab documentation
+footnote:[If requested, I could at least make the mnemonics identical to
+`wavread`].
+
+Changes in the behaviour of `wavread`
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+It may be that some `wavread()` behaviour may change over time or may have
+changed in the (recent) past.  Msndfile will for simplicity only implement one
+type of behaviour.  Here is a list of all known examples:
+
+- In older versions of Matlab trying to read zero samples will instead read a
+  file in its entirety.  Newer versions instead return an empty matrix, which is
+  what msndfile does.  Note that some versions of Matlab (e.g., 2010a) print a
+  large warning that the behaviour will change.
 
 Installation
 ------------
