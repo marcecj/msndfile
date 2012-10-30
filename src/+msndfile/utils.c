@@ -345,8 +345,10 @@ int get_fmt(const char* const args)
         do_read_raw = 1;
     else if( strcmp(args, "double") == 0 )
         do_read_raw = 0;
-    else
-        mexWarnMsgTxt("Bad 'fmt' argument: defaulting to 'double'.");
+    else {
+        free(args);
+        mexErrMsgIdAndTxt("msndfile:argerror", "Bad 'fmt' argument: defaulting to 'double'.");
+    }
 
     return do_read_raw;
 }

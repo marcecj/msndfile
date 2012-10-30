@@ -163,6 +163,8 @@ in_test = msndfile.read('test_files/test.raw', [], 'native', ref_data.file_info)
 
 assertEqual(in_test, in_wav);
 
+assertExceptionThrown(@() msndfile.read('test_files/test.wav', 'bla'), 'msndfile:argerror');
+
 function test_output_fs(ref_data)
 % test 'fs' return value
 
