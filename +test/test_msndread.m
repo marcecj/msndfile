@@ -37,12 +37,16 @@ msndfile.read('test_files/only_flac/test');
 assertExceptionThrown(@() msndfile.read('test_files/no_wav/test'), ...
                       'msndfile:ambiguousname');
 
+% UTF-8 encoded file name 'test_files/bläßgans'
+utf8_bytes = [98 108 195 164 195 159]; % bläß
+fname = ['test_files/' native2unicode(utf8_bytes, 'UTF-8') 'gans'];
+
 % test multibyte file name support
 warning('off', 'msndfile:ambiguousname');
-msndfile.read('test_files/bläßgans');
+msndfile.read(fname);
 warning('on', 'msndfile:ambiguousname');
-msndfile.read('test_files/bläßgans.wav');
-msndfile.read('test_files/bläßgans.flac');
+msndfile.read([fname '.wav']);
+msndfile.read([fname '.flac']);
 
 function test_read(ref_data)
 % verify that data is read correctly
