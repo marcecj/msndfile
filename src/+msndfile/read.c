@@ -96,6 +96,8 @@ void mexFunction(int nlhs, mxArray *plhs[],
 
         do_read_raw = get_fmt(fmt);
         free(fmt);
+        if( do_read_raw == -1 )
+            mexErrMsgIdAndTxt("msndfile:argerror", "Bad 'fmt' argument: defaulting to 'double'.");
     }
 
     sf_input_file = sf_open(sf_in_fname, SFM_READ, &sf_file_info);

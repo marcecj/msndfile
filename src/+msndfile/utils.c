@@ -339,16 +339,12 @@ int get_num_frames(const SF_INFO* const sf_file_info, SNDFILE* sf_input_file, co
 /* check the fmt argument and return true or false */
 int get_fmt(const char* const args)
 {
-    int do_read_raw = 0;
+    int do_read_raw = -1;
 
     if( strcmp(args, "native") == 0 )
         do_read_raw = 1;
     else if( strcmp(args, "double") == 0 )
         do_read_raw = 0;
-    else {
-        free(args);
-        mexErrMsgIdAndTxt("msndfile:argerror", "Bad 'fmt' argument: defaulting to 'double'.");
-    }
 
     return do_read_raw;
 }
