@@ -33,8 +33,8 @@ Linux::
     manager (typically a package with a '-devel' or '-dev' suffix).
 Windows::
     Follow the instructions at http://www.mega-nerd.com/libsndfile[]).  After
-    you have done that, copy the files `libsndfile-1.dll` and `libsndfile-1.lib`
-    into the `Win` subdirectory.
+    you have done that, copy the files `libsndfile-1.dll`, `libsndfile-1.lib`
+    and `sndfile.h` into the `Win` subdirectory.
 Mac OS X::
     Either download the sources from http://www.mega-nerd.com/libsndfile[] and
     compile them yourself or use a package management system like fink or
