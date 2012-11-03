@@ -1,3 +1,3 @@
 #!/bin/sh
 
-sftp -b upload-site marcecj@web.sourceforge.net
+scp index.html marcecj@web.sourceforge.net:/home/project-web/msndfile/htdocs
