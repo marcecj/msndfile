@@ -38,7 +38,7 @@ directory in the source repository).
 
 msndfile is Copyright (c) 2010-2012 Marc Joliet <marcec@gmx.de> and licenced
 under the MIT licence.  See the file
-link:https://github.com/marcecj/msndfile/blob/master/LICENSE[LICENSE] in the
+[LICENSE](https://github.com/marcecj/msndfile/blob/master/LICENSE) in the
 project repository.
 
 The test files test.{raw,flac,wav} are an excerpt of "Glass Cafe" by Jon7 and
