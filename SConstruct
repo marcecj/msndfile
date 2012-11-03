@@ -40,10 +40,11 @@ else:
                       variables = env_vars)
 
 # define a simple AsciiDoc builder
-asciidoc = env.Builder(action = ['asciidoc -o ${TARGET} ${SOURCE}'],
+asciidoc = env.Builder(action = ['asciidoc ${ASCIIDOCFLAGS} -o ${TARGET} ${SOURCE}'],
                        suffix = '.html',
                        single_source = True)
 env['BUILDERS']['AsciiDoc'] = asciidoc
+env.Append(ASCIIDOCFLAGS = '-b html5')
 
 # The matlab package directory
 env['pkg_dir'] = "+msndfile"
