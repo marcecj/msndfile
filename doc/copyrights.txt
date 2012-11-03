@@ -1,0 +1,16 @@
+Copyrights
+----------
+
+msndfile is Copyright (c) 2010-2012 Marc Joliet <marcec@gmx.de> and licenced
+under the MIT licence.  See the file
+link:https://github.com/marcecj/msndfile/blob/master/LICENSE[LICENSE] in the
+project repository.
+
+The test files test.{raw,flac,wav} are an excerpt of ``Glass Cafe'' by Jon7 and
+are licensed under the ``Attribution-NonCommercial-ShareAlike 2.5 Generic (CC
+BY-NC-SA 2.5)'' license (see
+http://creativecommons.org/licenses/by-nc-sa/2.5/[]).
+
+libsndfile is maintained by Erik de Castro Lopo <erikd@mega-nerd.com> and is
+licensed under the link:http://www.gnu.org/licenses/old-licenses/lgpl-2.1[LGPLv2.1]
+(included in the source directory in the file ``LGPL-2.1'').

@@ -1,0 +1,24 @@
+The msndfile Mex extension
+==========================
+Marc Joliet <marcec@gmx.de>
+:toc:
+:website: http://sourceforge.net/projects/msndfile/
+
+{description}
+msndfile is a suite of MATLAB Mex wrappers of the
+http://www.mega-nerd.com/libsndfile[libsndfile] C library for reading and
+writing audio files.
+
+include::intro.txt[]
+
+include::features.txt[]
+
+include::compatibility.txt[]
+
+include::downloads.txt[]
+
+include::installation.txt[]
+
+include::copyrights.txt[]
+
+// vim:ft=asciidoc

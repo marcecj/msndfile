@@ -1,0 +1,64 @@
+Compatibility with `wavread`
+----------------------------
+
+Leaving off the file type extension
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+While `msndfile` supports reading files without the file type extension, i.e.
+
+---------------------------
+>> msndfile.read('some_file');
+---------------------------
+
+works, the following conditions must be met:
+
+- There may be no ambiguity with regards to which file is meant, unless one of
+  the files with the same basename is a WAV file.  For example: if you try to
+  read `some_file` and there are two files, `some_file.aiff` and `some_file.flac`,
+  msndfile will abort with an error.  However, if there is also a file
+  `some_file.wav`, msndfile will read that.
+- The format must be what the libsndfile documentation refers to as ``simple''.
+  These ``simple formats'' are: AIF{F,C}, AU, CAF, FLAC, VOX, Ogg and WAV.
+  Additionaly, RAW files are supported, even though RAW is not a ``simple format''.
+
+For other, more ``exotic'' file types, it is therefor necessary to provide the
+file type extension.
+
+Differences when the file is not a WAV file
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+Msndfile may differ in behaviour a bit if a file is not a WAV file.  In these
+cases, the following differences to `wavread` hold:
+
+- The opts.fmt struct has no ``wFormatTag'' field if the file type is not a WAV
+  file (which is completely logical).
+- Broadcast WAV files produce an additional opts.bext field.
+- The opts.info struct may contain fields unique to non-WAV formats.
+
+Warnings and errors
+~~~~~~~~~~~~~~~~~~~
+
+Msndfile will of course have its own unique warnings and errors, but might also
+print different warnings and errors in identical situations.  This might be less
+of a problem in situations where the error is a system error, in which case it
+seems that `wavread` and msndfile both print the system error (i.e.,
+`strerror(errno)`).
+
+More importantly, though, the error and warning IDs will be different, since
+msndfile uses its own ID component 'msndfile:', as per Matlab documentation
+footnote:[If requested, I could at least make the mnemonics identical to
+`wavread`].
+
+Changes in the behaviour of `wavread`
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+It may be that some `wavread()` behaviour may change over time or may have
+changed in the (recent) past.  Msndfile will for simplicity only implement one
+type of behaviour.  Here is a list of all known examples:
+
+- In older versions of Matlab trying to read zero samples will instead read a
+  file in its entirety.  Newer versions instead return an empty matrix, which is
+  what msndfile does.  Note that some versions of Matlab (e.g., 2010a) print a
+  large warning that the behaviour will change.
+
+// vim:ft=asciidoc

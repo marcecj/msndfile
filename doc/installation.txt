@@ -1,5 +1,5 @@
-Installing msndfile
-===================
+Installing msndfile from source
+-------------------------------
 
 There are two ways to compile msndfile.  The easy way is to call the m-file
 `compile_msndfile.m` from Matlab.  This is probably the way to go if you only
@@ -10,7 +10,7 @@ this if you want to 'work on' msndfile.  For details on both methods, see their
 relevant subsections.
 
 Prerequisites
--------------
+~~~~~~~~~~~~~
 
 The basic dependencies of msndfile are:
 
@@ -62,12 +62,12 @@ doing so before I get around to it, I would like to know if it works.  I already
 test compile with clang, so there *should* be no issues.
 
 Using the compile_msndfile.m script
------------------------------------
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 In Matlab, type `compile_msndfile` to compile all Mex extensions.
 
 Using the SCons based build system
-----------------------------------
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 The SCons based build system is in general more robust and flexibel than calling
 Mex in `compile_msndfile.m`.  It uses an extension that properly presets some
@@ -112,7 +112,7 @@ call MATLAB with the `-wait` argument.  I could not find a way to do this
 automatically with SCons.
 
 Linux
-~~~~~
+^^^^^
 
 Just open a terminal, navigate to the top-level project directory, and type
 
@@ -121,7 +121,7 @@ $ scons
 -----------------
 
 Windows
-~~~~~~~
+^^^^^^^
 
 You can launch the batch file `start_scons.bat`, which launches scons and keeps
 the terminal window open.  It is expected that SCons is in your $PATH.
@@ -132,13 +132,13 @@ see http://www.scons.org/wiki/IDEIntegration[].  Also, there is an option to
 force the use of MinGW in case it is installed along with Visual Studio.
 
 Mac OS X
-~~~~~~~~
+^^^^^^^^
 
 Follow the same steps as under Linux, or look into integrating SCons into your
 IDE of choice (see http://www.scons.org/wiki/IDEIntegration[]).
 
 Testing
--------
+~~~~~~~
 
 Msndfile comes with a comprehensive test suite (based on
 http://www.mathworks.com/matlabcentral/fileexchange/22846[MTest]) that is run by

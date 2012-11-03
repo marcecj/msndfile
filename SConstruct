@@ -170,7 +170,8 @@ sndfile_pkg = env.Package(
 # create an alias for building the documentation, but only if the asciidoc
 # binary could be found
 if env.WhereIs('asciidoc') is not None:
-    docs = env.AsciiDoc(['README', 'INSTALL', 'LICENSE'])
+    docs = env.AsciiDoc(['doc/index.txt'])
+    env.Depends(docs, Glob('doc/*.txt'))
     Alias('doc', docs)
     Help("    doc          -> compiles documentation to HTML")
 else:

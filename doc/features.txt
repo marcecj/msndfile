@@ -1,0 +1,18 @@
+Features
+--------
+
+The msndfile suite currently has the following features:
+
+- Can read any file type supported by libsndfile, such as FLAC and OGG Vorbis,
+  but also various WAV formats not supported by the `wavread` function, e.g.
+  Riff64 (RF64), and has no (known) file size limit.
+- Supports BWF metadata (the `bext` chunk).
+- Can read multiple files in a block-wise manner via the function
+  `msndfile.blockread`.
+- It is in general more efficient (read: faster) than pure-MATLAB code, except
+  under special circumstances which favour the JIT compiler footnote:[The one
+  example I can think of is a pure-MATLAB function for block-wise reading of WAV
+  files that becomes *extremely* fast when reading the same range of samples
+  repeatedly.].
+
+// vim:ft=asciidoc

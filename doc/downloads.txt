@@ -1,0 +1,10 @@
+Download
+--------
+
+The most recent version of msndfile is 1.0rc3. You can download source
+packages and binaries (32bit Windows and Linux) from
+http://sourceforge.net/projects/msndfile/[the SourceForge project page].  The
+Windows binaries bundle the libsndfile DLL.  For Linux, it is expected that
+libsndfile is installed via the package manager.
+
+// vim:ft=asciidoc
