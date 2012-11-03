@@ -46,5 +46,3 @@ BY-NC-SA 2.5)" license (see
 libsndfile is maintained by Erik de Castro Lopo <erikd@mega-nerd.com> and is
 licensed under the LGPLv2.1 (included in the source directory, see the file
 [LGPL-2.1](LGPL-2.1).
-
-// vim:ft=markdown
