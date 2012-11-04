@@ -175,7 +175,7 @@ void mexFunction(int nlhs, mxArray *plhs[],
             num_frames = file_info->info->frames;
 
         if( nrhs == 4 && mxIsLogicalScalar(prhs[3]) )
-            do_transpose = *mxGetPr(prhs[3]);
+            do_transpose = *(bool*)mxGetPr(prhs[3]);
 
         /* initialise Matlab output array */
         num_chns = file_info->info->channels;
