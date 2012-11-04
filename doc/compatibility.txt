@@ -1,6 +1,10 @@
 Compatibility with `wavread`
 ----------------------------
 
+While the goal of `msndfile.read` is to be API-compatible with `wavread`,
+there are special cases where this cannot be (completely) achieved.  These are
+detailed in the following sections.
+
 Leaving off the file type extension
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
