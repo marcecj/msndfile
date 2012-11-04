@@ -1,0 +1,8 @@
+Bugs & improvements
+-------------------
+
+Bugs should be reported on the {githubpage} or sent to {email}.  Patches
+should ideally be handled via pull requests (also on the {githubpage}), but I
+will also accept patches sent via email.
+
+// vim:ft=asciidoc

@@ -1,0 +1,28 @@
+Additional credits
+------------------
+
+////////
+TODO: find a way to have the images and text vertically centered on one line.
+Kind of like a table, but I don't want to use a table.  I don't really like
+the current formatting.
+////////
+
+In addition to the above, msndfile profits from the use of various other projects, credited here.
+
+.AsciiDoc
+****
+This page was created using {asciidoc}.
+****
+
+****
+image:./images/valgrind-link1.png[float=left]
+The http://www.valgrind.org/[Valgrind] memory debugger proved useful in
+tracking down memory allocation bugs.
+****
+
+****
+image:./images/SCons-Bricks.png[float=left]
+{scons} proved a flexible and relatively easy to use build system.
+****
+
+// vim:ft=asciidoc

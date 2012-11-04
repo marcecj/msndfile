@@ -3,8 +3,10 @@ The msndfile Mex extension
 Marc Joliet <marcec@gmx.de>
 :toc:
 :numbered:
+:data-uri:
 :website:       http://msndfile.sourceforge.net
 :projectpage:   http://sourceforge.net/projects/msndfile/[project page]
+:githubpage:    http://github.com/marcecj/msndfile/[github page]
 :asciidoc:      http://www.methods.co.nz/asciidoc/[AsciiDoc]
 :libsndfile:    http://www.mega-nerd.com/libsndfile[libsndfile]
 :vorbis:        http://www.vorbis.com/[Ogg Vorbis]
@@ -25,6 +27,10 @@ include::downloads.txt[]
 
 include::installation.txt[]
 
+include::bugs.txt[]
+
 include::copyrights.txt[]
+
+include::credits.txt[]
 
 // vim:ft=asciidoc
