@@ -9,6 +9,7 @@ Marc Joliet <marcec@gmx.de>
 :libsndfile:    http://www.mega-nerd.com/libsndfile[libsndfile]
 :vorbis:        http://www.vorbis.com/[Ogg Vorbis]
 :flac:          http://flac.sourceforge.net[FLAC]
+:scons:         http://scons.org[SCons]
 
 {description}
 msndfile is a suite of MATLAB Mex wrappers of the {libsndfile} C library for
