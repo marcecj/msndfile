@@ -27,6 +27,8 @@ include::downloads.txt[]
 
 include::installation.txt[]
 
+include::examples.txt[]
+
 include::bugs.txt[]
 
 include::copyrights.txt[]

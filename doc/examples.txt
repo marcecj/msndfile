@@ -1,0 +1,437 @@
+Examples
+--------
+
+Here are some examples demonstrating `msndfile.read` and `msndfile.blockread`.
+
+NOTE: See the help text (`help msndfile.read` and `help msndfile.blockread`)
+for the full documentation, including all available options.
+
+`msndfile.read`
+~~~~~~~~~~~~~~~
+
+First some API compatibility examples:
+
+.Compatibility with `wavread(..., 'size')`
+==============
+First we verify that the `'size'` command yields identical results.  First
+`wavread`:
+
+--------------
+EDU>> [dim, fs, nbits, opts] = wavread('test_files/test.wav', 'size');
+EDU>> dim
+dim =
+      418853           2
+EDU>> fs
+fs =
+       44100
+EDU>> nbits
+nbits =
+    16
+EDU>> opts
+opts =
+     fmt: [1x1 struct]
+    info: [1x1 struct]
+EDU>> opts.fmt
+ans =
+         wFormatTag: 1
+          nChannels: 2
+     nSamplesPerSec: 44100
+    nAvgBytesPerSec: 176400
+        nBlockAlign: 4
+     nBitsPerSample: 16
+EDU>> opts.info
+ans =
+    inam: 'glass cafe'
+    iart: 'Jon 7'
+    icrd: '2006
+--------------
+
+Now `msndfile.read`:
+
+--------------
+EDU>> [dim, fs, nbits, opts] = msndfile.read('test_files/test.wav', 'size');
+EDU>> dim
+dim =
+      418853           2
+EDU>> fs
+fs =
+       44100
+EDU>> nbits
+nbits =
+    16
+EDU>> opts
+opts =
+     fmt: [1x1 struct]
+    info: [1x1 struct]
+EDU>> opts.fmt
+ans =
+         wFormatTag: 1
+          nChannels: 2
+     nSamplesPerSec: 44100
+    nAvgBytesPerSec: 176400
+        nBlockAlign: 4
+     nBitsPerSample: 16
+EDU>> opts.info
+ans =
+    inam: 'glass cafe'
+    iart: 'Jon 7'
+    icrd: '2006'
+--------------
+
+And for comparison the same command, but with a FLAC file:
+
+--------------
+EDU>> msndfile.read('test_files/test.wav', 10)
+EDU>> [dim, fs, nbits, opts] = msndfile.read('test_files/test.flac', 'size');
+EDU>> dim
+dim =
+      418853           2
+EDU>> fs
+fs =
+       44100
+EDU>> nbits
+nbits =
+    16
+EDU>> opts
+opts =
+     fmt: [1x1 struct]
+    info: [1x1 struct]
+EDU>> opts.fmt
+ans =
+          nChannels: 2
+     nSamplesPerSec: 44100
+    nAvgBytesPerSec: 176400
+        nBlockAlign: 4
+     nBitsPerSample: 16
+EDU>> opts.info
+ans =
+    inam: 'glass cafe'
+    iart: 'Jon 7'
+    icrd: '2006'
+    ialb: 'Sound Without Film [JON7NET015]'
+    inum: '1'
+    ignr: '(12)'
+--------------
+
+Notable differences are:
+
+- `opts.fmt` lacks the field `wFormatTag` (but is otherwise identical)
+- `opts.info` contains more meta-data tags
+==============
+
+.Reading the first and last ten samples
+==============
+Next we read the first and last ten samples.  Again, first `wavread`:
+
+--------------
+EDU>> wavread('test_files/test.wav', 10)
+ans =
+   1.0e-03 *
+   -0.0305         0
+         0         0
+    0.0305   -0.0610
+    0.0916   -0.1526
+    0.1221   -0.0916
+    0.0916   -0.0916
+    0.0305   -0.0610
+    0.0305         0
+   -0.0305   -0.0610
+    0.0610   -0.1221
+EDU>> wavread('test_files/test.wav', [1 10])
+ans =
+   1.0e-03 *
+   -0.0305         0
+         0         0
+    0.0305   -0.0610
+    0.0916   -0.1526
+    0.1221   -0.0916
+    0.0916   -0.0916
+    0.0305   -0.0610
+    0.0305         0
+   -0.0305   -0.0610
+    0.0610   -0.1221
+EDU>> wavread('test_files/test.wav', [dim(1)-9 dim(1)])
+ans =
+   1.0e-03 *
+         0         0
+   -0.1221    0.0610
+   -0.1221    0.0305
+   -0.0916    0.0305
+   -0.0916    0.0305
+   -0.0610   -0.0305
+    0.0305   -0.1221
+    0.1221   -0.1221
+    0.0305         0
+         0         0
+--------------
+
+Now `msndfile.read`:
+
+--------------
+EDU>> msndfile.read('test_files/test.wav', 10)
+ans =
+   1.0e-03 *
+   -0.0305         0
+         0         0
+    0.0305   -0.0610
+    0.0916   -0.1526
+    0.1221   -0.0916
+    0.0916   -0.0916
+    0.0305   -0.0610
+    0.0305         0
+   -0.0305   -0.0610
+    0.0610   -0.1221
+EDU>> msndfile.read('test_files/test.wav', [1 10])
+ans =
+   1.0e-03 *
+   -0.0305         0
+         0         0
+    0.0305   -0.0610
+    0.0916   -0.1526
+    0.1221   -0.0916
+    0.0916   -0.0916
+    0.0305   -0.0610
+    0.0305         0
+   -0.0305   -0.0610
+    0.0610   -0.1221
+EDU>> msndfile.read('test_files/test.wav', [dim(1)-9 dim(1)])
+ans =
+   1.0e-03 *
+         0         0
+   -0.1221    0.0610
+   -0.1221    0.0305
+   -0.0916    0.0305
+   -0.0916    0.0305
+   -0.0610   -0.0305
+    0.0305   -0.1221
+    0.1221   -0.1221
+    0.0305         0
+         0         0
+--------------
+
+And as a last comparison, the first ten samples read with the `'native'`
+option:
+
+--------------
+EDU>> wavread('test_files/test.wav', [1 10], 'native')
+ans =
+     -1      0
+      0      0
+      1     -2
+      3     -5
+      4     -3
+      3     -3
+      1     -2
+      1      0
+     -1     -2
+      2     -4
+--------------
+
+--------------
+EDU>> msndfile.read('test_files/test.wav', [1 10], 'native')
+ans =
+     -1      0
+      0      0
+      1     -2
+      3     -5
+      4     -3
+      3     -3
+      1     -2
+      1      0
+     -1     -2
+      2     -4
+--------------
+==============
+
+And now, to show that using `'native'` doesn't always make sense, here the
+output using a FLAC file:
+
+.Using `msndfile.read(..., 'native')` with a FLAC file
+==============
+--------------
+EDU>> msndfile.read('test_files/test.flac', 10, 'native')
+ans =
+  -8056 -25196
+   9239   5111
+  27485 -26301
+   3763  12444
+  -4953  20257
+  32212   8889
+   -368  -2329
+  15185   4621
+  11586   6946
+   9991  21003
+--------------
+==============
+
+A unique feature of `msndfile.read` is support for RAW files. Here is an
+example showing how to set up the necessary `struct`.
+
+.Using `msndfile.read(...)` to read a RAW file
+==============
+You need to define a structure with at least three fields: `samplerate`,
+`channels` and `sampleformat`.  If either of these is not set, `msndfile.read`
+will output an error.
+
+--------------
+EDU>> file_info.samplerate = 44100;
+EDU>> file_info.channels = 2;
+EDU>> msndfile.read('test_files/test.raw', 10, [], file_info)
+??? Error using ==> read
+Field 'sampleformat' not set.
+--------------
+
+Now with all required fields set:
+
+--------------
+EDU>> file_info.sampleformat = 'PCM_16';
+EDU>> msndfile.read('test_files/test.raw', 10, [], file_info)
+ans =
+   1.0e-03 *
+   -0.0305         0
+         0         0
+    0.0305   -0.0610
+    0.0916   -0.1526
+    0.1221   -0.0916
+    0.0916   -0.0916
+    0.0305   -0.0610
+    0.0305         0
+   -0.0305   -0.0610
+    0.0610   -0.122
+--------------
+
+Of course `'native'` works here, too:
+
+--------------
+EDU>> msndfile.read('test_files/test.raw', 10, 'native', file_info)
+ans =
+     -1      0
+      0      0
+      1     -2
+      3     -5
+      4     -3
+      3     -3
+      1     -2
+      1      0
+     -1     -2
+      2     -4
+--------------
+==============
+
+`msndfile.blockread`
+~~~~~~~~~~~~~~~~~~~~
+
+Here are some examples showing the use of `msndfile.blockread`.
+
+.Basic usage of `msndfile.blockread`
+==============
+First we open a file and read 10 samples twice in a row:
+
+--------------
+EDU>> msndfile.blockread('open', 'test_files/test.wav');
+EDU>> msndfile.blockread('read', 'test_files/test.wav', 10)
+ans =
+   1.0e-03 *
+   -0.0305         0
+         0         0
+    0.0305   -0.0610
+    0.0916   -0.1526
+    0.1221   -0.0916
+    0.0916   -0.0916
+    0.0305   -0.0610
+    0.0305         0
+   -0.0305   -0.0610
+    0.0610   -0.1221
+EDU>> msndfile.blockread('read', 'test_files/test.wav', 10)
+ans =
+   1.0e-03 *
+    0.0916   -0.1526
+    0.0916   -0.1526
+    0.0916   -0.1526
+    0.0610   -0.1526
+    0.0916   -0.1831
+    0.0610   -0.1221
+   -0.0305   -0.0305
+   -0.1221         0
+   -0.1221   -0.0610
+         0   -0.2136
+--------------
+
+Now let's seek back to the beginning and read the first 20 samples again.
+
+--------------
+EDU>> msndfile.blockread('seek', 'test_files/test.wav', 1)
+EDU>> msndfile.blockread('tell', 'test_files/test.wav')
+ans =
+     1
+EDU>> msndfile.blockread('read', 'test_files/test.wav', 20)
+ans =
+   1.0e-03 *
+   -0.0305         0
+         0         0
+    0.0305   -0.0610
+    0.0916   -0.1526
+    0.1221   -0.0916
+    0.0916   -0.0916
+    0.0305   -0.0610
+    0.0305         0
+   -0.0305   -0.0610
+    0.0610   -0.1221
+    0.0916   -0.1526
+    0.0916   -0.1526
+    0.0916   -0.1526
+    0.0610   -0.1526
+    0.0916   -0.1831
+    0.0610   -0.1221
+   -0.0305   -0.0305
+   -0.1221         0
+   -0.1221   -0.0610
+         0   -0.2136
+EDU>> msndfile.blockread('tell', 'test_files/test.wav')
+ans =
+    21
+--------------
+
+The `tell` command returns the current read position of the file, i.e., where
+the next read would occur if you do not pass the start position.
+
+Now that we are done, we can close the file:
+
+--------------
+EDU>> msndfile.blockread('close', 'test_files/test.wav')
+EDU>> msndfile.blockread('close', 'test_files/test.wav')
+??? Error using ==> blockread
+File not open.
+--------------
+
+As you can see, attempting to close a file twice yields an error.
+
+==============
+
+///////////////
+TODO: this feature needs to be documented and tested first
+
+.Not transposing the output
+==============
+Now the final example: for compatibility with `wavread`, both `msndfile.read`
+and `msndfile.blockread` transpose the output.  For a small performance boost,
+you can turn that off by passing an option to `msndfile.blockread`.
+
+--------------
+EDU>> msndfile.blockread('read', 'test_files/test.wav', 10, false)
+ans =
+   1.0e-03 *
+  Columns 1 through 9
+    0.0610    0.0305         0    0.0305    0.0610         0   -0.0305    0.0305   -0.0305
+   -0.2136   -0.1831   -0.2136   -0.2441   -0.2441   -0.2136   -0.2136   -0.2747   -0.1526
+  Column 10
+   -0.1526
+   -0.0610
+--------------
+
+NOTE: to see the effect of the affect on performance, run the performance
+tests (see <<testsuite>>).
+==============
+///////////////
+
+// vim:ft=asciidoc

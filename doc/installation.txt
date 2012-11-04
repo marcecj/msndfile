@@ -138,6 +138,7 @@ Mac OS X
 Follow the same steps as under Linux, or look into integrating SCons into your
 IDE of choice (see {ideintegration}).
 
+[[testsuite]]
 Testing
 ~~~~~~~
 
