@@ -163,7 +163,8 @@ msndfile_inst = env.Install(os.sep.join([env['DESTDIR'], env['pkg_dir']]),
 sndfile_pkg = env.Package(
     NAME        = "msndfile",
     VERSION     = "1.0",
-    PACKAGETYPE = "zip"
+    PACKAGETYPE = "zip",
+    source = msndfile_inst + ['README.md', 'LICENSE', 'LGPL-2.1']
 )
 
 ## miscellanea
