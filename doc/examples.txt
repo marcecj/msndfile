@@ -243,7 +243,7 @@ ans =
 --------------
 ==============
 
-And now, to show that using `'native'` doesn't always make sense, here the
+And now, to show that using `'native'` does not always make sense, here the
 output using a FLAC file:
 
 .Using `msndfile.read(..., 'native')` with a FLAC file
@@ -357,7 +357,7 @@ ans =
          0   -0.2136
 --------------
 
-Now let's seek back to the beginning and read the first 20 samples again.
+Now let us seek back to the beginning and read the first 20 samples again.
 
 --------------
 EDU>> msndfile.blockread('seek', 'test_files/test.wav', 1)
