@@ -44,7 +44,7 @@ project repository.
 The test files test.{raw,flac,wav} are an excerpt of "Glass Cafe" by Jon7 and
 are licensed under the "Attribution-NonCommercial-ShareAlike 2.5 Generic (CC
 BY-NC-SA 2.5)" license (see
-[](http://creativecommons.org/licenses/by-nc-sa/2.5/)).
+[here](http://creativecommons.org/licenses/by-nc-sa/2.5/)).
 
 libsndfile is maintained by Erik de Castro Lopo <erikd@mega-nerd.com> and is
 licensed under the LGPLv2.1 (included in the source directory, see the file
