@@ -49,7 +49,7 @@ seems that `wavread` and msndfile both print the system error (i.e.,
 `strerror(errno)`).
 
 More importantly, though, the error and warning IDs will be different, since
-msndfile uses its own ID component 'msndfile:', as per Matlab documentation
+msndfile uses its own ID component 'msndfile:', as per MATLAB documentation
 footnote:[If requested, I could at least make the mnemonics identical to
 `wavread`].
 
@@ -60,9 +60,9 @@ It may be that some `wavread()` behaviour may change over time or may have
 changed in the (recent) past.  Msndfile will for simplicity only implement one
 type of behaviour.  Here is a list of all known examples:
 
-- In older versions of Matlab trying to read zero samples will instead read a
+- In older versions of MATLAB trying to read zero samples will instead read a
   file in its entirety.  Newer versions instead return an empty matrix, which is
-  what msndfile does.  Note that some versions of Matlab (e.g., 2010a) print a
+  what msndfile does.  Note that some versions of MATLAB (e.g., 2010a) print a
   large warning that the behaviour will change.
 
 // vim:ft=asciidoc

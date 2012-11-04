@@ -2,7 +2,7 @@ Installing msndfile from source
 -------------------------------
 
 There are two ways to compile msndfile.  The easy way is to call the m-file
-`compile_msndfile.m` from Matlab.  This is probably the way to go if you only
+`compile_msndfile.m` from MATLAB.  This is probably the way to go if you only
 want to 'use' msndfile.  There is also a more flexible build system based on
 SCons available, that can also generate a Visual Studio IDE project file and can
 be integrated into other IDEs like Eclipse.  You will most likely want to use
@@ -19,7 +19,7 @@ Prerequisites
 
 The basic dependencies of msndfile are:
 
-- Matlab (tested with 2010a Student Edition)
+- MATLAB (tested with 2010a Student Edition)
 - {libsndfile}
 - `stdint.h` (a C99 header file; required for reading files in their native
   format, à la `wavread(..., 'native')`
@@ -51,7 +51,7 @@ If you are going to use the SCons based build system, you will also need
 - {pywin32} (optional, but necessary for some SCons features on Windows)
 - the http://sconsmatlabtool.sf.net[SCons Matlab Tool]
 
-The Matlab Tool is a submodule of this repository.  To install it, just run
+The MATLAB Tool is a submodule of this repository.  To install it, just run
 
 -----------------------------
 $ git submodule update --init
@@ -66,7 +66,7 @@ test compile with clang, so there *should* be no issues.
 Using the `compile_msndfile.m` script
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-In Matlab, type `compile_msndfile` to compile all Mex extensions.
+In MATLAB, type `compile_msndfile` to compile all Mex extensions.
 
 Using the SCons based build system
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -74,7 +74,7 @@ Using the SCons based build system
 The SCons based build system is in general more robust and flexibel than calling
 Mex in `compile_msndfile.m`.  It uses an extension that properly presets some
 environment variables, though it slows compilation down the first time it is run
-because it starts a Matlab subprocess to obtain them.
+because it starts a MATLAB subprocess to obtain them.
 
 Anyway, to use SCons, call it from the command line like so:
 
@@ -98,7 +98,7 @@ things:
 - supports whatever compilers SCons (or third party extensions) supports, and
   not just what The Mathworks supports, which is incomplete and quite outdated
   anyway footnote:[Fun fact: the most recent minor version of GCC officially
-  supported by The Mathworks for Matlab 2012a (GCC 4.4) is not even supported by
+  supported by The Mathworks for MATLAB 2012a (GCC 4.4) is not even supported by
   the _compiler vendor_ anymore, though I suppose this may be deliberate.].
 
 For more information (such as available build targets, options and overridable
@@ -149,6 +149,6 @@ default.  To run them, too, set `do_perf_tests` to `true` in
 `test_msndfile.m`.
 
 NOTE: If you use SCons, you must run the `install` target first and make sure DESTDIR
-is in Matlab's path.
+is in MATLABs path.
 
 // vim:ft=asciidoc
