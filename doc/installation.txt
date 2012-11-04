@@ -61,8 +61,8 @@ NOTE: I have never compiled msndfile under Mac OS X, if anybody succeeds in
 doing so before I get around to it, I would like to know if it works.  I already
 test compile with clang, so there *should* be no issues.
 
-Using the compile_msndfile.m script
-~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+Using the `compile_msndfile.m` script
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 In Matlab, type `compile_msndfile` to compile all Mex extensions.
 
