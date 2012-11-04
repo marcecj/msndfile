@@ -5,11 +5,14 @@ Marc Joliet <marcec@gmx.de>
 :numbered:
 :website:       http://msndfile.sourceforge.net
 :projectpage:   http://sourceforge.net/projects/msndfile/[project page]
+:asciidoc:      http://www.methods.co.nz/asciidoc/[AsciiDoc]
+:libsndfile:    http://www.mega-nerd.com/libsndfile[libsndfile]
+:vorbis:        http://www.vorbis.com/[Ogg Vorbis]
+:flac:          http://flac.sourceforge.net[FLAC]
 
 {description}
-msndfile is a suite of MATLAB Mex wrappers of the
-http://www.mega-nerd.com/libsndfile[libsndfile] C library for reading and
-writing audio files.
+msndfile is a suite of MATLAB Mex wrappers of the {libsndfile} C library for
+reading and writing audio files.
 
 include::intro.txt[]
 

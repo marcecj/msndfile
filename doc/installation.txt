@@ -12,14 +12,18 @@ relevant subsections.
 Prerequisites
 ~~~~~~~~~~~~~
 
+:libsndfile1: http://www.mega-nerd.com/libsndfile
+:mtest: http://www.mathworks.com/matlabcentral/fileexchange/22846[MTest]
+:pywin32: http://starship.python.net/crew/mhammond/win32/[Python Win32 extensions]
+:ideintegration: http://www.scons.org/wiki/IDEIntegration
+
 The basic dependencies of msndfile are:
 
 - Matlab (tested with 2010a Student Edition)
-- http://www.mega-nerd.com/libsndfile[libsndfile]
+- {libsndfile}
 - `stdint.h` (a C99 header file; required for reading files in their native
   format, à la `wavread(..., 'native')`
-- http://www.mathworks.com/matlabcentral/fileexchange/22846[MTest] (needed only
-  for the test suite)
+- {mtest} (needed only for the test suite)
 
 The `stdint.h` header is available in Visual Studio 2010 and up.  Otherwise, all
 somewhat recent compilers/libc's should support it (especially those that
@@ -32,20 +36,19 @@ Linux::
     Install the libsndfile development package via your distributions package
     manager (typically a package with a '-devel' or '-dev' suffix).
 Windows::
-    Follow the instructions at http://www.mega-nerd.com/libsndfile[]).  After
-    you have done that, copy the files `libsndfile-1.dll`, `libsndfile-1.lib`
-    and `sndfile.h` into the `Win` subdirectory.
+    Follow the instructions at {libsndfile1}).  After you have done that, copy
+    the files `libsndfile-1.dll`, `libsndfile-1.lib` and `sndfile.h` into the
+    `Win` subdirectory.
 Mac OS X::
-    Either download the sources from http://www.mega-nerd.com/libsndfile[] and
-    compile them yourself or use a package management system like fink or
-    macports or whatever system you already use.
+    Either download the sources from {libsndfile1} and compile them yourself
+    or use a package management system like fink or macports or whatever
+    system you already use.
 
 If you are going to use the SCons based build system, you will also need
 
 - http://www.python.org[Python] (whatever version SCons works with)
 - http://scons.org[SCons] (tested with SCons 2.1.x)
-- http://starship.python.net/crew/mhammond/win32/[Python Win32 extensions]
-  (optional, but necessary for some SCons features on Windows)
+- {pywin32} (optional, but necessary for some SCons features on Windows)
 - the http://sconsmatlabtool.sf.net[SCons Matlab Tool]
 
 The Matlab Tool is a submodule of this repository.  To install it, just run
@@ -54,8 +57,7 @@ The Matlab Tool is a submodule of this repository.  To install it, just run
 $ git submodule update --init
 -----------------------------
 
-If you want to build the documentation, you need to install
-http://www.methods.co.nz/asciidoc/[AsciiDoc].
+If you want to build the documentation, you need to install {asciidoc}.
 
 NOTE: I have never compiled msndfile under Mac OS X, if anybody succeeds in
 doing so before I get around to it, I would like to know if it works.  I already
@@ -92,8 +94,7 @@ things:
 - separates release from debug builds
 - *could* support cross-compiling to other architectures/operating systems to
   provide binaries for them
-- builds the http://www.methods.co.nz/asciidoc/[AsciiDoc] documentation you are
-  currently reading
+- builds the {asciidoc} documentation you are currently reading
 - supports whatever compilers SCons (or third party extensions) supports, and
   not just what The Mathworks supports, which is incomplete and quite outdated
   anyway footnote:[Fun fact: the most recent minor version of GCC officially
@@ -128,23 +129,23 @@ the terminal window open.  It is expected that SCons is in your $PATH.
 
 Under Windows, the build system has an additional `vsproj` target.  This creates
 an MS Visual Studio Solution file with msndfile as a project.  For other IDEs,
-see http://www.scons.org/wiki/IDEIntegration[].  Also, there is an option to
+see {ideintegration}.  Also, there is an option to
 force the use of MinGW in case it is installed along with Visual Studio.
 
 Mac OS X
 ^^^^^^^^
 
 Follow the same steps as under Linux, or look into integrating SCons into your
-IDE of choice (see http://www.scons.org/wiki/IDEIntegration[]).
+IDE of choice (see {ideintegration}).
 
 Testing
 ~~~~~~~
 
-Msndfile comes with a comprehensive test suite (based on
-http://www.mathworks.com/matlabcentral/fileexchange/22846[MTest]) that is run by
-executing `test_msndfile.m` from MATLAB.  There are also performance evaluation
-scripts, however they take several minutes and so are not run by default.  To
-run them, too, set `do_perf_tests` to `true` in `test_msndfile.m`.
+Msndfile comes with a comprehensive test suite (based on {mtest}) that is run
+by executing `test_msndfile.m` from MATLAB.  There are also performance
+evaluation scripts, however they take several minutes and so are not run by
+default.  To run them, too, set `do_perf_tests` to `true` in
+`test_msndfile.m`.
 
 NOTE: If you use SCons, you must run the `install` target first and make sure DESTDIR
 is in Matlab's path.

@@ -3,7 +3,7 @@ Features
 
 The msndfile suite currently has the following features:
 
-- Can read any file type supported by libsndfile, such as FLAC and OGG Vorbis,
+- Can read any file type supported by libsndfile, such as {flac} and {vorbis},
   but also various WAV formats not supported by the `wavread` function, e.g.
   Riff64 (RF64), and has no (known) file size limit.
 - Supports BWF metadata (the `bext` chunk).
