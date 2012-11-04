@@ -18,8 +18,8 @@ The basic dependencies of msndfile are:
 - http://www.mega-nerd.com/libsndfile[libsndfile]
 - `stdint.h` (a C99 header file; required for reading files in their native
   format, à la `wavread(..., 'native')`
-- http://www.mathworks.com/matlabcentral/fileexchange/22846[Matlab xUnit
-  Test Framework] (aka MTest; needed only for the test suite)
+- http://www.mathworks.com/matlabcentral/fileexchange/22846[MTest] (needed only
+  for the test suite)
 
 The `stdint.h` header is available in Visual Studio 2010 and up.  Otherwise, all
 somewhat recent compilers/libc's should support it (especially those that
