@@ -3,8 +3,8 @@ The msndfile Mex extension
 Marc Joliet <marcec@gmx.de>
 :toc:
 :numbered:
-:website: http://sourceforge.net/projects/msndfile/
-:projectpage: http://sourceforge.net/projects/msndfile/[project page]
+:website:       http://msndfile.sourceforge.net
+:projectpage:   http://sourceforge.net/projects/msndfile/[project page]
 
 {description}
 msndfile is a suite of MATLAB Mex wrappers of the
