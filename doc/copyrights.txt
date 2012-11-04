@@ -1,7 +1,7 @@
 Copyrights
 ----------
 
-msndfile is Copyright (c) 2010-2012 Marc Joliet <marcec@gmx.de> and licenced
+msndfile is Copyright (C) 2010-2012 Marc Joliet <marcec@gmx.de> and licenced
 under the MIT licence.  See the file
 link:https://github.com/marcecj/msndfile/blob/master/LICENSE[LICENSE] in the
 project repository.
