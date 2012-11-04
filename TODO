@@ -11,6 +11,7 @@ Before v1.2:
 Misc:
 -----
 
+- document "no transpose" feature of blockread
 - merge linkedlists branch
 - move gen_filename() and friends to read_utils.c
 - change license to LGPL (like libsndfile)
