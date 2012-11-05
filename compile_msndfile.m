@@ -1,4 +1,5 @@
 % Simple script for compiling msndfile.
+% TODO: make this a function
 
 %
 %% build variables
@@ -76,6 +77,6 @@ copyfile([src_dir '/*.m'], install_dir);
 
 if ispc
     disp('Copying libsndfile...');
-    copyfile('Win/libsndfile-1.dll', [inst_prefix '/' pkg_dir]);
+    copyfile('Win/libsndfile-1.dll', install_dir);
 end
 disp('Done!');
