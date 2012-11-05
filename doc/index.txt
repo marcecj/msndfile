@@ -33,6 +33,8 @@ include::compatibility.txt[]
 
 include::downloads.txt[]
 
+include::repository.txt[]
+
 include::installation.txt[]
 
 include::examples.txt[]
