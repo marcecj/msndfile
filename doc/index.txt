@@ -5,6 +5,7 @@ Marc Joliet <marcec@gmx.de>
 :max-width: 50em
 :numbered:
 :data-uri:
+:keywords:      matlab, mex, libsndfile, audio
 :website:       http://msndfile.sourceforge.net
 :projectpage:   http://sourceforge.net/projects/msndfile/[project page]
 :githubpage:    http://github.com/marcecj/msndfile/[github page]
