@@ -41,12 +41,12 @@ include::examples.txt[]
 
 include::bugs.txt[]
 
-include::copyrights.txt[]
-
 include::credits.txt[]
 
 // appendices start here
 :numbered!:
+
+include::copyrights.txt[]
 
 include::revisions.txt[]
 
