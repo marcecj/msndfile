@@ -1,13 +1,14 @@
-Additional credits
-------------------
+Credits
+-------
 
-In addition to the above, msndfile profits from the use of various other
-projects, credited here.
+msndfile profits from the use of various other open-source projects.  These
+are credited here.
 
 // FIXME: the grid attribute does nothing; maybe a bug?
 [options="autowidth",cols="^,<",frame="none",grid="none",valign="center",align="center"]
 |========================================
-| AsciiDoc                                 | This page was created using {asciidoc}.
+| AsciiDoc                                 | This page was created using {asciidoc}, a great format for writing documentation.
+| MTest                                    | The test suite is implemented using {mtest}, the ``MATLAB xUnit Test Framework''.
 | image:./images/valgrind-link1.png[]      | The http://www.valgrind.org/[Valgrind] memory debugger proved useful in tracking down memory allocation bugs.
 | image:./images/SCons-Bricks.png[]        | {scons} proved a flexible and relatively easy to use -- and _extend_ -- build system.
 | image:./images/git-logomark-orange.png[] | {git} is simply an awesome version control system.
