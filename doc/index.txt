@@ -14,7 +14,6 @@ Marc Joliet <marcec@gmx.de>
 :flac:          http://flac.sourceforge.net[FLAC]
 :scons:         http://scons.org[SCons]
 
-{description}
 msndfile is a suite of MATLAB Mex wrappers of the {libsndfile} C library for
 reading and writing audio files.
 
