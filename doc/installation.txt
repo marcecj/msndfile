@@ -69,7 +69,8 @@ Using the `compile_msndfile.m` script
 
 In MATLAB, type `compile_msndfile` to compile all Mex extensions.  By default
 this will put the binaries in the `+msndfile` subdirectory (a Matlab package
-directory).  Feel free to edit it according to your needs.
+directory).  See the built-in help (`help compile_msndfile`) for overriding
+the defaults to your needs.
 
 Using the SCons based build system
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~

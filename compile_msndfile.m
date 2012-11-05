@@ -1,18 +1,44 @@
-% Simple script for compiling msndfile.
-% TODO: make this a function
+function compile_msndfile(varargin)
+% COMPILE_MSNDFILE Compile msndfile.
+%
+% COMPILE_MSNDFILE will compile the msndfile suite of Mex extensions and copy
+% the resulting binaries into the package directory '+msndfile'.
+%
+% Input parameters
+% ----------------
+%
+% COMPILE_MSNDFILE has the following options (passed as parameter/value pairs):
+%
+%   Name        | Type    | Description                                  | Default
+%   ==================================================================================
+%   HaveStdintH | logical | whether the system has the stdint.h C header | false
+%   Debug       | logical | whether to build msndfile with debug symbols | false
+%   Destdir     | char    | where to install the package directory       | '.'
+%   PkgDir      | char    | the name of the package directory            | '+msndfile'
+
+%
+%% input parsing
+%
+
+p = inputParser();
+p.addParamValue('HaveStdintH' , false       , @islogical);
+p.addParamValue('Debug'       , false       , @islogical);
+p.addParamValue('Destdir'     , '.'         , @(x) ischar(x) && isdir(x));
+p.addParamValue('PkgDir'      , '+msndfile' , @ischar);
+p.parse(varargin{:});
 
 %
 %% build variables
 %
 
 % define whether stdint.h is available
-have_stdint_h = false;
+have_stdint_h = p.Results.HaveStdintH;
 % define whether to create a debug build
-do_debug      = false;
+do_debug      = p.Results.Debug;
 % the installation prefix
-inst_prefix   = '.';
+inst_prefix   = p.Results.Destdir;
 % the name of the package directory
-pkg_dir       = '+msndfile';
+pkg_dir       = p.Results.PkgDir;
 
 %
 %% compile
