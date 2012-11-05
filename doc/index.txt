@@ -1,7 +1,7 @@
 The msndfile Mex extension
 ==========================
 Marc Joliet <marcec@gmx.de>
-:toc:
+:toc2:
 :numbered:
 :data-uri:
 :website:       http://msndfile.sourceforge.net
