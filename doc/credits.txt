@@ -5,7 +5,7 @@ msndfile profits from the use of various other open-source projects.  These
 are credited here.
 
 // FIXME: the grid attribute does nothing; maybe a bug?
-[options="autowidth",cols="^,<",frame="none",grid="none",valign="center",align="center"]
+[options="autowidth",cols="^,<",frame="none",grid="none",valign="center"]
 |========================================
 | AsciiDoc                                 | This page was created using {asciidoc}, a great format for writing documentation.
 | MTest                                    | The test suite is implemented using {mtest}, the ``MATLAB xUnit Test Framework''.
