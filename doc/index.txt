@@ -19,6 +19,11 @@ v1.0.1, 5th November 2012
 msndfile is a suite of MATLAB Mex wrappers of the {libsndfile} C library for
 reading and writing audio files.
 
+This project is split between SourceForge.net and github.com.  The SF.net
+{projectpage} hosts downloads, this website and the git repository.  The
+{githubpage} also hosts the git repository (isn't git nice?) and a bug tracker
+and is basically where development happens.
+
 include::intro.txt[]
 
 include::features.txt[]
