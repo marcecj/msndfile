@@ -1,7 +1,7 @@
 The msndfile Mex extension
 ==========================
 Marc Joliet <marcec@gmx.de>
-v1.0.1, 5th November 2012
+v1.0.2, 5th November 2012
 :toc2:
 :max-width: 50em
 :numbered:
