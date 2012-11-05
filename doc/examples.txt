@@ -81,7 +81,6 @@ ans =
 And for comparison the same command, but with a FLAC file:
 
 --------------
-EDU>> msndfile.read('test_files/test.wav', 10)
 EDU>> [dim, fs, nbits, opts] = msndfile.read('test_files/test.flac', 'size');
 EDU>> dim
 dim =
