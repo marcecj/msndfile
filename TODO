@@ -12,6 +12,7 @@ Misc:
 -----
 
 - document "no transpose" feature of blockread
+- pick a license for the documentation
 - merge linkedlists branch
 - move gen_filename() and friends to read_utils.c
 - change license to LGPL (like libsndfile)
