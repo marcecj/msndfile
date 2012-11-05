@@ -1,6 +1,7 @@
 The msndfile Mex extension
 ==========================
 Marc Joliet <marcec@gmx.de>
+v1.0, 5th November 2012: First version.
 :toc2:
 :max-width: 50em
 :numbered:
@@ -35,5 +36,7 @@ include::bugs.txt[]
 include::copyrights.txt[]
 
 include::credits.txt[]
+
+include::revisions.txt[]
 
 // vim:ft=asciidoc
