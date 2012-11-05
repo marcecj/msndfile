@@ -14,4 +14,7 @@ are credited here.
 | image:./images/git-logomark-orange.png[] | {git} is simply an awesome version control system.
 |========================================
 
+Also, thanks to http://bastibe.de/[Bastian Bechtold] for his feedback on this
+website.
+
 // vim:ft=asciidoc
