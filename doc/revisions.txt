@@ -7,6 +7,7 @@ Document revision history
 | 1.0              | First version.
 | 1.0.1            | Add credit to Git VCS, reformat credits as table.
 | 1.0.2            | Update copyrights.
+| 1.0.3            | Miscellaneous edits/improvements.
 |========================================
 
 // vim:ft=asciidoc
