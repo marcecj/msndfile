@@ -42,6 +42,9 @@ include::copyrights.txt[]
 
 include::credits.txt[]
 
+// appendices start here
+:numbered!:
+
 include::revisions.txt[]
 
 // vim:ft=asciidoc

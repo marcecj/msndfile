@@ -1,4 +1,5 @@
-Document Revision history
+[appendix]
+Document revision history
 -------------------------
 
 |========================================
