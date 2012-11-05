@@ -61,8 +61,8 @@ changed in the (recent) past.  Msndfile will for simplicity only implement one
 type of behaviour.  Here is a list of all known examples:
 
 - In older versions of MATLAB trying to read zero samples will instead read a
-  file in its entirety.  Newer versions instead return an empty matrix, which is
-  what msndfile does.  Note that some versions of MATLAB (e.g., 2010a) print a
+  file in its entirety.  Newer versions return an empty matrix, which is what
+  msndfile does.  Note that some versions of MATLAB (e.g., 2010a) print a
   large warning that the behaviour will change.
 
 // vim:ft=asciidoc

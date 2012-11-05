@@ -3,11 +3,12 @@ Installing msndfile from source
 
 There are two ways to compile msndfile.  The easy way is to call the m-file
 `compile_msndfile.m` from MATLAB.  This is probably the way to go if you only
-want to 'use' msndfile.  There is also a more flexible build system based on
-SCons available, that can also generate a Visual Studio IDE project file and can
-be integrated into other IDEs like Eclipse.  You will most likely want to use
-this if you want to 'work on' msndfile.  For details on both methods, see their
-relevant subsections.
+want to 'use' msndfile, but none of the binary downloads satisfy your needs.
+There is also a more flexible build system based on SCons available, that can
+also generate a Visual Studio IDE project file and can be integrated into
+other IDEs like Eclipse.  You will most likely want to use this if you want to
+'work on' msndfile.  For details on both methods, see their relevant
+subsections.
 
 Prerequisites
 ~~~~~~~~~~~~~
@@ -66,7 +67,9 @@ test compile with clang, so there *should* be no issues.
 Using the `compile_msndfile.m` script
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-In MATLAB, type `compile_msndfile` to compile all Mex extensions.
+In MATLAB, type `compile_msndfile` to compile all Mex extensions.  By default
+this will put the binaries in the `+msndfile` subdirectory (a Matlab package
+directory).  Feel free to edit it according to your needs.
 
 Using the SCons based build system
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~

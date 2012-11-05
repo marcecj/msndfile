@@ -1,8 +1,6 @@
 Additional credits
 ------------------
 
-:git: http://git-scm.com[Git]
-
 In addition to the above, msndfile profits from the use of various other
 projects, credited here.
 

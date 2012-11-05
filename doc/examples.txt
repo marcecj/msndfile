@@ -13,8 +13,8 @@ First some API compatibility examples:
 
 .Compatibility with `wavread(..., 'size')`
 ==============
-First we verify that the `'size'` command yields identical results.  First
-`wavread`:
+For starters, we verify that the `'size'` command yields identical results.
+First `wavread`:
 
 --------------
 EDU>> [dim, fs, nbits, opts] = wavread('test_files/test.wav', 'size');

@@ -15,6 +15,7 @@ v1.0.2, 5th November 2012
 :vorbis:        http://www.vorbis.com/[Ogg Vorbis]
 :flac:          http://flac.sourceforge.net[FLAC]
 :scons:         http://scons.org[SCons]
+:git:           http://git-scm.com[Git]
 
 msndfile is a suite of MATLAB Mex wrappers of the {libsndfile} C library for
 reading and writing audio files.

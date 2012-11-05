@@ -1,8 +1,9 @@
-Bugs & improvements
--------------------
+Bugs, feature requests & patches
+--------------------------------
 
-Bugs should be reported on the {githubpage} or sent to {email}.  Patches
-should ideally be handled via pull requests (also on the {githubpage}), but I
-will also accept patches sent via email.
+Bugs and features should ideally be reported/requested on the {githubpage}
+(using the issue tracker) or via {email}.  Patches should ideally be handled
+via pull requests (either via the {githubpage} or by email), but I will also
+accept patches sent via email.
 
 // vim:ft=asciidoc
