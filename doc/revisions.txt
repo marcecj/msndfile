@@ -6,7 +6,7 @@ Document revision history
 |========================================
 | Version | Date       | Summary of changes
 | 1.0     | 2012.11.05 | First version.
-| 1.0.1   | 2012.11.05 | Add credit to Git VCS, miscellaneous edits/improvements, update copyrights.
+| 1.0.1   | 2012.11.05 | Add credit to Git and MTest, miscellaneous edits/improvements, update copyrights.
 |========================================
 
 // vim:ft=asciidoc
