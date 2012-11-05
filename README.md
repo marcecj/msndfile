@@ -41,10 +41,22 @@ under the MIT licence.  See the file
 [LICENSE](https://github.com/marcecj/msndfile/blob/master/LICENSE) in the
 project repository.
 
+The documentation of msndfile (including this README) is Copyright (C) 2010-2012
+Marc Joliet <marcec@gmx.de> and licenced under the [Attribution-ShareAlike 3.0
+Unported (CC BY-SA 3.0)](http://creativecommons.org/licenses/by-sa/3.0/)
+license.
+
+The SCons logo is licensed under the [Creative Commons
+Attribution-Noncommercial-Share Alike 3.0
+Unported](http://creativecommons.org/licenses/by-nc-sa/3.0/) license.
+
+The Git Logo by [Jason Long](http://twitter.com/jasonlong) is licensed under the
+[Creative Commons Attribution 3.0
+Unported](http://creativecommons.org/licenses/by/3.0/) license.
+
 The test files test.{raw,flac,wav} are an excerpt of "Glass Cafe" by Jon7 and
-are licensed under the "Attribution-NonCommercial-ShareAlike 2.5 Generic (CC
-BY-NC-SA 2.5)" license (see
-[here](http://creativecommons.org/licenses/by-nc-sa/2.5/)).
+are licensed under the [Attribution-NonCommercial-ShareAlike 2.5 Generic (CC
+BY-NC-SA 2.5)](http://creativecommons.org/licenses/by-nc-sa/2.5/) license.
 
 libsndfile is maintained by Erik de Castro Lopo <erikd@mega-nerd.com> and is
 licensed under the LGPLv2.1 (included in the source directory, see the file
