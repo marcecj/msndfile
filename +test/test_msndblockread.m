@@ -246,7 +246,7 @@ assertExceptionThrown(@() msndfile.blockread('read', 'test_files/test.flac', [kk
 assertExceptionThrown(@() msndfile.blockread('read', 'test_files/test.raw', [kk kk+block_size-1]), 'msndfile:blockread:filenotopen');
 
 % test multibyte file name support; just do some regular stuff
-function test_multibyte(ref_data)
+function test_multibyte_filename(ref_data)
 
 % UTF-8 encoded file name 'test_files/bläßgans'
 utf8_bytes = [98 108 195 164 195 159]; % bläß
