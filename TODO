@@ -11,6 +11,8 @@ Before v1.2:
 Misc:
 -----
 
+- test suite: don't fail when a format is not supported, just print a message
+  (see https://github.com/marcecj/msndfile/issues/1).
 - document "no transpose" feature of blockread
 - pick a license for the documentation
 - merge linkedlists branch
