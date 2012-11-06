@@ -40,16 +40,20 @@ assertExceptionThrown(@() msndfile.read('test_files/no_wav/test'), ...
 function test_multibyte_filename(ref_data)
 % test multi-byte file name support
 
-% UTF-8 encoded file name 'test_files/bläßgans'
-utf8_bytes = [98 108 195 164 195 159]; % bläß
-fname = ['test_files/' native2unicode(utf8_bytes, 'UTF-8') 'gans'];
+if ismac
+    warning('Skipping test since file names on Mac must be ASCII.');
+else
+    % UTF-8 encoded file name 'test_files/bläßgans'
+    utf8_bytes = [98 108 195 164 195 159]; % bläß
+    fname = ['test_files/' native2unicode(utf8_bytes, 'UTF-8') 'gans'];
 
-% test multibyte file name support
-warning('off', 'msndfile:read:ambiguousname');
-msndfile.read(fname);
-warning('on', 'msndfile:read:ambiguousname');
-msndfile.read([fname '.wav']);
-msndfile.read([fname '.flac']);
+    % test multibyte file name support
+    warning('off', 'msndfile:read:ambiguousname');
+    msndfile.read(fname);
+    warning('on', 'msndfile:read:ambiguousname');
+    msndfile.read([fname '.wav']);
+    msndfile.read([fname '.flac']);
+end
 
 function test_read(ref_data)
 % verify that data is read correctly
