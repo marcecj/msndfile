@@ -248,16 +248,12 @@ assertExceptionThrown(@() msndfile.blockread('read', 'test_files/test.raw', [kk 
 % test multibyte file name support; just do some regular stuff
 function test_multibyte_filename(ref_data)
 
-if ismac
-    warning('Skipping test since file names on Mac must be ASCII.');
-else
-    % UTF-8 encoded file name 'test_files/bläßgans'
-    utf8_bytes = [98 108 195 164 195 159]; % bläß
-    fname = ['test_files/' native2unicode(utf8_bytes, 'UTF-8') 'gans.wav'];
+% UTF-8 encoded file name 'test_files/bläßgans'
+utf8_bytes = [98 108 195 164 195 159]; % bläß
+fname = ['test_files/' native2unicode(utf8_bytes, 'UTF-8') 'gans.wav'];
 
-    msndfile.blockread('open', fname);
-    assertExceptionThrown(@() msndfile.blockread('open', fname), 'msndfile:blockread:fileopen');
-    msndfile.blockread('read', fname, [1 ref_data.file_size(1)]);
-    msndfile.blockread('close', fname);
-    assertExceptionThrown(@() msndfile.blockread('close', fname), 'msndfile:blockread:filenotopen');
-end
+msndfile.blockread('open', fname);
+assertExceptionThrown(@() msndfile.blockread('open', fname), 'msndfile:blockread:fileopen');
+msndfile.blockread('read', fname, [1 ref_data.file_size(1)]);
+msndfile.blockread('close', fname);
+assertExceptionThrown(@() msndfile.blockread('close', fname), 'msndfile:blockread:filenotopen');
