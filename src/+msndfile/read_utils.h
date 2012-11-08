@@ -4,11 +4,34 @@
 #include <sndfile.h>
 
 /*
+ * functions used to generate a valid file name
+ */
+
+/* returns the number of simple formats + RAW */
+unsigned int get_num_formats();
+
+/* returns a list of file extensions to simple formats + RAW */
+char** get_format_extensions();
+
+/* helper function for gen_filename(): return whether a file extension was
+ * already checked */
+unsigned int ext_already_checked(char** extensions, const char* ext, const unsigned int num_ext);
+
+/* function to get a valid file name; for wavread() compatibility, if the file
+ * name does not have a suffix, file_name+".wav" is attempted, and if that
+ * fails, NULL is returned */
+char* gen_filename(char* fname);
+
+/*
  * functions needed for the return values
  */
 
 /* get the number of bits of an audio file */
 short get_bits(SF_INFO* sf_file_info);
+
+/*
+ * functions used to generate the opts output argument
+ */
 
 /* create an opts structure a la wavread() */
 void get_opts(SF_INFO* sf_file_info, SNDFILE* sf_input_file, mxArray* opts);
