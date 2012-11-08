@@ -15,14 +15,12 @@ Misc:
   (see https://github.com/marcecj/msndfile/issues/1).
 - support relative seeking?
 - document "no transpose" feature of blockread
-- pick a license for the documentation
 - merge linkedlists branch
 - move gen_filename() and friends to read_utils.c
 - change license to LGPL (like libsndfile)
 - maybe add support for "fmt" option to blockread
-- improve error handling and messages (e.g., prefix libsndfile errors with "libsndfile: ")
-    - maybe support internationalization? might be difficult to port, though
-    - return error codes and handle all errors in the main functions?
+- maybe support internationalization in error/warning messages? might be
+  difficult to port, though
 
 Someday (maybe):
 ----------------
