@@ -213,11 +213,11 @@ for k=1:length(fmt_fields_ref)
 end
 
 % compare info fields
-info_fields_ref = fieldnames(opts_ref.fmt);
-info_fields     = fieldnames(opts.fmt);
+info_fields_ref = fieldnames(opts_ref.info);
+info_fields     = fieldnames(opts.info);
 assertEqual(info_fields_ref, info_fields);
 assertEqual(length(info_fields_ref), length(info_fields));
 for k=1:length(info_fields_ref)
     assertEqual(info_fields_ref{k}, info_fields{k});
-    assertEqual(opts_ref.fmt.(info_fields_ref{k}), opts.fmt.(info_fields{k}));
+    assertEqual(opts_ref.info.(info_fields_ref{k}), opts.info.(info_fields{k}));
 end
