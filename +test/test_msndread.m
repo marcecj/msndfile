@@ -60,49 +60,6 @@ test_flac = msndfile.read('test_files/test.flac');
 assertEqual(test_wav, ref_data.in_wav);
 assertEqual(test_flac, ref_data.in_wav);
 
-function test_raw_empty_args(~)
-% verify that msndread raises an error when called with insufficient arguments
-
-assertExceptionThrown(@() msndfile.read('test_files/test.raw', []), 'msndfile:sndfile');
-assertExceptionThrown(@() msndfile.read('test_files/test.raw', [], []), 'msndfile:sndfile');
-assertExceptionThrown(@() msndfile.read('test_files/test.raw', [], [], []), 'msndfile:sndfile');
-
-function test_raw_incomplete_file_info(~)
-% verify that msndread raises an error when file_info is incomplete
-
-file_info.samplerate   = 44100;
-assertExceptionThrown(@() msndfile.read('test_files/test.raw', [], [], file_info), 'msndfile:argerror');
-file_info.channels     = 2;
-assertExceptionThrown(@() msndfile.read('test_files/test.raw', [], [], file_info), 'msndfile:argerror');
-
-% only now is file_info complete
-file_info.sampleformat = 'PCM_16';
-[in_sig, fs] = msndfile.read('test_files/test.raw', [], [], file_info);
-
-% reset file_info
-file_info = [];
-
-file_info.samplerate   = 44100;
-file_info.channels     = 2;
-file_info.format       = 'RAW';
-assertExceptionThrown(@() msndfile.read('test_files/test.raw', [], [], file_info), 'msndfile:argerror');
-file_info.endianness   = 'FILE';
-assertExceptionThrown(@() msndfile.read('test_files/test.raw', [], [], file_info), 'msndfile:argerror');
-% only now is file_info complete
-file_info.sampleformat = 'PCM_16';
-[in_sig, fs] = msndfile.read('test_files/test.raw', [], [], file_info);
-
-% endianness defaults to 'FILE'; it is unused here, test anyway
-file_info.endianness   = 'FILE';
-[in_sig, fs] = msndfile.read('test_files/test.raw', [], [], file_info);
-
-function test_raw_read(ref_data)
-% test the RAW file import
-
-[in_raw, fs] = msndfile.read('test_files/test.raw', [], [], ref_data.file_info);
-
-assertEqual(ref_data.in_wav, in_raw);
-
 function test_blockwise_read(ref_data)
 % test block-wise reading
 
@@ -150,7 +107,7 @@ file_size = msndfile.read('test_files/test.flac', 'size');
 assertEqual(ref_data.file_size, file_size);
 
 function test_input_fmt(ref_data)
-% test fmt input argument
+% test fmt input argument; doesn't make sense with FLAC
 
 in_test = msndfile.read('test_files/test.wav', 'double');
 in_wav  = wavread('test_files/test.wav', 'double');
@@ -221,3 +178,46 @@ for k=1:length(info_fields_ref)
     assertEqual(info_fields_ref{k}, info_fields{k});
     assertEqual(opts_ref.info.(info_fields_ref{k}), opts.info.(info_fields{k}));
 end
+
+function test_raw_empty_args(~)
+% verify that msndread raises an error when called with insufficient arguments
+
+assertExceptionThrown(@() msndfile.read('test_files/test.raw', []), 'msndfile:sndfile');
+assertExceptionThrown(@() msndfile.read('test_files/test.raw', [], []), 'msndfile:sndfile');
+assertExceptionThrown(@() msndfile.read('test_files/test.raw', [], [], []), 'msndfile:sndfile');
+
+function test_raw_incomplete_file_info(~)
+% verify that msndread raises an error when file_info is incomplete
+
+file_info.samplerate   = 44100;
+assertExceptionThrown(@() msndfile.read('test_files/test.raw', [], [], file_info), 'msndfile:argerror');
+file_info.channels     = 2;
+assertExceptionThrown(@() msndfile.read('test_files/test.raw', [], [], file_info), 'msndfile:argerror');
+
+% only now is file_info complete
+file_info.sampleformat = 'PCM_16';
+[in_sig, fs] = msndfile.read('test_files/test.raw', [], [], file_info);
+
+% reset file_info
+file_info = [];
+
+file_info.samplerate   = 44100;
+file_info.channels     = 2;
+file_info.format       = 'RAW';
+assertExceptionThrown(@() msndfile.read('test_files/test.raw', [], [], file_info), 'msndfile:argerror');
+file_info.endianness   = 'FILE';
+assertExceptionThrown(@() msndfile.read('test_files/test.raw', [], [], file_info), 'msndfile:argerror');
+% only now is file_info complete
+file_info.sampleformat = 'PCM_16';
+[in_sig, fs] = msndfile.read('test_files/test.raw', [], [], file_info);
+
+% endianness defaults to 'FILE'; it is unused here, test anyway
+file_info.endianness   = 'FILE';
+[in_sig, fs] = msndfile.read('test_files/test.raw', [], [], file_info);
+
+function test_raw_read(ref_data)
+% test the RAW file import
+
+[in_raw, fs] = msndfile.read('test_files/test.raw', [], [], ref_data.file_info);
+
+assertEqual(ref_data.in_wav, in_raw);

@@ -31,64 +31,6 @@ assertExceptionThrown(@() msndfile.blockread('open', 'test_files/test.wav'), 'ms
 assertExceptionThrown(@() msndfile.blockread('open', 'test_files/test.flac'), 'msndfile:blockread:fileopen');
 assertExceptionThrown(@() msndfile.blockread('open', 'test_files/test.raw', ref_data.file_info), 'msndfile:blockread:fileopen');
 
-function test_seek(ref_data)
-
-file_len = ref_data.file_size(1);
-
-msndfile.blockread('open', 'test_files/test.wav');
-
-% Invalid sample positions should raise errors
-assertExceptionThrown(@() msndfile.blockread('seek', 'test_files/test.wav', -1), 'msndfile:argerror');
-assertExceptionThrown(@() msndfile.blockread('seek', 'test_files/test.wav', 0), 'msndfile:argerror');
-assertExceptionThrown(@() msndfile.blockread('seek', 'test_files/test.wav', file_len+1), 'msndfile:argerror');
-assertExceptionThrown(@() msndfile.blockread('seek', 'test_files/test.wav', file_len+2), 'msndfile:argerror');
-
-% These indices should be fine
-msndfile.blockread('seek', 'test_files/test.wav', 1);
-msndfile.blockread('seek', 'test_files/test.wav', file_len);
-
-% Read 100 random samples and compare with wavread() to verify that "seek"
-% actually seeks to the correct position.
-for k=1:100
-    pos = randi([0 file_len], 1);
-
-    msndfile.blockread('seek', 'test_files/test.wav', pos);
-
-    data1 = msndfile.blockread('read', 'test_files/test.wav', 1);
-    data2 = wavread('test_files/test.wav', [pos pos]);
-
-    assertEqual(data1, data2);
-end
-
-function test_tell(ref_data)
-
-file_len = ref_data.file_size(1);
-
-msndfile.blockread('open', 'test_files/test.wav');
-
-% verify that the current position is unaltered after seek errors
-assertEqual(1, msndfile.blockread('tell', 'test_files/test.wav'));
-assertExceptionThrown(@() msndfile.blockread('seek', 'test_files/test.wav', 0), 'msndfile:argerror');
-assertEqual(1, msndfile.blockread('tell', 'test_files/test.wav'));
-assertExceptionThrown(@() msndfile.blockread('seek', 'test_files/test.wav', file_len+1), 'msndfile:argerror');
-assertEqual(1, msndfile.blockread('tell', 'test_files/test.wav'));
-
-% simple "tell" checks
-msndfile.blockread('seek', 'test_files/test.wav', file_len);
-assertEqual(file_len, msndfile.blockread('tell', 'test_files/test.wav'));
-msndfile.blockread('seek', 'test_files/test.wav', 1);
-assertEqual(1, msndfile.blockread('tell', 'test_files/test.wav'));
-
-% seek to 100 random positions and verify that "tell" correctly reports the
-% position we seeked to
-for k=1:100
-    pos = randi([0 file_len], 1);
-
-    msndfile.blockread('seek', 'test_files/test.wav', pos);
-
-    assertEqual(pos, msndfile.blockread('tell', 'test_files/test.wav'));
-end
-
 function test_close(ref_data)
 % test close command
 
@@ -110,24 +52,6 @@ msndfile.blockread('close', 'test_files/test.flac');
 msndfile.blockread('close', 'test_files/test.wav');
 
 % should throw an exception
-assertExceptionThrown(@() msndfile.blockread('close', 'test_files/test.wav'), 'msndfile:blockread:filenotopen');
-assertExceptionThrown(@() msndfile.blockread('close', 'test_files/test.flac'), 'msndfile:blockread:filenotopen');
-assertExceptionThrown(@() msndfile.blockread('close', 'test_files/test.raw', ref_data.file_info), 'msndfile:blockread:filenotopen');
-
-function test_closeall(ref_data)
-% test read command
-
-msndfile.blockread('open', 'test_files/test.wav');
-msndfile.blockread('open', 'test_files/test.flac');
-msndfile.blockread('open', 'test_files/test.raw', ref_data.file_info);
-
-msndfile.blockread('closeall');
-
-assertExceptionThrown(@() msndfile.blockread('read', 'test_files/test.wav', ref_data.block_size), 'msndfile:blockread:filenotopen');
-assertExceptionThrown(@() msndfile.blockread('read', 'test_files/test.flac', ref_data.block_size), 'msndfile:blockread:filenotopen');
-assertExceptionThrown(@() msndfile.blockread('read', 'test_files/test.raw', ref_data.block_size, ref_data.file_info), 'msndfile:blockread:filenotopen');
-
-% should not throw an exception
 assertExceptionThrown(@() msndfile.blockread('close', 'test_files/test.wav'), 'msndfile:blockread:filenotopen');
 assertExceptionThrown(@() msndfile.blockread('close', 'test_files/test.flac'), 'msndfile:blockread:filenotopen');
 assertExceptionThrown(@() msndfile.blockread('close', 'test_files/test.raw', ref_data.file_info), 'msndfile:blockread:filenotopen');
@@ -293,8 +217,8 @@ assertExceptionThrown(@() msndfile.blockread('read', 'test_files/test.wav', [kk 
 assertExceptionThrown(@() msndfile.blockread('read', 'test_files/test.flac', [kk kk+block_size-1]), 'msndfile:blockread:filenotopen');
 assertExceptionThrown(@() msndfile.blockread('read', 'test_files/test.raw', [kk kk+block_size-1]), 'msndfile:blockread:filenotopen');
 
-% test multibyte file name support; just do some regular stuff
 function test_multibyte_filename(ref_data)
+% test multibyte file name support; just do some regular stuff
 
 % UTF-8 encoded file name 'test_files/bläßgans'
 utf8_bytes = [98 108 195 164 195 159]; % bläß
@@ -305,3 +229,80 @@ assertExceptionThrown(@() msndfile.blockread('open', fname), 'msndfile:blockread
 msndfile.blockread('read', fname, [1 ref_data.file_size(1)]);
 msndfile.blockread('close', fname);
 assertExceptionThrown(@() msndfile.blockread('close', fname), 'msndfile:blockread:filenotopen');
+
+function test_seek(ref_data)
+% test seek command
+
+file_len = ref_data.file_size(1);
+
+msndfile.blockread('open', 'test_files/test.wav');
+
+% Invalid sample positions should raise errors
+assertExceptionThrown(@() msndfile.blockread('seek', 'test_files/test.wav', -1), 'msndfile:argerror');
+assertExceptionThrown(@() msndfile.blockread('seek', 'test_files/test.wav', 0), 'msndfile:argerror');
+assertExceptionThrown(@() msndfile.blockread('seek', 'test_files/test.wav', file_len+1), 'msndfile:argerror');
+assertExceptionThrown(@() msndfile.blockread('seek', 'test_files/test.wav', file_len+2), 'msndfile:argerror');
+
+% These indices should be fine
+msndfile.blockread('seek', 'test_files/test.wav', 1);
+msndfile.blockread('seek', 'test_files/test.wav', file_len);
+
+% Read 100 random samples and compare with wavread() to verify that "seek"
+% actually seeks to the correct position.
+for k=1:100
+    pos = randi([0 file_len], 1);
+
+    msndfile.blockread('seek', 'test_files/test.wav', pos);
+
+    data1 = msndfile.blockread('read', 'test_files/test.wav', 1);
+    data2 = wavread('test_files/test.wav', [pos pos]);
+
+    assertEqual(data1, data2);
+end
+
+function test_tell(ref_data)
+% test tell command
+
+file_len = ref_data.file_size(1);
+
+msndfile.blockread('open', 'test_files/test.wav');
+
+% verify that the current position is unaltered after seek errors
+assertEqual(1, msndfile.blockread('tell', 'test_files/test.wav'));
+assertExceptionThrown(@() msndfile.blockread('seek', 'test_files/test.wav', 0), 'msndfile:argerror');
+assertEqual(1, msndfile.blockread('tell', 'test_files/test.wav'));
+assertExceptionThrown(@() msndfile.blockread('seek', 'test_files/test.wav', file_len+1), 'msndfile:argerror');
+assertEqual(1, msndfile.blockread('tell', 'test_files/test.wav'));
+
+% simple "tell" checks
+msndfile.blockread('seek', 'test_files/test.wav', file_len);
+assertEqual(file_len, msndfile.blockread('tell', 'test_files/test.wav'));
+msndfile.blockread('seek', 'test_files/test.wav', 1);
+assertEqual(1, msndfile.blockread('tell', 'test_files/test.wav'));
+
+% seek to 100 random positions and verify that "tell" correctly reports the
+% position we seeked to
+for k=1:100
+    pos = randi([0 file_len], 1);
+
+    msndfile.blockread('seek', 'test_files/test.wav', pos);
+
+    assertEqual(pos, msndfile.blockread('tell', 'test_files/test.wav'));
+end
+
+function test_closeall(ref_data)
+% test closeall command
+
+msndfile.blockread('open', 'test_files/test.wav');
+msndfile.blockread('open', 'test_files/test.flac');
+msndfile.blockread('open', 'test_files/test.raw', ref_data.file_info);
+
+msndfile.blockread('closeall');
+
+assertExceptionThrown(@() msndfile.blockread('read', 'test_files/test.wav', ref_data.block_size), 'msndfile:blockread:filenotopen');
+assertExceptionThrown(@() msndfile.blockread('read', 'test_files/test.flac', ref_data.block_size), 'msndfile:blockread:filenotopen');
+assertExceptionThrown(@() msndfile.blockread('read', 'test_files/test.raw', ref_data.block_size, ref_data.file_info), 'msndfile:blockread:filenotopen');
+
+assertExceptionThrown(@() msndfile.blockread('close', 'test_files/test.wav'), 'msndfile:blockread:filenotopen');
+assertExceptionThrown(@() msndfile.blockread('close', 'test_files/test.flac'), 'msndfile:blockread:filenotopen');
+assertExceptionThrown(@() msndfile.blockread('close', 'test_files/test.raw', ref_data.file_info), 'msndfile:blockread:filenotopen');
