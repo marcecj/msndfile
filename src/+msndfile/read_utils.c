@@ -24,8 +24,8 @@ unsigned int get_num_formats()
 /* returns a list of file extensions to simple formats + RAW */
 char** get_format_extensions()
 {
-    int i;
-    const int num_formats = get_num_formats();
+    unsigned int i;
+    const unsigned int num_formats = get_num_formats();
     char** file_exts = (char**)malloc(num_formats*sizeof(char*));
     SF_FORMAT_INFO format_info;
 
@@ -50,7 +50,7 @@ char** get_format_extensions()
  * already checked */
 unsigned int ext_already_checked(char** extensions, const char* ext, const unsigned int num_ext)
 {
-    size_t i;
+    unsigned int i;
     for( i = 0; i < num_ext; i++ )
         if( strcmp(extensions[i], ext) == 0 )
             return 1;
@@ -63,14 +63,14 @@ unsigned int ext_already_checked(char** extensions, const char* ext, const unsig
  * fails, NULL is returned */
 char* gen_filename(char* fname)
 {
-    const size_t N           = strlen(fname);
-    const size_t num_formats = get_num_formats();
-    char** file_exts         = NULL;
-    char** read_exts         = NULL;
-    FILE* audio_file         = NULL;
-    size_t num_read_exts     = 0;
-    size_t num_files         = 0; /* file name ambiguity if num_files>1 */
-    size_t i;
+    const size_t N                 = strlen(fname);
+    const unsigned int num_formats = get_num_formats();
+    char** file_exts               = NULL;
+    char** read_exts               = NULL;
+    FILE* audio_file               = NULL;
+    unsigned int num_read_exts     = 0;
+    unsigned int num_files         = 0; /* file name ambiguity if num_files>1 */
+    unsigned int i;
 
     /* if the file name (probably) has a suffix, the file name is OK */
     if( strrchr(fname, '.') != NULL )
