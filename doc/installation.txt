@@ -58,7 +58,15 @@ The MATLAB Tool is a submodule of this repository.  To install it, just run
 $ git submodule update --init
 -----------------------------
 
-If you want to build the documentation, you need to install {asciidoc}.
+Finally, if you want to build the documentation, you need these additional
+dependencies:
+
+- {asciidoc} (and 'its' dependencies, which can be vast, depending on the
+  output format -- it is probably easiest to do this on a Linux system)
+- an https://github.com/marcecj/scons_asciidoc[SCons AsciiDoc Tool]
+
+The SCons Tool is, again, a submodule of this repository and will be installed
+by running the above command.
 
 NOTE: I have never compiled msndfile under Mac OS X, if anybody succeeds in
 doing so before I get around to it, I would like to know if it works.  I already

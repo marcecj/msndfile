@@ -33,25 +33,15 @@ AddOption('--force-mingw',
 
 # the Matlab tool automatically sets various environment variables
 if os.name == 'nt' and GetOption('forcemingw'):
-    env = Environment(tools = ['mingw', 'filesystem', 'zip', 'packaging', 'matlab'],
+    env = Environment(tools = ['mingw', 'filesystem', 'zip', 'packaging', 'matlab', 'asciidoc'],
                       variables = env_vars)
 else:
-    env = Environment(tools = ['default', 'packaging', 'matlab'],
+    env = Environment(tools = ['default', 'packaging', 'matlab', 'asciidoc'],
                       variables = env_vars)
 
-# define a simple AsciiDoc builder
-asciidoc = env.Builder(action = ['asciidoc ${ASCIIDOCFLAGS} -o ${TARGET} ${SOURCE}'],
-                       suffix = '.html',
-                       single_source = True)
-env['BUILDERS']['AsciiDoc'] = asciidoc
-env.Append(ASCIIDOCFLAGS = '-b html5')
-
-# define a simple a2x builder
-a2x = env.Builder(action = ['a2x $A2XFLAGS ${SOURCE}'],
-                  suffix = 'pdf',
-                  single_source = True)
-env['BUILDERS']['A2X'] = a2x
-env.Append(A2XFLAGS = '-f pdf -L')
+# set document builder flags
+env['ASCIIDOCBACKEND'] = 'html5'
+env.Append(A2XFLAGS = '-L')
 
 # The matlab package directory
 env['pkg_dir'] = "+msndfile"
@@ -178,9 +168,8 @@ sndfile_pkg = env.Package(
 
 # create an alias for building the documentation, but only if the asciidoc
 # binary could be found
-if env.WhereIs('asciidoc') is not None:
+if env.WhereIs('asciidoc'):
     docs = env.AsciiDoc(['doc/index.txt'])
-    env.Depends(docs, Glob('doc/*.txt'))
     Alias('doc', docs)
     Help("    doc          -> compiles documentation to HTML")
 else:
@@ -190,7 +179,6 @@ else:
 # binary could be found
 if env.WhereIs('a2x'):
     pdf = env.A2X(['doc/index.txt'])
-    env.Depends(docs, Glob('doc/*.txt'))
     Alias('pdf', pdf)
     Help("\n    pdf          -> compiles documentation to PDF")
 else:
