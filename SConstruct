@@ -46,6 +46,13 @@ asciidoc = env.Builder(action = ['asciidoc ${ASCIIDOCFLAGS} -o ${TARGET} ${SOURC
 env['BUILDERS']['AsciiDoc'] = asciidoc
 env.Append(ASCIIDOCFLAGS = '-b html5')
 
+# define a simple a2x builder
+a2x = env.Builder(action = ['a2x $A2XFLAGS ${SOURCE}'],
+                  suffix = 'pdf',
+                  single_source = True)
+env['BUILDERS']['A2X'] = a2x
+env.Append(A2XFLAGS = '-f pdf -L')
+
 # The matlab package directory
 env['pkg_dir'] = "+msndfile"
 
@@ -178,6 +185,16 @@ if env.WhereIs('asciidoc') is not None:
     Help("    doc          -> compiles documentation to HTML")
 else:
     print "info: asciidoc not found, cannot build documentation"
+
+# create an alias for building the documentation to PDF, but only if the a2x
+# binary could be found
+if env.WhereIs('a2x'):
+    pdf = env.A2X(['doc/index.txt'])
+    env.Depends(docs, Glob('doc/*.txt'))
+    Alias('pdf', pdf)
+    Help("\n    pdf          -> compiles documentation to PDF")
+else:
+    print "info: a2x not found, cannot build documentation"
 
 # define some useful aliases
 Alias("makezip", sndfile_pkg)
