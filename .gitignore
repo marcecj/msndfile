@@ -20,8 +20,11 @@ graphics
 *.expand
 *.mex*
 *.zip
-*.html
 *.log
+
+# documentation output
+doc/*.html
+doc/*.pdf
 
 # VS files
 *.sln*
