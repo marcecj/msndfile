@@ -22,7 +22,7 @@ function test_filename(ref_data)
 % verify that file names without a suffix will have ".wav" appended and that an
 % appropriate errors are thrown
 
-% non-existent files should through exceptions
+% non-existent files should throw exceptions
 assertExceptionThrown(@() msndfile.read('test_files/bla'), 'msndfile:sndfile');
 assertExceptionThrown(@() msndfile.read('test_files/bla.wav'), 'msndfile:sndfile');
 
@@ -33,7 +33,7 @@ msndfile.read('test_files/only_wav/test');
 msndfile.read('test_files/only_raw/test', [], [], ref_data.file_info);
 msndfile.read('test_files/only_flac/test');
 
-% ambiguous file names should through exceptions
+% ambiguous file names should throw exceptions
 assertExceptionThrown(@() msndfile.read('test_files/no_wav/test'), ...
                       'msndfile:read:ambiguousname');
 
