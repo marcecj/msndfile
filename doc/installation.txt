@@ -50,7 +50,7 @@ If you are going to use the SCons based build system, you will also need
 - http://www.python.org[Python] (whatever version SCons works with)
 - {scons} (tested with SCons 2.1.x)
 - {pywin32} (optional, but necessary for some SCons features on Windows)
-- the https://github.com/marcecj/SCons-Matlab-Tool[SCons Matlab Tool]
+- the https://github.com/marcecj/scons_matlab[SCons Matlab Tool]
 
 The MATLAB Tool is a submodule of this repository.  To install it, just run
 

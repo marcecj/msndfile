@@ -1,6 +1,6 @@
-[submodule "site_scons/site_tools/matlab"]
-	path = site_scons/site_tools/matlab
-	url = git://git.code.sf.net/p/sconsmatlabtool/code
 [submodule "site_scons/site_tools/asciidoc"]
 	path = site_scons/site_tools/asciidoc
 	url = git://github.com/marcecj/scons_asciidoc.git
+[submodule "site_scons/site_tools/matlab"]
+	path = site_scons/site_tools/matlab
+	url = git://github.com/marcecj/scons_matlab.git
