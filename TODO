@@ -11,6 +11,9 @@ Before v1.2:
 Misc:
 -----
 
+- try the method by Henrik at
+  http://groups.google.com/group/asciidoc/tree/browse_frm/month/2009-05/f5ecb9425a5c7c43?rnum=1&_done=%2Fgroup%2Fasciidoc%2Fbrowse_frm%2Fmonth%2F2009-05%3F
+  for having a central way of documenting the docs revision history
 - test suite: don't fail when a format is not supported, just print a message
   (see https://github.com/marcecj/msndfile/issues/1).
 - support relative seeking?
