@@ -21,7 +21,8 @@ the following build targets:
 env_vars = Variables()
 env_vars.AddVariables(
     ('CC', 'The C compiler'),
-    ('DESTDIR', 'The install destination', os.curdir),
+    PathVariable('DESTDIR', 'The install destination', os.curdir,
+                 PathVariable.PathIsDir),
     ('ASCIIDOCBACKEND', 'The backend used by asciidoc', 'html5'),
     ('A2XFORMAT', 'The format output by a2x'),
 )
