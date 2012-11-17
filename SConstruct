@@ -19,8 +19,12 @@ the following build targets:
 
 # modifiable environment variables
 env_vars = Variables()
-env_vars.Add('CC', 'The C compiler')
-env_vars.Add('DESTDIR', 'The install destination', os.curdir)
+env_vars.AddVariables(
+    ('CC', 'The C compiler'),
+    ('DESTDIR', 'The install destination', os.curdir),
+    ('ASCIIDOCBACKEND', 'The backend used by asciidoc', 'html5'),
+    ('A2XFORMAT', 'The format output by a2x'),
+)
 
 AddOption('--force-mingw',
           dest='forcemingw',
@@ -40,7 +44,6 @@ else:
                       variables = env_vars)
 
 # set document builder flags
-env['ASCIIDOCBACKEND'] = 'html5'
 env.Append(A2XFLAGS = '-L')
 
 # The matlab package directory
