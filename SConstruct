@@ -45,7 +45,7 @@ else:
                       variables = env_vars)
 
 # set document builder flags
-env.Append(A2XFLAGS = '-L')
+env.Append(A2XFLAGS = '-L -k')
 
 # The matlab package directory
 env['pkg_dir'] = "+msndfile"
