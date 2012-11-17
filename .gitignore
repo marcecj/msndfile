@@ -26,6 +26,9 @@ graphics
 doc/*.html
 doc/*.pdf
 
+# documentation intermediaries
+doc/*.xml
+
 # VS files
 *.sln*
 *.vcproj*
