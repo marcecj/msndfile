@@ -150,25 +150,7 @@ if env['PLATFORM'] == 'win32' and 'msvs' in env['TOOLS']:
 
     Help("    vsproj       -> create a visual studio project file")
 
-## package the software
-
-# define the package sources and corresponding install targets
-pkg_src = msndfile + mfiles
-if env['PLATFORM'] == 'win32':
-    pkg_src.append(env.File('Win' + os.sep +
-                        env['SHLIBPREFIX'] + sndfile_lib + env['SHLIBSUFFIX']))
-
-msndfile_inst = env.Install(os.sep.join([env['DESTDIR'], env['pkg_dir']]),
-                            pkg_src)
-
-sndfile_pkg = env.Package(
-    NAME        = "msndfile",
-    VERSION     = "1.0",
-    PACKAGETYPE = "zip",
-    source = msndfile_inst + ['README.md', 'LICENSE', 'LGPL-2.1']
-)
-
-## miscellanea
+## build documentation
 
 # create an alias for building the documentation, but only if the asciidoc
 # binary could be found
@@ -187,6 +169,31 @@ if env.WhereIs('a2x'):
     Help("\n    pdf          -> compiles documentation to PDF")
 else:
     print "info: a2x not found, cannot build documentation"
+
+## package the software
+
+# define the package sources and corresponding install targets
+pkg_src = msndfile + mfiles
+if env['PLATFORM'] == 'win32':
+    pkg_src.append(env.File('Win' + os.sep +
+                        env['SHLIBPREFIX'] + sndfile_lib + env['SHLIBSUFFIX']))
+
+msndfile_inst = env.Install(os.sep.join([env['DESTDIR'], env['pkg_dir']]),
+                            pkg_src)
+
+doc_inst = env.InstallAs(
+    os.sep.join([env['DESTDIR'], 'manual.pdf']),
+    pdf[0] # install the PDF, but without the XML file
+)
+
+sndfile_pkg = env.Package(
+    NAME        = "msndfile",
+    VERSION     = "1.0",
+    PACKAGETYPE = "zip",
+    source = doc_inst + msndfile_inst + ['README.md', 'LICENSE', 'LGPL-2.1']
+)
+
+## miscellanea
 
 # define some useful aliases
 Alias("makezip", sndfile_pkg)
