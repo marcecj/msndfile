@@ -34,7 +34,7 @@ AddOption('--force-mingw',
           help='Force the use of mingw on Windows platforms.'
          )
 
-## set the environment and extra builders
+## set the environment
 
 # the Matlab tool automatically sets various environment variables
 if os.name == 'nt' and GetOption('forcemingw'):
@@ -148,6 +148,10 @@ if env['PLATFORM'] == 'win32' and 'msvs' in env['TOOLS']:
     Help("    vsproj       -> create a visual studio project file")
 
 ## build documentation
+#
+# By default, the documentation is compiled to HTML and PDF.  This can be
+# changed by modifying the ASCIIDOCBACKEND and A2XFORMAT variables,
+# respectively.
 
 # set document builder flags
 env.Append(A2XFLAGS = '-L -k')
