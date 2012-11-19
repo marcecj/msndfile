@@ -18,7 +18,6 @@ Misc:
   (see https://github.com/marcecj/msndfile/issues/1).
 - support relative seeking?
 - document "no transpose" feature of blockread
-- merge linkedlists branch
 - change license to LGPL (like libsndfile)
 - maybe add support for "fmt" option to blockread
 - maybe support internationalization in error/warning messages? might be
