@@ -44,9 +44,6 @@ else:
     env = Environment(tools = ['default', 'packaging', 'matlab', 'asciidoc'],
                       variables = env_vars)
 
-# set document builder flags
-env.Append(A2XFLAGS = '-L -k')
-
 # The matlab package directory
 env['pkg_dir'] = "+msndfile"
 
@@ -151,6 +148,9 @@ if env['PLATFORM'] == 'win32' and 'msvs' in env['TOOLS']:
     Help("    vsproj       -> create a visual studio project file")
 
 ## build documentation
+
+# set document builder flags
+env.Append(A2XFLAGS = '-L -k')
 
 # create an alias for building the documentation, but only if the asciidoc
 # binary could be found
