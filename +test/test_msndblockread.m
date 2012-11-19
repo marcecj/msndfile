@@ -100,6 +100,15 @@ msndfile.blockread('close', 'test_files/test.wav');
 msndfile.blockread('close', 'test_files/test.flac');
 msndfile.blockread('close', 'test_files/test.raw', ref_data.file_info);
 
+% due to the nature of the implementation, also test closing in reverse order
+msndfile.blockread('open', 'test_files/test.wav');
+msndfile.blockread('open', 'test_files/test.flac');
+msndfile.blockread('open', 'test_files/test.raw', ref_data.file_info);
+
+msndfile.blockread('close', 'test_files/test.raw', ref_data.file_info);
+msndfile.blockread('close', 'test_files/test.flac');
+msndfile.blockread('close', 'test_files/test.wav');
+
 % should throw an exception
 assertExceptionThrown(@() msndfile.blockread('close', 'test_files/test.wav'), 'msndfile:blockread:filenotopen');
 assertExceptionThrown(@() msndfile.blockread('close', 'test_files/test.flac'), 'msndfile:blockread:filenotopen');

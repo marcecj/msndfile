@@ -18,6 +18,7 @@ AUDIO_FILE_INFO* create_file_info(const char *const name, SF_INFO* sf_file_info,
 
     file_info->info = sf_file_info;
     file_info->file = file;
+    file_info->next = NULL;
 
     file_info->name = (char*)calloc(strlen(name)+1, sizeof(char));
     file_info->name = strcpy(file_info->name, name);
@@ -25,111 +26,113 @@ AUDIO_FILE_INFO* create_file_info(const char *const name, SF_INFO* sf_file_info,
     return file_info;
 }
 
-/* add an AUDIO_FILE_INFO structure to an AUDIO_FILES look-up table */
-AUDIO_FILES* store_file_info(AUDIO_FILES *array, AUDIO_FILE_INFO *file_info)
+/* append an AUDIO_FILE_INFO structure to an AUDIO_FILE_INFO linked list */
+AUDIO_FILES* store_file_info(AUDIO_FILES *file_list, AUDIO_FILE_INFO *file_info)
 {
-    /* create a new AUDIO_FILES* array if it does not exist */
-    if( array == NULL ) {
-        if( (array = (AUDIO_FILES*)malloc(sizeof(AUDIO_FILES))) == NULL )
+    AUDIO_FILE_INFO *ptr;
+
+    /* allocate a file_list instance if it does not exist yet */
+    if( file_list == NULL ) {
+        if( (file_list = (AUDIO_FILES*)malloc(sizeof(AUDIO_FILES))) == NULL )
             return NULL;
-        array->num_files = 0;
-        array->files = (AUDIO_FILE_INFO**)malloc(sizeof(AUDIO_FILE_INFO*));
+        file_list->first = NULL;
     }
 
-    /* if the file name is not stored yet, append it to the array */
-    if( lookup_file_info(array, file_info->name) == NULL ) {
-        if( array->num_files > 0 )
-            array->files = (AUDIO_FILE_INFO**)realloc(array->files, (array->num_files+1)*sizeof(AUDIO_FILE_INFO*));
-        array->num_files++;
-
-        array->files[array->num_files-1] = file_info;
+    /* if the list is empty set the file to the first element */
+    if( (ptr = file_list->first) == NULL ) {
+        file_list->first = file_info;
+        return file_list;
     }
 
-    return array;
+    /* if the file name is not stored yet, append it to the list */
+    if( lookup_file_info(file_list, file_info->name) == NULL ) {
+        while( ptr->next != NULL )
+            ptr = ptr->next;
+        ptr->next = file_info;
+    }
+
+    return file_list;
 }
 
-/* Get an AUDIO_FILE_INFO structure from an AUDIO_FILES look-up table.
+/* Get an AUDIO_FILE_INFO structure from an AUDIO_FILES linked list
  * Returns NULL if the file is not open. */
-AUDIO_FILE_INFO* lookup_file_info(const AUDIO_FILES *const array, const char *const name)
+AUDIO_FILE_INFO* lookup_file_info(AUDIO_FILES *file_list, const char *const name)
 {
-    int i;
+    AUDIO_FILE_INFO *ptr;
 
-    if( array == NULL )
+    if( file_list == NULL )
         return NULL;
 
-    for(i = 0; i < array->num_files; i++)
-        if( strcmp(name, array->files[i]->name) == 0 )
-            return array->files[i];
+    for(ptr = file_list->first; ptr != NULL; ptr = ptr->next)
+        if( strcmp(name, ptr->name) == 0 )
+            break;
 
-    return NULL;
+    return ptr;
 }
 
-/* remove an AUDIO_FILE_INFO structure from an AUDIO_FILES look-up table */
-AUDIO_FILES* remove_file_info(AUDIO_FILES *array, const char *const name)
+/* remove an AUDIO_FILE_INFO structure from an AUDIO_FILES linked list */
+int remove_file_info(AUDIO_FILES *file_list, const char *const name)
 {
-    int i=0;
+    AUDIO_FILE_INFO *ptr=NULL, *prev=NULL;
 
-    if( array == NULL ) {
-        mexErrMsgIdAndTxt("msndfile:blockread:filenotopen", "File not open.");
-        return array;
-    }
+    /* there are no open files */
+    if( file_list == NULL )
+        return -1;
 
-    while( i < array->num_files && strcmp(name, array->files[i]->name) != 0 )
-        i++;
+    for( ptr=file_list->first, prev=ptr; ptr != NULL; prev=ptr, ptr=ptr->next )
+        if( strcmp(name, ptr->name) == 0 )
+            break;
 
-    if( i < array->num_files )
-    {
-        array->files[i] = destroy_file_info(array->files[i]);
+    /* the file is not open */
+    if( ptr == NULL )
+        return -1;
 
-        /* replace the deleted element with the last one */
-        array->files[i] = array->files[array->num_files-1];
+    prev->next = ptr->next;
+    /* Special case: if the ptr is at the first element, we need to
+     * update the pointer to the first element. */
+    if( ptr == file_list->first )
+        file_list->first = ptr->next;
 
-        /* resize the array */
-        array->files = (AUDIO_FILE_INFO**)realloc(array->files, (--array->num_files)*sizeof(AUDIO_FILE_INFO*));
+    destroy_file_info(ptr);
 
-        /* if array->files now has zero elements, it will have an address of
-         * NULL, so allocate it with one element */
-        if( array->num_files < 1 )
-            array->files = (AUDIO_FILE_INFO**)malloc(sizeof(AUDIO_FILE_INFO*));
-    }
-    else
-        mexErrMsgIdAndTxt("msndfile:blockread:filenotopen", "File not open.");
-
-    return array;
+    return 0;
 }
 
 /* deallocate an AUDIO_FILE_INFO structure */
-AUDIO_FILE_INFO* destroy_file_info(AUDIO_FILE_INFO* file_info)
+void destroy_file_info(AUDIO_FILE_INFO* file_info)
 {
     int status;
 
-    if( file_info == NULL )
+    if( file_info != NULL ) {
+        free(file_info->name);
+        free(file_info->info);
+
+        /* TODO: what to do here? */
+        if( (status = sf_close(file_info->file)) == 0 )
+            file_info->file = NULL;
+        else {
+            mexWarnMsgIdAndTxt("msndfile:sndfile", "libsndfile could not close the file!");
+            mexWarnMsgIdAndTxt("msndfile:sndfile", sf_error_number(status));
+        }
+
+        free(file_info);
+    } else
         mexWarnMsgTxt("File already removed! This is odd.");
-
-    free(file_info->name);
-    free(file_info->info);
-
-    /* TODO: what to do here? */
-    if( (status = sf_close(file_info->file)) == 0 )
-        file_info->file = NULL;
-    else {
-        mexWarnMsgIdAndTxt("msndfile:sndfile", "libsndfile could not close the file! Deallocating structure anyway.");
-        mexWarnMsgIdAndTxt("msndfile:sndfile", sf_error_number(status));
-    }
-
-
-    free(file_info);
-
-    return file_info;
 }
 
-/* deallocate an AUDIO_FILES look-up table */
-void destroy_file_list(AUDIO_FILES* array)
+/* deallocate an AUDIO_FILES linked list */
+AUDIO_FILES* destroy_file_list(AUDIO_FILES *file_list)
 {
-    if( array ) {
-        int i;
-        for( i = 0; i < array->num_files; i++ )
-            array->files[i] = destroy_file_info(array->files[i]);
+    if( file_list != NULL ) {
+        AUDIO_FILE_INFO *ptr, *next;
+
+        for( ptr = file_list->first; ptr != NULL; ptr=next ) {
+            next = ptr->next;
+            destroy_file_info(ptr);
+        }
+
+        free(file_list);
     }
-    free(array);
+
+    return NULL;
 }

@@ -18,11 +18,11 @@ enum {
     CMD_CLOSEALL
 };
 
-static AUDIO_FILES* file_list=NULL;
+static AUDIO_FILES *file_list=NULL;
 
 void clear_static_vars()
 {
-    destroy_file_list(file_list);
+    file_list = destroy_file_list(file_list);
 }
 
 void mexFunction(int nlhs, mxArray *plhs[],
@@ -147,12 +147,12 @@ void mexFunction(int nlhs, mxArray *plhs[],
     }
     else if( cmd_id == CMD_CLOSE )
     {
-        file_list = remove_file_info(file_list, sf_in_fname);
+        if( remove_file_info(file_list, sf_in_fname) == -1 )
+            mexErrMsgIdAndTxt("msndfile:blockread:filenotopen", "File not open.");
     }
     else if( cmd_id == CMD_CLOSEALL )
     {
-        destroy_file_list(file_list);
-        file_list = NULL;
+        file_list = destroy_file_list(file_list);
     }
     else if( cmd_id == CMD_READ )
     {
