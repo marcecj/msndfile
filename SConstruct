@@ -15,7 +15,9 @@ the following build targets:
 """
 )
 
-## environment variables and options
+###################################
+# environment variables and options
+###################################
 
 # modifiable environment variables
 env_vars = Variables()
@@ -34,7 +36,9 @@ AddOption('--force-mingw',
           help='Force the use of mingw on Windows platforms.'
          )
 
-## set the environment
+#####################
+# set the environment
+#####################
 
 # the Matlab tool automatically sets various environment variables
 if os.name == 'nt' and GetOption('forcemingw'):
@@ -47,7 +51,9 @@ else:
 # The matlab package directory
 env['pkg_dir'] = "+msndfile"
 
-## platform dependent environment configuration
+##############################################
+# platform dependent environment configuration
+##############################################
 
 # assume a GCC-compatible compiler on Unix like platforms
 if env['PLATFORM'] in ("posix", "darwin"):
@@ -93,7 +99,9 @@ else:
 
     exit("Oops, not a supported platform.")
 
-## check the system for required features
+########################################
+# check the system for required features
+########################################
 
 if not (GetOption('clean') or GetOption('help')):
     conf = env.Configure()
@@ -114,11 +122,13 @@ if not (GetOption('clean') or GetOption('help')):
 
     env = conf.Finish()
 
-## compilation targets
+#####################
+# compilation targets
 #
 # These are: msndfile (build and debug variants), the corresponding m-Files, and
 # a visual studio project (if the current platform is Windows and MinGW is not
 # used).
+#####################
 
 env['do_debug'] = False
 msndfile, mfiles = env.SConscript(dirs='src',
@@ -147,11 +157,13 @@ if env['PLATFORM'] == 'win32' and 'msvs' in env['TOOLS']:
 
     Help("    vsproj       -> create a visual studio project file")
 
-## build documentation
+#####################
+# build documentation
 #
 # By default, the documentation is compiled to HTML and PDF.  This can be
 # changed by modifying the ASCIIDOCBACKEND and A2XFORMAT variables,
 # respectively.
+#####################
 
 # set document builder flags
 env.Append(A2XFLAGS = '-L -k')
@@ -174,7 +186,9 @@ if env.WhereIs('a2x'):
 else:
     print "info: a2x not found, cannot build documentation"
 
-## package the software
+######################
+# package the software
+######################
 
 # define the package sources and corresponding install targets
 pkg_src = msndfile + mfiles
@@ -196,7 +210,9 @@ sndfile_pkg = env.Package(
     source = doc_inst + msndfile_inst + ['README.md', 'LICENSE', 'LGPL-2.1']
 )
 
-## miscellanea
+#############
+# miscellanea
+#############
 
 # define some useful aliases
 Alias("makezip", sndfile_pkg)
