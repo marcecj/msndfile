@@ -48,7 +48,7 @@ else:
     env = Environment(tools = ['default', 'packaging', 'matlab', 'asciidoc'],
                       variables = env_vars)
 
-# The matlab package directory
+# The Matlab package directory
 env['pkg_dir'] = "+msndfile"
 
 ##############################################
