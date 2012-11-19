@@ -182,8 +182,7 @@ msndfile_inst = env.Install(os.sep.join([env['DESTDIR'], env['pkg_dir']]),
                             pkg_src)
 
 doc_inst = env.InstallAs(
-    os.sep.join([env['DESTDIR'], 'manual.pdf']),
-    pdf[0] # install the PDF, but without the XML file
+    os.sep.join([env['DESTDIR'], 'manual.pdf']), pdf
 )
 
 sndfile_pkg = env.Package(
