@@ -199,9 +199,11 @@ if env['PLATFORM'] == 'win32':
 msndfile_inst = env.Install(os.sep.join([env['DESTDIR'], env['pkg_dir']]),
                             pkg_src)
 
-doc_inst = env.InstallAs(
-    os.sep.join([env['DESTDIR'], 'manual.pdf']), pdf
-)
+doc_inst = []
+if env.WhereIs('a2x'):
+    doc_inst = env.InstallAs(
+        os.sep.join([env['DESTDIR'], 'manual.pdf']), pdf
+    )
 
 sndfile_pkg = env.Package(
     NAME        = "msndfile",
