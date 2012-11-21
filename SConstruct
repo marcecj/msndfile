@@ -25,10 +25,10 @@ env_vars.AddVariables(
     ('CC', 'The C compiler'),
     PathVariable('DESTDIR', 'The install destination', os.curdir,
                  PathVariable.PathIsDir),
-    ('ASCIIDOCBACKEND', 'The backend used by asciidoc', 'html5'),
-    ('ASCIIDOCDOCTYPE', 'The doctype set by asciidoc'),
-    ('A2XFORMAT', 'The format output by a2x'),
-    ('A2XDOCTYPE', 'The doctype set by a2x'),
+    ('AD_BACKEND', 'The backend used by asciidoc', 'html5'),
+    ('AD_DOCTYPE', 'The doctype set by asciidoc'),
+    ('A2X_FORMAT', 'The format output by a2x'),
+    ('A2X_DOCTYPE', 'The doctype set by a2x'),
 )
 
 AddOption('--force-mingw',
@@ -163,12 +163,11 @@ if env['PLATFORM'] == 'win32' and 'msvs' in env['TOOLS']:
 # build documentation
 #
 # By default, the documentation is compiled to HTML and PDF.  This can be
-# changed by modifying the ASCIIDOCBACKEND and A2XFORMAT variables,
-# respectively.
+# changed by modifying the AD_BACKEND and A2X_FORMAT variables, respectively.
 #####################
 
 # set document builder flags
-env.Append(A2XFLAGS = '-L -k')
+env.Append(A2X_FLAGS = ['-L'])
 
 # create an alias for building the documentation, but only if the asciidoc
 # binary could be found
