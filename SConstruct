@@ -171,7 +171,7 @@ env.Append(A2X_FLAGS = ['-L'])
 
 # create an alias for building the documentation, but only if the asciidoc
 # binary could be found
-if env.WhereIs('asciidoc'):
+if env['AD_ASCIIDOC']:
     docs = env.AsciiDoc(['doc/index.txt'])
     Alias('doc', docs)
     Help("    doc          -> compiles documentation to HTML")
@@ -180,7 +180,7 @@ else:
 
 # create an alias for building the documentation to PDF, but only if the a2x
 # binary could be found
-if env.WhereIs('a2x'):
+if env['A2X_A2X']:
     pdf = env.A2X(['doc/index.txt'])
     Alias('pdf', pdf)
     Help("\n    pdf          -> compiles documentation to PDF")
