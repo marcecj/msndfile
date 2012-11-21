@@ -26,7 +26,9 @@ env_vars.AddVariables(
     PathVariable('DESTDIR', 'The install destination', os.curdir,
                  PathVariable.PathIsDir),
     ('ASCIIDOCBACKEND', 'The backend used by asciidoc', 'html5'),
+    ('ASCIIDOCDOCTYPE', 'The doctype set by asciidoc'),
     ('A2XFORMAT', 'The format output by a2x'),
+    ('A2XDOCTYPE', 'The doctype set by a2x'),
 )
 
 AddOption('--force-mingw',
