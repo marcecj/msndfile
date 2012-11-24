@@ -11,11 +11,11 @@ for the full documentation, including all available options.
 
 First some API compatibility examples:
 
-.Compatibility with `wavread(..., 'size')`
-==============
 For starters, we verify that the `'size'` command yields identical results.
 First `wavread`:
 
+.Output of `wavread(..., 'size')`
+==============
 --------------
 EDU>> [dim, fs, nbits, opts] = wavread('test_files/test.wav', 'size');
 EDU>> dim
@@ -45,9 +45,12 @@ ans =
     iart: 'Jon 7'
     icrd: '2006
 --------------
+==============
 
 Now `msndfile.read`:
 
+.Output of `msndfile.read(..., 'size')` -- WAV file
+==============
 --------------
 EDU>> [dim, fs, nbits, opts] = msndfile.read('test_files/test.wav', 'size');
 EDU>> dim
@@ -77,9 +80,12 @@ ans =
     iart: 'Jon 7'
     icrd: '2006'
 --------------
+==============
 
 And for comparison the same command, but with a FLAC file:
 
+.Output of `msndfile.read(..., 'size')` -- FLAC file
+==============
 --------------
 EDU>> [dim, fs, nbits, opts] = msndfile.read('test_files/test.flac', 'size');
 EDU>> dim
@@ -111,17 +117,17 @@ ans =
     inum: '1'
     ignr: '(12)'
 --------------
+==============
 
 Notable differences are:
 
 - `opts.fmt` lacks the field `wFormatTag` (but is otherwise identical)
 - `opts.info` contains more meta-data tags
-==============
 
-.Reading the first and last ten samples
-==============
 Next we read the first and last ten samples.  Again, first `wavread`:
 
+.Reading the first and last ten samples -- `wavread()`
+==============
 --------------
 EDU>> wavread('test_files/test.wav', 10)
 ans =
@@ -163,9 +169,12 @@ ans =
     0.0305         0
          0         0
 --------------
+==============
 
 Now `msndfile.read`:
 
+.Reading the first and last ten samples -- `msndfile.read()`
+==============
 --------------
 EDU>> msndfile.read('test_files/test.wav', 10)
 ans =
@@ -207,10 +216,13 @@ ans =
     0.0305         0
          0         0
 --------------
+==============
 
 And as a last comparison, the first ten samples read with the `'native'`
 option:
 
+.Reading the first and last ten samples with the `native` option
+==============
 --------------
 EDU>> wavread('test_files/test.wav', [1 10], 'native')
 ans =
@@ -224,9 +236,6 @@ ans =
       1      0
      -1     -2
       2     -4
---------------
-
---------------
 EDU>> msndfile.read('test_files/test.wav', [1 10], 'native')
 ans =
      -1      0
@@ -279,7 +288,6 @@ EDU>> msndfile.read('test_files/test.raw', 10, [], file_info)
 ??? Error using ==> read
 Field 'sampleformat' not set.
 --------------
-
 Now with all required fields set:
 
 --------------
@@ -322,10 +330,10 @@ ans =
 
 Here are some examples showing the use of `msndfile.blockread`.
 
-.Basic usage of `msndfile.blockread`
-==============
 First we open a file and read 10 samples twice in a row:
 
+.Basic usage of `msndfile.blockread` -- `open` and `read` commands
+==============
 --------------
 EDU>> msndfile.blockread('open', 'test_files/test.wav');
 EDU>> msndfile.blockread('read', 'test_files/test.wav', 10)
@@ -355,9 +363,12 @@ ans =
    -0.1221   -0.0610
          0   -0.2136
 --------------
+==============
 
 Now let us seek back to the beginning and read the first 20 samples again.
 
+.Basic usage of `msndfile.blockread` -- `seek` and `tell` commands
+==============
 --------------
 EDU>> msndfile.blockread('seek', 'test_files/test.wav', 1)
 EDU>> msndfile.blockread('tell', 'test_files/test.wav')
@@ -390,22 +401,24 @@ EDU>> msndfile.blockread('tell', 'test_files/test.wav')
 ans =
     21
 --------------
+==============
 
 The `tell` command returns the current read position of the file, i.e., where
 the next read would occur if you do not pass the start position.
 
 Now that we are done, we can close the file:
 
+.Basic usage of `msndfile.blockread` -- `close` command
+==============
 --------------
 EDU>> msndfile.blockread('close', 'test_files/test.wav')
 EDU>> msndfile.blockread('close', 'test_files/test.wav')
 ??? Error using ==> blockread
 File not open.
 --------------
+==============
 
 As you can see, attempting to close a file twice yields an error.
-
-==============
 
 ///////////////
 TODO: this feature needs to be documented and tested first
