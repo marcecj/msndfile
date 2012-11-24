@@ -27,8 +27,10 @@ env_vars.AddVariables(
                  PathVariable.PathIsDir),
     ('AD_BACKEND', 'The backend used by asciidoc', 'html5'),
     ('AD_DOCTYPE', 'The doctype set by asciidoc'),
+    ('AD_FLAGS', 'Extra flags passed to asciidoc'),
     ('A2X_FORMAT', 'The format output by a2x'),
     ('A2X_DOCTYPE', 'The doctype set by a2x'),
+    ('A2X_FLAGS', 'Extra flags passed to a2x'),
 )
 
 AddOption('--force-mingw',
