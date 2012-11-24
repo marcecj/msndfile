@@ -38,6 +38,8 @@ cases, the following differences to `wavread` hold:
   file (which is completely logical).
 - Broadcast WAV files produce an additional `opts.bext` field.
 - The opts.info struct may contain fields unique to non-WAV formats.
+- RAW files require an additional argument: a `struct` detailing the file
+  format.
 
 Warnings and errors
 ~~~~~~~~~~~~~~~~~~~
