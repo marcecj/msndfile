@@ -6,9 +6,12 @@ and `wavwrite`) have their limitations.  They do not support files larger than 4
 GB, and do not support certain non-Microsoft WAV formats (e.g., RF64).  This
 leads to users editing `wavread` to support whatever formats they need to use.
 This project, msndfile, aims to provide `wavread` and `wavwrite` compatible
-functions using the {libsndfile} C library.  This also means that msndfile
-supports {vorbis} and (in my opinion much more interesting) the Free Lossless
-Audio Codec {flac}.
+functions using the {libsndfile} C library, which supports various formats,
+including many WAV variants, and has a track record of robustness footnote:[I
+received informal feedback from one user who had WAV files that `wavread()`
+had trouble reading, but which libsndfile handled fine.].  This also means
+that msndfile supports {vorbis} and (in my opinion much more interesting) the
+Free Lossless Audio Codec {flac}.
 
 Currently, the suite consists of two functions: `msndfile.read` and
 `msndfile.blockread`.  The latter is intended solely for reading audio files
