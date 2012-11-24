@@ -15,6 +15,6 @@ are credited here.
 |========================================
 
 Also, thanks to http://bastibe.de/[Bastian Bechtold] for his feedback on this
-website.
+website and for testing msndfile under Mac.
 
 // vim:ft=asciidoc
