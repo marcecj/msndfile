@@ -11,7 +11,7 @@ are credited here.
 | MTest                                    | The test suite is implemented using {mtest}, the ``MATLAB xUnit Test Framework''.
 | image:./images/valgrind-link1.png[]      | The http://www.valgrind.org/[Valgrind] memory debugger proved useful in tracking down memory allocation bugs.
 | image:./images/SCons-Bricks.png[]        | {scons} proved a flexible and relatively easy to use -- and _extend_ -- build system.
-| image:./images/git-logomark-orange.png[] | {git} is simply an awesome version control system.
+| image:./images/git-logomark-orange.png[width=60] | {git} is simply an awesome version control system.
 |========================================
 
 Also, thanks to http://bastibe.de/[Bastian Bechtold] for his feedback on this
