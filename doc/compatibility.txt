@@ -23,7 +23,7 @@ works, the following conditions must be met:
   `some_file.wav`, msndfile will read that.
 - The format must be what the libsndfile documentation refers to as ``simple''.
   These ``simple formats'' are: AIF{F,C}, AU, CAF, FLAC, VOX, Ogg and WAV.
-  Additionaly, RAW files are supported, even though RAW is not a ``simple format''.
+  Additionally, msndfile explicitly supports RAW files.
 
 For other, more ``exotic'' file types, it is therefor necessary to provide the
 file type extension.
@@ -36,7 +36,7 @@ cases, the following differences to `wavread` hold:
 
 - The opts.fmt struct has no ``wFormatTag'' field if the file type is not a WAV
   file (which is completely logical).
-- Broadcast WAV files produce an additional opts.bext field.
+- Broadcast WAV files produce an additional `opts.bext` field.
 - The opts.info struct may contain fields unique to non-WAV formats.
 
 Warnings and errors
