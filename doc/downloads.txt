@@ -12,7 +12,7 @@ Source::
 http://sourceforge.net/projects/msndfile/files/msndfile-1.0rc3-src.zip/download
 
 Older versions can be found at the SourceForge {projectpage}.  The Windows
-binaries bundle the libsndfile DLL.  Under Linux it is expected that
-libsndfile is installed via the package manager.
+binaries bundle the libsndfile DLL.  Under Linux and Mac it is expected that
+libsndfile is already installed (e.g., via a package manager).
 
 // vim:ft=asciidoc

@@ -7,7 +7,7 @@ want to 'use' msndfile, but none of the binary downloads satisfy your needs.
 There is also a more flexible build system based on SCons available, that can
 also generate a Visual Studio IDE project file and can be integrated into
 other IDEs like Eclipse.  You will most likely want to use this if you want to
-'work on' msndfile.  For details on both methods, see their relevant
+'work on' msndfile.  For details on both methods, see their corresponding
 subsections.
 
 Prerequisites
@@ -48,7 +48,7 @@ Mac OS X::
 If you are going to use the SCons based build system, you will also need
 
 - http://www.python.org[Python] (whatever version SCons works with)
-- {scons} (tested with SCons 2.1.x)
+- {scons} (tested with SCons 2.2.x)
 - {pywin32} (optional, but necessary for some SCons features on Windows)
 - the https://github.com/marcecj/scons_matlab[SCons Matlab Tool]
 
@@ -63,10 +63,10 @@ dependencies:
 
 - {asciidoc} (and 'its' dependencies, which can be vast, depending on the
   output format -- it is probably easiest to do this on a Linux system)
-- an https://github.com/marcecj/scons_asciidoc[SCons AsciiDoc Tool]
+- the https://github.com/marcecj/scons_asciidoc[SCons AsciiDoc Tool]
 
 The SCons Tool is, again, a submodule of this repository and will be installed
-by running the above command.
+by running the above git command.
 
 NOTE: I have never compiled msndfile under Mac OS X, if anybody succeeds in
 doing so before I get around to it, I would like to know if it works.  I already
@@ -116,7 +116,7 @@ things:
 For more information (such as available build targets, options and overridable
 environment variables), see the output of `scons --help`.
 
-If you need to work on the Code and plan to compile often, you can speed up the
+If you need to work on the code and plan to compile often, you can speed up the
 process in general by using the interactive mode by passing the `--interactive`
 option to SCons.
 
@@ -137,7 +137,7 @@ Windows
 ^^^^^^^
 
 You can launch the batch file `start_scons.bat`, which launches scons and keeps
-the terminal window open.  It is expected that SCons is in your $PATH.
+the terminal window open.  It is expected that SCons is in your `$PATH`.
 
 Under Windows, the build system has an additional `vsproj` target.  This creates
 an MS Visual Studio Solution file with msndfile as a project.  For other IDEs,
