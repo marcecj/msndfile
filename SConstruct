@@ -169,8 +169,8 @@ if env['PLATFORM'] == 'win32' and 'msvs' in env['TOOLS']:
 #####################
 
 # set document builder flags
-env.Append(A2X_FLAGS = ['-L'])
-env.Append(A2X_FLAGS = ['--dblatex-opts', '-s db2latex'])
+env.Append(A2X_FLAGS = '-L')
+env.Append(A2X_FLAGS = '--dblatex-opts "-s db2latex"')
 
 # create an alias for building the documentation, but only if the asciidoc
 # binary could be found
