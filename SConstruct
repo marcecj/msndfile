@@ -46,11 +46,19 @@ AddOption('--force-mingw',
 
 # the Matlab tool automatically sets various environment variables
 if os.name == 'nt' and GetOption('forcemingw'):
-    env = Environment(tools = ['mingw', 'filesystem', 'zip', 'packaging', 'matlab', 'asciidoc'],
+    env = Environment(tools = ['mingw', 'filesystem', 'zip', 'packaging', 'matlab'],
                       variables = env_vars)
 else:
-    env = Environment(tools = ['default', 'packaging', 'matlab', 'asciidoc'],
+    env = Environment(tools = ['default', 'packaging', 'matlab'],
                       variables = env_vars)
+
+# if AsciiDoc is installed, add the asciidoc tool to the environment
+ad_tool = Tool('asciidoc')
+ad_exists = ad_tool.exists(env)
+if ad_exists:
+    ad_tool(env)
+else:
+    print "info: asciidoc not available, cannot build documentation."
 
 # The Matlab package directory
 env['pkg_dir'] = "+msndfile"
@@ -176,23 +184,16 @@ dblatex_opts = (
 env.Append(A2X_FLAGS = '-L')
 env.Append(A2X_FLAGS = '--dblatex-opts "' + ' '.join(dblatex_opts)+'"')
 
-# create an alias for building the documentation, but only if the asciidoc
-# binary could be found
-if env['AD_ASCIIDOC']:
+if ad_exists:
+    # build web and PDF documentation
     docs = env.AsciiDoc(['doc/index.txt'])
-    Alias('doc', docs)
-    Help("    doc          -> compiles documentation to HTML")
-else:
-    print "info: asciidoc not found, cannot build documentation"
+    pdf  = env.A2X(['doc/index.txt'])
 
-# create an alias for building the documentation to PDF, but only if the a2x
-# binary could be found
-if env['A2X_A2X']:
-    pdf = env.A2X(['doc/index.txt'])
+    Alias('doc', docs)
     Alias('pdf', pdf)
-    Help("\n    pdf          -> compiles documentation to PDF")
-else:
-    print "info: a2x not found, cannot build documentation"
+
+    Help("    doc          -> compiles documentation to HTML\n")
+    Help("    pdf          -> compiles documentation to PDF")
 
 ######################
 # package the software
@@ -208,7 +209,7 @@ msndfile_inst = env.Install(os.sep.join([env['DESTDIR'], env['pkg_dir']]),
                             pkg_src)
 
 doc_inst = []
-if env.WhereIs('a2x'):
+if ad_exists:
     doc_inst = env.InstallAs(
         os.sep.join([env['DESTDIR'], 'manual.pdf']), pdf
     )
