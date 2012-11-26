@@ -44,13 +44,17 @@ AddOption('--force-mingw',
 # set the environment
 #####################
 
-# the Matlab tool automatically sets various environment variables
+# add platform dependent tools
 if os.name == 'nt' and GetOption('forcemingw'):
-    env = Environment(tools = ['mingw', 'filesystem', 'zip', 'packaging', 'matlab'],
-                      variables = env_vars)
+    my_tools = ['mingw', 'filesystem', 'zip']
 else:
-    env = Environment(tools = ['default', 'packaging', 'matlab'],
-                      variables = env_vars)
+    my_tools = ['default']
+
+# append required tools
+my_tools.extend(['packaging', 'matlab'])
+
+# initialise the environment
+env = Environment(tools = my_tools, variables = env_vars)
 
 # if AsciiDoc is installed, add the asciidoc tool to the environment
 ad_tool = Tool('asciidoc')
