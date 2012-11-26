@@ -16,6 +16,7 @@ First `wavread`:
 
 .Output of `wavread(..., 'size')`
 ==============
+[source,matlab]
 --------------
 EDU>> [dim, fs, nbits, opts] = wavread('test_files/test.wav', 'size');
 EDU>> dim
@@ -51,6 +52,7 @@ Now `msndfile.read`:
 
 .Output of `msndfile.read(..., 'size')` -- WAV file
 ==============
+[source,matlab]
 --------------
 EDU>> [dim, fs, nbits, opts] = msndfile.read('test_files/test.wav', 'size');
 EDU>> dim
@@ -86,6 +88,7 @@ And for comparison the same command, but with a FLAC file:
 
 .Output of `msndfile.read(..., 'size')` -- FLAC file
 ==============
+[source,matlab]
 --------------
 EDU>> [dim, fs, nbits, opts] = msndfile.read('test_files/test.flac', 'size');
 EDU>> dim
@@ -128,6 +131,7 @@ Next we read the first and last ten samples.  Again, first `wavread`:
 
 .Reading the first and last ten samples -- `wavread()`
 ==============
+[source,matlab]
 --------------
 EDU>> wavread('test_files/test.wav', 10)
 ans =
@@ -175,6 +179,7 @@ Now `msndfile.read`:
 
 .Reading the first and last ten samples -- `msndfile.read()`
 ==============
+[source,matlab]
 --------------
 EDU>> msndfile.read('test_files/test.wav', 10)
 ans =
@@ -223,6 +228,7 @@ option:
 
 .Reading the first and last ten samples with the `native` option
 ==============
+[source,matlab]
 --------------
 EDU>> wavread('test_files/test.wav', [1 10], 'native')
 ans =
@@ -256,6 +262,7 @@ output using a FLAC file:
 
 .Using `msndfile.read(..., 'native')` with a FLAC file
 ==============
+[source,matlab]
 --------------
 EDU>> msndfile.read('test_files/test.flac', 10, 'native')
 ans =
@@ -281,6 +288,7 @@ You need to define a structure with at least three fields: `samplerate`,
 `channels` and `sampleformat`.  If either of these is not set, `msndfile.read`
 will output an error.
 
+[source,matlab]
 --------------
 EDU>> file_info.samplerate = 44100;
 EDU>> file_info.channels = 2;
@@ -290,6 +298,7 @@ Field 'sampleformat' not set.
 --------------
 Now with all required fields set:
 
+[source,matlab]
 --------------
 EDU>> file_info.sampleformat = 'PCM_16';
 EDU>> msndfile.read('test_files/test.raw', 10, [], file_info)
@@ -309,6 +318,7 @@ ans =
 
 Of course `'native'` works here, too:
 
+[source,matlab]
 --------------
 EDU>> msndfile.read('test_files/test.raw', 10, 'native', file_info)
 ans =
@@ -334,6 +344,7 @@ First we open a file and read 10 samples twice in a row:
 
 .Basic usage of `msndfile.blockread` -- `open` and `read` commands
 ==============
+[source,matlab]
 --------------
 EDU>> msndfile.blockread('open', 'test_files/test.wav');
 EDU>> msndfile.blockread('read', 'test_files/test.wav', 10)
@@ -369,6 +380,7 @@ Now let us seek back to the beginning and read the first 20 samples again.
 
 .Basic usage of `msndfile.blockread` -- `seek` and `tell` commands
 ==============
+[source,matlab]
 --------------
 EDU>> msndfile.blockread('seek', 'test_files/test.wav', 1)
 EDU>> msndfile.blockread('tell', 'test_files/test.wav')
@@ -410,6 +422,7 @@ Now that we are done, we can close the file:
 
 .Basic usage of `msndfile.blockread` -- `close` command
 ==============
+[source,matlab]
 --------------
 EDU>> msndfile.blockread('close', 'test_files/test.wav')
 EDU>> msndfile.blockread('close', 'test_files/test.wav')
