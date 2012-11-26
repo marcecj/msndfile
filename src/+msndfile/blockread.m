@@ -11,6 +11,14 @@ function OutData = blockread(cmd, file_name, idx_range, file_info)
 % next N samples, starting from wherever was left off.  For example, if no
 % samples have been read yet, the first N samples are read.
 %
+% OUTDATA = MSNDFILE.BLOCKREAD(FILE_NAME, ..., TRANSPOSE) will transpose the
+% signal read by libsndfile (the default).  The libsndfile sf_readf_* functions
+% return interleaved data, i.e., the format is (c0s0, c1s0, ..., c0s1, c1s1,
+% ...), where ci denotes the i-th channel and sj denotes j-th sample.  To be
+% compatible with WAVREAD(), MSNDFILE.BLOCKREAD() transposes this data by
+% default, i.e., makes it non-interleaved.  Since that can add a notable
+% overhead, it is possible to deactivate this by setting TRANSPOSE to false.
+%
 % MSNDFILE.BLOCKREAD('seek', FILE_NAME, N) will seek to the position N in an
 % open file specified by FILE_NAME.
 %

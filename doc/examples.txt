@@ -433,15 +433,14 @@ File not open.
 
 As you can see, attempting to close a file twice yields an error.
 
-///////////////
-TODO: this feature needs to be documented and tested first
+Now the final example: for compatibility with `wavread`, both `msndfile.read`
+and `msndfile.blockread` must internally transpose the output.  For a small
+performance boost, you can turn that off by passing a fourth argument to
+`msndfile.blockread`.
 
 .Not transposing the output
 ==============
-Now the final example: for compatibility with `wavread`, both `msndfile.read`
-and `msndfile.blockread` transpose the output.  For a small performance boost,
-you can turn that off by passing an option to `msndfile.blockread`.
-
+[source,matlab]
 --------------
 EDU>> msndfile.blockread('read', 'test_files/test.wav', 10, false)
 ans =
@@ -453,10 +452,9 @@ ans =
    -0.1526
    -0.0610
 --------------
-
-NOTE: to see the effect of the affect on performance, run the performance
-tests (see <<testsuite>>).
 ==============
-///////////////
+
+NOTE: To see the effect of the affect on performance, run the performance
+tests (see <<testsuite>>).
 
 // vim:ft=asciidoc

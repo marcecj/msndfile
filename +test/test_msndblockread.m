@@ -206,6 +206,45 @@ assertEqual(in_blockwise1, in_wav);
 
 msndfile.blockread('close', 'test_files/test.wav');
 
+function test_read_transpose(ref_data)
+% test the "transpose" option
+
+block_size = ref_data.block_size;
+in_wav     = ref_data.in_wav;
+
+in_blockwise1 = zeros(ref_data.file_size);
+in_blockwise2 = zeros(fliplr(ref_data.file_size));
+in_blockwise3 = zeros(fliplr(ref_data.file_size));
+
+msndfile.blockread('open', 'test_files/test.wav');
+
+% read in the whole file
+for kk = 1:block_size:ref_data.file_size(1)-block_size
+    in_blockwise1(kk:kk+block_size-1, :) = msndfile.blockread('read', 'test_files/test.wav', block_size, true);
+end
+in_blockwise1(kk+block_size:end, :) = msndfile.blockread('read', 'test_files/test.wav', ref_data.file_size(1)-(kk+block_size)+1, true);
+
+% seek back to the beginning
+msndfile.blockread('seek', 'test_files/test.wav', 1);
+
+% read in the whole file, but without transposing the output
+for kk = 1:block_size:ref_data.file_size(1)-block_size
+    in_blockwise2(:, kk:kk+block_size-1) = msndfile.blockread('read', 'test_files/test.wav', block_size, false);
+end
+in_blockwise2(:, kk+block_size:end) = msndfile.blockread('read', 'test_files/test.wav', ref_data.file_size(1)-(kk+block_size)+1, false);
+
+% now do the same thing, but with a RAW file
+msndfile.blockread('open', 'test_files/test.raw', ref_data.file_info);
+for kk = 1:block_size:ref_data.file_size(1)-block_size
+    in_blockwise3(:, kk:kk+block_size-1) = msndfile.blockread('read', 'test_files/test.raw', block_size, false);
+end
+in_blockwise3(:, kk+block_size:end) = msndfile.blockread('read', 'test_files/test.raw', ref_data.file_size(1)-(kk+block_size)+1, false);
+
+% now check for correct matrix dimensions
+assertEqual(in_blockwise1, in_wav);
+assertEqual(in_blockwise2.', in_wav);
+assertEqual(in_blockwise3.', in_wav);
+
 function test_reopen(ref_data)
 % test opening and closing files with repeated reading
 
