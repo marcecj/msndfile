@@ -169,8 +169,12 @@ if env['PLATFORM'] == 'win32' and 'msvs' in env['TOOLS']:
 #####################
 
 # set document builder flags
+dblatex_opts = (
+    "-s doc/db2latex_mod.sty",
+    "-P xref.with.number.and.title",
+)
 env.Append(A2X_FLAGS = '-L')
-env.Append(A2X_FLAGS = '--dblatex-opts "-s doc/db2latex_mod.sty"')
+env.Append(A2X_FLAGS = '--dblatex-opts "' + ' '.join(dblatex_opts)+'"')
 
 # create an alias for building the documentation, but only if the asciidoc
 # binary could be found
