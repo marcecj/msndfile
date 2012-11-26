@@ -44,7 +44,7 @@ EDU>> opts.info
 ans =
     inam: 'glass cafe'
     iart: 'Jon 7'
-    icrd: '2006
+    icrd: '2006'
 --------------
 ==============
 
