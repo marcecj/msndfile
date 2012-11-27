@@ -1,0 +1,59 @@
+Change history of msndfile
+==========================
+
+This document records the changes made in each release of msndfile, and in all
+release candidates.  For the full list of changes, see the git log.
+
+Version 1.0
+-----------
+
+This is the first release of msndfile. It supports all functionality of wavread,
+and an almost feature complete function for block-wise reading.
+
+Changes since 1.0RC3:
+- completely re-structure the documentation
+  - The README was split up and moved to the doc/ subdirectory, along with the
+    INSTALL file. The result (after various edits) are a proper AsciiDoc based
+    website and PDF manual.
+  - A much smaller README file is now written in markdown (for Github).
+- a small fix to the blockread help text
+- various small changes and bug fixes
+- various fixes and improvements to the test suite
+- various improvements to the build system, including a new AsciiDoc tool
+  (written by me)
+
+Version 1.0RC3
+--------------
+
+Changes since 1.0RC2:
+- msndfile.blockread() now supports the commands "seek" and "tell".
+- return an empty matrix when no samples can be read
+- support multi-byte file names
+- make errors and warnings more consistent
+- all errors and warnings now have an ID component
+- lots of small bug fixes (often in error handling paths that have yet to be
+  reached, e.g, due to malloc() errors).
+
+Version 1.0RC2
+--------------
+
+Changes since 1.0RC1:
+- msndfile.read:
+  - auto-add file type extension for "simple formats" and RAW
+  - add support for retrieving Broadcast WAV bext chunk
+- compilation fixes and improvements:
+  - pass -largeArrayDims to mex in compile_msndfile.m
+  - add checks for stdint.h to both build systems
+  - various small fixes and improvements to the build system (both SCons and
+    compile_msndfile.m)
+- extend test coverage
+- convert test suite to use MTest
+- add Valgrind debugging scripts and fix some bugs found with them
+- add m-File for starting a debugging session
+- move audio files to their own subdir.
+- fix support for visual studio
+
+Version 1.0RC1
+--------------
+
+The first release candidate, no changes to report here.
