@@ -16,6 +16,7 @@ debug/*
 msndfile-0.1*
 
 # misc files
+/releases/
 graphics
 *.expand
 *.mex*
