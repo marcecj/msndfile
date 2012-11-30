@@ -215,17 +215,11 @@ if env['PLATFORM'] == 'win32':
 msndfile_inst = env.Install(os.sep.join([env['DESTDIR'], env['pkg_dir']]),
                             pkg_src)
 
-doc_inst = []
-if ad_exists:
-    doc_inst = env.InstallAs(
-        os.sep.join([env['DESTDIR'], 'manual.pdf']), pdf
-    )
-
 sndfile_pkg = env.Package(
     NAME        = "msndfile",
     VERSION     = "1.0",
     PACKAGETYPE = "zip",
-    source = doc_inst + msndfile_inst + ['README.md', 'LICENSE', 'LGPL-2.1']
+    source = msndfile_inst + ['README.md', 'LICENSE', 'LGPL-2.1']
 )
 
 #############
