@@ -3,7 +3,7 @@
 This document records the changes made in each release of msndfile, and in all
 release candidates.  For the full list of changes, see the git log.
 
-## Version 1.0
+## Version 1.0 (2012.11.30)
 
 This is the first release of msndfile. It supports all functionality of wavread,
 and an almost feature complete function for block-wise reading.
@@ -21,7 +21,7 @@ Changes since 1.0RC3:
 - various improvements to the build system, including a new AsciiDoc tool
   (written by me)
 
-## Version 1.0RC3
+## Version 1.0RC3 (2012.10.30)
 
 Changes since 1.0RC2:
 
@@ -33,7 +33,7 @@ Changes since 1.0RC2:
 - lots of small bug fixes (often in error handling paths that have yet to be
   reached, e.g, due to malloc() errors).
 
-## Version 1.0RC2
+## Version 1.0RC2 (2012.04.17)
 
 Changes since 1.0RC1:
 
@@ -52,6 +52,6 @@ Changes since 1.0RC1:
 - move audio files to their own subdir.
 - fix support for visual studio
 
-## Version 1.0RC1
+## Version 1.0RC1 (2012.03.23)
 
 The first release candidate, no changes to report here.
