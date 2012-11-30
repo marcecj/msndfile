@@ -1,15 +1,18 @@
 Download
 --------
 
-The most recent version of msndfile is 1.0rc3. You can download source
-packages and binaries (32bit Windows and Linux) here:
+The most recent version of msndfile is 1.0. You can download the source
+package, binaries (32bit Windows and Linux) and a PDF version of this website
+here:
 
 Windows::
-http://sourceforge.net/projects/msndfile/files/msndfile-1.0rc3-win32.zip/download
+http://sourceforge.net/projects/msndfile/files/1.0/msndfile-1.0-win32.zip/download
 Linux::
-http://sourceforge.net/projects/msndfile/files/msndfile-1.0rc3-glnx86.zip/download
+http://sourceforge.net/projects/msndfile/files/1.0/msndfile-1.0-glnx86.zip/download
 Source::
-http://sourceforge.net/projects/msndfile/files/msndfile-1.0rc3-src.zip/download
+http://sourceforge.net/projects/msndfile/files/1.0/msndfile-1.0-src.zip/download
+Manual::
+http://sourceforge.net/projects/msndfile/files/1.0/msndfile-1.0-manual.pdf/download
 
 Older versions can be found at the SourceForge {projectpage}.  The Windows
 binaries bundle the libsndfile DLL.  Under Linux and Mac it is expected that
