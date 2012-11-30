@@ -25,6 +25,7 @@ env_vars.AddVariables(
     ('CC', 'The C compiler'),
     PathVariable('DESTDIR', 'The install destination', os.curdir,
                  PathVariable.PathIsDir),
+    BoolVariable('verbose', 'Set more verbose build options', False),
     ('AD_BACKEND', 'The backend used by asciidoc', 'html5'),
     ('AD_DOCTYPE', 'The doctype set by asciidoc'),
     ('AD_FLAGS', 'Extra flags passed to asciidoc'),
@@ -81,12 +82,14 @@ if env['PLATFORM'] in ("posix", "darwin"):
     if env['CC'] == 'gcc' and env['CCVERSION'] >= '4.5':
         env.Append(CCFLAGS=[
             "-ftree-vectorize",
-            "-ftree-vectorizer-verbose=2",
             "-floop-interchange",
             "-floop-strip-mine",
             "-floop-block",
             "-fno-reorder-blocks", # Matlab crashes without this!
         ])
+
+        if env['verbose']:
+            env.Append(CCFLAGS="-ftree-vectorizer-verbose=2")
 
     # if the system is 64 bit and Matlab is 32 bit, compile for 32 bit; since
     # Matlab currently only runs on x86 architectures, checking for x86_64
