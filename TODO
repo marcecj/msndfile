@@ -17,7 +17,6 @@ Misc:
 - test suite: don't fail when a format is not supported, just print a message
   (see https://github.com/marcecj/msndfile/issues/1).
 - support relative seeking?
-- document "no transpose" feature of blockread
 - change license to LGPL (like libsndfile)
 - maybe add support for "fmt" option to blockread
 - maybe support internationalization in error/warning messages? might be
