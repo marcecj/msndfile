@@ -163,11 +163,11 @@ msndfile_dbg = env.SConscript(dirs='src',
 
 if env['PLATFORM'] == 'win32' and 'msvs' in env['TOOLS']:
     msndfile_vs = env.MSVSProject(
-        target      = "msndfile" + env['MSVSPROJECTSUFFIX'],
+        target      = "msndfile${MSVSPROJECTSUFFIX}",
         buildtarget = ["msndfile", "msndfile-dbg"],
-        runfile     = os.sep.join([env['MATLAB']['ROOT'], "bin", "matlab.exe"]),
-        srcs        = Glob(os.sep.join(["src", env['pkg_dir'], "*.c"]), strings=True),
-        localincs   = Glob(os.sep.join(["src", env['pkg_dir'], "*.h"]), strings=True),
+        runfile     = os.sep.join(["${MATLAB['ROOT']}", "bin", "matlab.exe"]),
+        srcs        = env.Glob(os.sep.join(["src", '$pkg_dir', "*.c"]), strings=True),
+        localincs   = env.Glob(os.sep.join(["src", '$pkg_dir', "*.h"]), strings=True),
         incs        = os.sep.join(["Win", "sndfile.h"]),
         variant     = ["Release", "Debug"]
     )
@@ -211,10 +211,10 @@ pkg_src = msndfile + mfiles
 if env['PLATFORM'] == 'win32':
     pkg_src.append(
         env.File('Win' + os.sep +
-                 env['SHLIBPREFIX'] + sndfile_lib + env['SHLIBSUFFIX'])
+                 '${SHLIBPREFIX}' + sndfile_lib + '${SHLIBSUFFIX}')
     )
 
-install_path  = os.sep.join([env['DESTDIR'], env['pkg_dir']])
+install_path  = os.sep.join(['$DESTDIR', '$pkg_dir'])
 msndfile_inst = env.Install(install_path, pkg_src)
 
 sndfile_pkg = env.Package(
