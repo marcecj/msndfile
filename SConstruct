@@ -189,7 +189,7 @@ dblatex_opts = (
     "-P xref.with.number.and.title",
 )
 env.Append(A2X_FLAGS = '-L')
-env.Append(A2X_FLAGS = '--dblatex-opts "' + ' '.join(dblatex_opts)+'"')
+env.Append(A2X_FLAGS = '--dblatex-opts "' + ' '.join(dblatex_opts) + '"')
 
 if ad_exists:
     # build web and PDF documentation
@@ -209,11 +209,13 @@ if ad_exists:
 # define the package sources and corresponding install targets
 pkg_src = msndfile + mfiles
 if env['PLATFORM'] == 'win32':
-    pkg_src.append(env.File('Win' + os.sep +
-                        env['SHLIBPREFIX'] + sndfile_lib + env['SHLIBSUFFIX']))
+    pkg_src.append(
+        env.File('Win' + os.sep +
+                 env['SHLIBPREFIX'] + sndfile_lib + env['SHLIBSUFFIX'])
+    )
 
-msndfile_inst = env.Install(os.sep.join([env['DESTDIR'], env['pkg_dir']]),
-                            pkg_src)
+install_path  = os.sep.join([env['DESTDIR'], env['pkg_dir']])
+msndfile_inst = env.Install(install_path, pkg_src)
 
 sndfile_pkg = env.Package(
     NAME        = "msndfile",
