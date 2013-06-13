@@ -48,7 +48,7 @@ char** get_format_extensions(void)
 
 /* helper function for gen_filename(): return whether a file extension was
  * already checked */
-unsigned int ext_already_checked(char** extensions, const char* ext, const unsigned int num_ext)
+unsigned int ext_already_checked(char** extensions, const char* const ext, const unsigned int num_ext)
 {
     unsigned int i;
     for( i = 0; i < num_ext; i++ )
@@ -165,7 +165,7 @@ get_filename_cleanup:
  */
 
 /* get the number of bits of an audio file */
-short get_bits(SF_INFO* sf_file_info)
+short get_bits(const SF_INFO* const sf_file_info)
 {
     /* a best effort attempt to get the number of bits of an audio file */
     short bits = 0;
@@ -198,7 +198,7 @@ short get_bits(SF_INFO* sf_file_info)
  */
 
 /* create an opts structure a la wavread() */
-void get_opts(SF_INFO* sf_file_info, SNDFILE* sf_input_file, mxArray* opts)
+void get_opts(const SF_INFO* const sf_file_info, SNDFILE* const sf_input_file, mxArray* opts)
 {
     int i;
     const short nbits      = get_bits(sf_file_info);
@@ -352,7 +352,7 @@ void get_opts(SF_INFO* sf_file_info, SNDFILE* sf_input_file, mxArray* opts)
  * enum, which makes it difficult to calculate indices based on the SF_STR_*
  * values.  This function works around this difficulty by manually checking them
  * and returning appropriate values. */
-int sf_str_to_index(int i)
+int sf_str_to_index(const int i)
 {
     switch(i)
     {
@@ -372,7 +372,7 @@ int sf_str_to_index(int i)
 }
 
 /* generate a value for the wFormatTag field based on the format subtype. */
-int get_wformattag(SF_INFO* sf_file_info)
+int get_wformattag(const SF_INFO* const sf_file_info)
 {
     /* TODO: maybe add exceptions for other WAV-like formats? */
     if( (sf_file_info->format & SF_FORMAT_TYPEMASK) != SF_FORMAT_WAV)

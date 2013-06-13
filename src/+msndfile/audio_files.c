@@ -9,7 +9,7 @@
  */
 
 /* create an AUDIO_FILE_INFO struct */
-AUDIO_FILE_INFO* create_file_info(const char *const name, SF_INFO* sf_file_info, SNDFILE* file)
+AUDIO_FILE_INFO* create_file_info(const char *const name, SF_INFO* const sf_file_info, SNDFILE* const file)
 {
     AUDIO_FILE_INFO* file_info = (AUDIO_FILE_INFO*)malloc(sizeof(AUDIO_FILE_INFO));
 
@@ -27,7 +27,7 @@ AUDIO_FILE_INFO* create_file_info(const char *const name, SF_INFO* sf_file_info,
 }
 
 /* append an AUDIO_FILE_INFO structure to an AUDIO_FILE_INFO linked list */
-AUDIO_FILES* store_file_info(AUDIO_FILES *file_list, AUDIO_FILE_INFO *file_info)
+AUDIO_FILES* store_file_info(AUDIO_FILES *file_list, AUDIO_FILE_INFO* const file_info)
 {
     AUDIO_FILE_INFO *ptr;
 

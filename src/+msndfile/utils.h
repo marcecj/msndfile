@@ -33,7 +33,7 @@ int lookup_val(const FMT_TABLE *const array, const char *const name);
  * the time of Matlab's wavread(), so some additional time complexity
  * probably won't hurt much.
  */
-void transpose_data(void* output, void* input, int num_frames, int num_chns, mxClassID class_id);
+void transpose_data(const void* output, const void* input, const int num_frames, const int num_chns, const mxClassID class_id);
 
 /* get information about a file from an args pointer and transfer it to an
  * SF_INFO struct */
@@ -46,6 +46,6 @@ int get_num_frames(const SF_INFO* const sf_file_info, SNDFILE* sf_input_file, co
 int get_fmt(const char* const args);
 
 /* get the mxClassID corresponding to a format subtype */
-mxClassID get_class_id(SF_INFO* sf_file_info);
+mxClassID get_class_id(const SF_INFO* const sf_file_info);
 
 #endif /* __UTILS_H__ */

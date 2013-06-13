@@ -23,10 +23,10 @@ typedef struct {
  */
 
 /* create an AUDIO_FILE_INFO struct */
-AUDIO_FILE_INFO* create_file_info(const char *const name, SF_INFO* file_info, SNDFILE* file);
+AUDIO_FILE_INFO* create_file_info(const char *const name, SF_INFO* const file_info, SNDFILE* const file);
 
 /* add an AUDIO_FILE_INFO structure to an AUDIO_FILES linked list */
-AUDIO_FILES* store_file_info(AUDIO_FILES* file_list, AUDIO_FILE_INFO* file_info);
+AUDIO_FILES* store_file_info(AUDIO_FILES* file_list, AUDIO_FILE_INFO* const file_info);
 
 /* Get an AUDIO_FILE_INFO structure from an AUDIO_FILES linked list  Returns
  * NULL if the file is not open. */
