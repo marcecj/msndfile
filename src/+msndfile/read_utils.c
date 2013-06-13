@@ -8,7 +8,7 @@
  */
 
 /* returns the number of simple formats + RAW */
-unsigned int get_num_formats()
+unsigned int get_num_formats(void)
 {
     int num_formats;
 
@@ -22,7 +22,7 @@ unsigned int get_num_formats()
 }
 
 /* returns a list of file extensions to simple formats + RAW */
-char** get_format_extensions()
+char** get_format_extensions(void)
 {
     unsigned int i;
     const unsigned int num_formats = get_num_formats();
