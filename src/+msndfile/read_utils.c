@@ -87,7 +87,6 @@ char* gen_filename(char* fname)
      */
 
     for( unsigned int i = 0; i < num_formats; i++ ) {
-        char* tmp_fname      = NULL;
         const char* cur_ext  = file_exts[i];
         const size_t ext_len = strlen(cur_ext)+1; /* '.' + extension */
         const size_t new_len = N+ext_len+1;
@@ -104,7 +103,7 @@ char* gen_filename(char* fname)
         num_read_exts++;
 
         /* copy the original N chars from fname into tmp_fname */
-        tmp_fname = (char*)calloc(new_len, sizeof(char));
+        char *tmp_fname = (char*)calloc(new_len, sizeof(char));
         tmp_fname = strncpy(tmp_fname, fname, N);
 
         /* append the file type extension */

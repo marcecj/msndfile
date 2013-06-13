@@ -120,7 +120,6 @@ void mexFunction(int nlhs, mxArray *plhs[],
     else if( cmd_id == CMD_SEEK )
     {
         AUDIO_FILE_INFO* file_info = NULL;
-        double *seek_idx;
 
         if( (file_info = lookup_file_info(file_list, sf_in_fname)) == NULL )
             mexErrMsgIdAndTxt("msndfile:blockread:filenotopen", "File not open!");
@@ -131,7 +130,7 @@ void mexFunction(int nlhs, mxArray *plhs[],
         if( mxIsEmpty(prhs[2]) && !mxIsDouble(prhs[2]))
             mexErrMsgIdAndTxt("msndfile:argerror", "Frame index is empty!");
 
-        seek_idx = mxGetPr(prhs[2]);
+        const double *seek_idx = mxGetPr(prhs[2]);
 
         if( seek_idx[0] > file_info->info->frames
                 || sf_seek(file_info->file, seek_idx[0]-1, SEEK_SET) == -1 )
@@ -140,13 +139,12 @@ void mexFunction(int nlhs, mxArray *plhs[],
     else if( cmd_id == CMD_TELL )
     {
         AUDIO_FILE_INFO* file_info = NULL;
-        double *cur_pos;
 
         if( (file_info = lookup_file_info(file_list, sf_in_fname)) == NULL )
             mexErrMsgIdAndTxt("msndfile:blockread:filenotopen", "File not open!");
 
         plhs[0] = mxCreateDoubleMatrix((int)1, 1, mxREAL);
-        cur_pos = mxGetPr(plhs[0]);
+        double *cur_pos = mxGetPr(plhs[0]);
 
         if( (*cur_pos = sf_seek(file_info->file, 0, SEEK_CUR)) == -1 )
             mexErrMsgIdAndTxt("msndfile:sndfile", sf_error_number(*cur_pos));
@@ -167,7 +165,6 @@ void mexFunction(int nlhs, mxArray *plhs[],
         AUDIO_FILE_INFO* file_info = NULL;
         bool        do_transpose=true;
         double*     temp_array;
-        int         num_chns;
         sf_count_t  num_frames=0;
         int         sndfile_err; /* libsndfile error status */
 
@@ -186,7 +183,7 @@ void mexFunction(int nlhs, mxArray *plhs[],
             do_transpose = *(bool*)mxGetPr(prhs[3]);
 
         /* initialise Matlab output array */
-        num_chns = file_info->info->channels;
+        const int num_chns = file_info->info->channels;
 
         if( do_transpose ) {
             plhs[0]    = mxCreateDoubleMatrix((int)num_frames, num_chns, mxREAL);

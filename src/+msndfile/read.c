@@ -29,10 +29,7 @@ void clear_memory(void)
 void mexFunction(int nlhs, mxArray *plhs[],
                  int nrhs, const mxArray *prhs[])
 {
-    int         num_chns;
-    char        *sf_in_fname; /* input file name */
     sf_count_t  num_frames=0;
-    double      *data, *output;
     SF_INFO     sf_file_info;
     int         do_read_raw = 0;
     mxClassID   class_id = mxDOUBLE_CLASS;
@@ -54,8 +51,7 @@ void mexFunction(int nlhs, mxArray *plhs[],
                           "Missing argument: you need to pass a file name.");
 
     /* get input filename */
-    sf_in_fname = mxArrayToString(prhs[0]);
-
+    char *sf_in_fname = mxArrayToString(prhs[0]);
     if( (sf_in_fname = gen_filename(sf_in_fname)) == NULL )
         mexErrMsgIdAndTxt("msndfile:read:ambiguousname",
                           "No file extension specified and no WAV file found.");
@@ -134,10 +130,8 @@ void mexFunction(int nlhs, mxArray *plhs[],
         }
 
         if( strcmp(cmd_str, "size") == 0 ) {
-            double *dims;
-
-            plhs[0] = mxCreateDoubleMatrix(1, 2, mxREAL);
-            dims    = mxGetPr(plhs[0]);
+            plhs[0]      = mxCreateDoubleMatrix(1, 2, mxREAL);
+            double *dims = mxGetPr(plhs[0]);
 
             dims[0] = (double)(sf_file_info.frames);
             dims[1] = (double)(sf_file_info.channels);
@@ -163,11 +157,11 @@ void mexFunction(int nlhs, mxArray *plhs[],
         num_frames = sf_file_info.frames;
 
     /* initialise Matlab output array */
-    num_chns = sf_file_info.channels;
+    const int num_chns = sf_file_info.channels;
     if( do_read_raw )
         class_id = get_class_id(&sf_file_info);
     plhs[0]  = mxCreateNumericMatrix((int)num_frames, num_chns, class_id, mxREAL);
-    output   = (double*)mxGetPr(plhs[0]);
+    const double* output = (double*)mxGetPr(plhs[0]);
 
     /* read the entire file in one go
      *
@@ -177,7 +171,8 @@ void mexFunction(int nlhs, mxArray *plhs[],
      * NOTE: Matlab 2010a returns the whole file when num_frames == 0, but warns
      * that in the future, an empty matrix will be returned. This implements
      * that future behaviour. */
-    if( (data = (double*)malloc((int)num_frames*num_chns*sizeof(double))) == NULL )
+    double *data = (double*)malloc((int)num_frames*num_chns*sizeof(double));
+    if( data == NULL )
         mexErrMsgIdAndTxt("msndfile:system", strerror(errno));
 
     if( do_read_raw )
@@ -206,20 +201,16 @@ return_to_matlab:
 
     /* return sampling rate if requested */
     if( nlhs > 1 ) {
-        double *fs;
-
         plhs[1] = mxCreateDoubleMatrix(1, 1, mxREAL);
-        fs      = mxGetPr(plhs[1]);
+        double *fs = mxGetPr(plhs[1]);
 
         *fs = (double)sf_file_info.samplerate;
     }
 
     /* return bit rate if requested */
     if( nlhs > 2 ) {
-        double *nbits;
-
         plhs[2] = mxCreateDoubleMatrix(1, 1, mxREAL);
-        nbits   = mxGetPr(plhs[2]);
+        double *nbits = mxGetPr(plhs[2]);
 
         *nbits = (double)get_bits(&sf_file_info);
     }
