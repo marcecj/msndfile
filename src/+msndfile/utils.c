@@ -27,8 +27,7 @@
 /* function to get a value from a look-up table */
 int lookup_val(const FMT_TABLE *const array, const char *const name)
 {
-    int i;
-    for(i = 0; i < array->size; i++)
+    for(int i = 0; i < array->size; i++)
         if( strcmp(name, array->table[i].name) == 0 )
             return array->table[i].number;
 
@@ -48,8 +47,6 @@ int lookup_val(const FMT_TABLE *const array, const char *const name)
  */
 void transpose_data(const void* output, const void* input, const int num_frames, const int num_chns, const mxClassID class_id)
 {
-    int i; /* loop variable */
-
     /* transpose the data
      *
      * To transpose correctly, we need to cast both the input and the output.
@@ -59,46 +56,34 @@ void transpose_data(const void* output, const void* input, const int num_frames,
      */
     switch ( class_id ) {
         case mxINT8_CLASS:
-            for( i=0; i<num_frames; i++ ) {
-                int j;
-                for( j=0; j<num_chns; j++ )
+            for( int i=0; i<num_frames; i++ )
+                for( int j=0; j<num_chns; j++ )
                     ((int8_t*)output)[i+j*num_frames] = ((int8_t*)input)[i*num_chns+j];
-            }
             break;
         case mxUINT8_CLASS:
-            for( i=0; i<num_frames; i++ ) {
-                int j;
-                for( j=0; j<num_chns; j++ )
+            for( int i=0; i<num_frames; i++ )
+                for( int j=0; j<num_chns; j++ )
                     ((uint8_t*)output)[i+j*num_frames] = ((uint8_t*)input)[i*num_chns+j];
-            }
             break;
         case mxINT16_CLASS:
-            for( i=0; i<num_frames; i++ ) {
-                int j;
-                for( j=0; j<num_chns; j++ )
+            for( int i=0; i<num_frames; i++ )
+                for( int j=0; j<num_chns; j++ )
                     ((int16_t*)output)[i+j*num_frames] = ((int16_t*)input)[i*num_chns+j];
-            }
             break;
         case mxINT32_CLASS:
-            for( i=0; i<num_frames; i++ ) {
-                int j;
-                for( j=0; j<num_chns; j++ )
+            for( int i=0; i<num_frames; i++ )
+                for( int j=0; j<num_chns; j++ )
                     ((int32_t*)output)[i+j*num_frames] = ((int32_t*)input)[i*num_chns+j];
-            }
             break;
         case mxSINGLE_CLASS:
-            for( i=0; i<num_frames; i++ ) {
-                int j;
-                for( j=0; j<num_chns; j++ )
+            for( int i=0; i<num_frames; i++ )
+                for( int j=0; j<num_chns; j++ )
                     ((float*)output)[i+j*num_frames] = ((float*)input)[i*num_chns+j];
-            }
             break;
         default:
-            for( i=0; i<num_frames; i++ ) {
-                int j;
-                for( j=0; j<num_chns; j++ )
+            for( int i=0; i<num_frames; i++ )
+                for( int j=0; j<num_chns; j++ )
                     ((double*)output)[i+j*num_frames] = ((double*)input)[i*num_chns+j];
-            }
             break;
     }
 }

@@ -211,12 +211,9 @@ void mexFunction(int nlhs, mxArray *plhs[],
         {
             double* output = mxGetPr(plhs[0]);
 
-            int i;
-            for( i=0; i<num_frames; i++ ) {
-                int j;
-                for( j=0; j<num_chns; j++ )
+            for( int i=0; i<num_frames; i++ )
+                for( int j=0; j<num_chns; j++ )
                     output[i+j*num_frames] = temp_array[i*num_chns+j];
-            }
 
             free(temp_array);
         }
