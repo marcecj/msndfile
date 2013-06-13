@@ -54,7 +54,7 @@ char** get_format_extensions(void)
 
 /* helper function for gen_filename(): return whether a file extension was
  * already checked */
-unsigned int ext_already_checked(char** extensions, const char* const ext, const unsigned int num_ext)
+unsigned int ext_already_checked(char *restrict *restrict extensions, const char* const restrict ext, const unsigned int num_ext)
 {
     for( unsigned int i = 0; i < num_ext; i++ )
         if( strcmp(extensions[i], ext) == 0 )
@@ -66,7 +66,7 @@ unsigned int ext_already_checked(char** extensions, const char* const ext, const
 /* function to get a valid file name; for wavread() compatibility, if the file
  * name does not have a suffix, file_name+".wav" is attempted, and if that
  * fails, NULL is returned */
-char* gen_filename(char* fname)
+char* gen_filename(char* restrict fname)
 {
     const size_t N                 = strlen(fname);
     const unsigned int num_formats = get_num_formats();
@@ -166,7 +166,7 @@ get_filename_cleanup:
  */
 
 /* get the number of bits of an audio file */
-short get_bits(const SF_INFO* const sf_file_info)
+short get_bits(const SF_INFO* const restrict sf_file_info)
 {
     /* a best effort attempt to get the number of bits of an audio file */
     short bits = 0;
@@ -199,7 +199,7 @@ short get_bits(const SF_INFO* const sf_file_info)
  */
 
 /* create an opts structure a la wavread() */
-void get_opts(const SF_INFO* const sf_file_info, SNDFILE* const sf_input_file, mxArray* opts)
+void get_opts(const SF_INFO* const restrict sf_file_info, SNDFILE* const restrict sf_input_file, mxArray* restrict opts)
 {
     const short nbits      = get_bits(sf_file_info);
     const mwSize ndims[]   = {1, 1};
@@ -343,7 +343,7 @@ int sf_str_to_index(const int i)
 }
 
 /* generate a value for the wFormatTag field based on the format subtype. */
-int get_wformattag(const SF_INFO* const sf_file_info)
+int get_wformattag(const SF_INFO* const restrict sf_file_info)
 {
     /* TODO: maybe add exceptions for other WAV-like formats? */
     if( (sf_file_info->format & SF_FORMAT_TYPEMASK) != SF_FORMAT_WAV)
