@@ -79,7 +79,7 @@ env['pkg_dir'] = "+msndfile"
 if env['PLATFORM'] in ("posix", "darwin"):
 
     env.Append(
-        CCFLAGS    = "-ansi -O2 -pedantic -Wall -Wextra",
+        CCFLAGS    = "-std=c99 -O2 -pedantic -Wall -Wextra",
         LINKFLAGS  = "-Wl,-O1 -Wl,--no-copy-dt-needed-entries -Wl,--as-needed",
         CPPDEFINES = "NDEBUG"
     )
