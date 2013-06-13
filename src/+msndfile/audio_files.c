@@ -11,9 +11,9 @@
 /* create an AUDIO_FILE_INFO struct */
 AUDIO_FILE_INFO* create_file_info(const char *const name, SF_INFO* sf_file_info, SNDFILE* file)
 {
-    AUDIO_FILE_INFO* file_info;
+    AUDIO_FILE_INFO* file_info = (AUDIO_FILE_INFO*)malloc(sizeof(AUDIO_FILE_INFO));
 
-    if((file_info = (AUDIO_FILE_INFO*)malloc(sizeof(AUDIO_FILE_INFO))) == NULL)
+    if(file_info == NULL)
         return NULL;
 
     file_info->info = sf_file_info;
