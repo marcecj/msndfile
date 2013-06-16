@@ -90,6 +90,7 @@ char* gen_filename(char* restrict fname)
         const char* cur_ext  = file_exts[i];
         const size_t ext_len = strlen(cur_ext)+1; /* '.' + extension */
         const size_t new_len = N+ext_len+1;
+        char tmp_fname[new_len];
 
         /* get_format_extensions() returns duplicate entries, so check here if
          * the extension has already been tried */
@@ -103,7 +104,6 @@ char* gen_filename(char* restrict fname)
         num_read_exts++;
 
         /* copy the original N chars from fname into tmp_fname */
-        char tmp_fname[new_len];
         strncpy(tmp_fname, fname, N);
 
         /* append the file type extension */
@@ -113,10 +113,10 @@ char* gen_filename(char* restrict fname)
         /* try to open the file; continue with next extension on failure */
         if( (audio_file = fopen(tmp_fname, "r")) == NULL )
             continue;
+        fclose(audio_file);
+        num_files++;
 
         /*  overwrite the original file name */
-        fclose(audio_file); /* close temporary file */
-        num_files++;
         fname = (char*)mxRealloc(fname, new_len*sizeof(char));
         fname = strcpy(fname, tmp_fname);
 
