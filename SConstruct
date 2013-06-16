@@ -150,16 +150,20 @@ if not (GetOption('clean') or GetOption('help')):
 #####################
 
 env['do_debug'] = False
-msndfile, mfiles = env.SConscript(dirs='src',
-                          variant_dir = "build",
-                          exports     = "env",
-                          duplicate   = False)
+msndfile, mfiles = env.SConscript(
+    dirs        = 'src',
+    variant_dir = "build",
+    exports     = "env",
+    duplicate   = False
+)
 
 env['do_debug'] = True
-msndfile_dbg = env.SConscript(dirs='src',
-                              variant_dir = "debug",
-                              exports     = "env",
-                              duplicate   = False)
+msndfile_dbg = env.SConscript(
+    dirs        = 'src',
+    variant_dir = "debug",
+    exports     = "env",
+    duplicate   = False
+)
 
 if env['PLATFORM'] == 'win32' and 'msvs' in env['TOOLS']:
     msndfile_vs = env.MSVSProject(
