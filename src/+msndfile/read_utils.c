@@ -65,7 +65,7 @@ char* gen_filename(char* fname)
 {
     const size_t N                 = strlen(fname);
     const unsigned int num_formats = get_num_formats();
-    char** file_exts               = NULL;
+    char** file_exts               = get_format_extensions();
     char** read_exts               = NULL;
     FILE* audio_file               = NULL;
     unsigned int num_read_exts     = 0;
@@ -81,8 +81,6 @@ char* gen_filename(char* fname)
      * check if such a file exists.  In the case of multiple candidates, default
      * to WAV.  If no WAV file exists, return NULL.
      */
-
-    file_exts = get_format_extensions();
 
     for( i = 0; i < num_formats; i++ ) {
         char* tmp_fname      = NULL;
