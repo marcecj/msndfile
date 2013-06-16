@@ -103,25 +103,22 @@ char* gen_filename(char* restrict fname)
         num_read_exts++;
 
         /* copy the original N chars from fname into tmp_fname */
-        char *tmp_fname = (char*)calloc(new_len, sizeof(char));
-        tmp_fname = strncpy(tmp_fname, fname, N);
+        char tmp_fname[new_len];
+        strncpy(tmp_fname, fname, N);
 
         /* append the file type extension */
-        tmp_fname = strcat(tmp_fname, ".");
-        tmp_fname = strcat(tmp_fname, cur_ext);
+        strcpy(&tmp_fname[N], ".");
+        strcpy(&tmp_fname[N+1], cur_ext);
 
         /* try to open the file; continue with next extension on failure */
-        if( (audio_file = fopen(tmp_fname, "r")) == NULL ) {
-            free(tmp_fname);
+        if( (audio_file = fopen(tmp_fname, "r")) == NULL )
             continue;
-        }
 
         /*  overwrite the original file name */
         fclose(audio_file); /* close temporary file */
         num_files++;
         fname = (char*)mxRealloc(fname, new_len*sizeof(char));
         fname = strcpy(fname, tmp_fname);
-        free(tmp_fname);
 
         /* break as soon as a WAV file is found */
         if( strcmp(cur_ext, "wav") == 0 )
@@ -150,12 +147,10 @@ get_filename_cleanup:
     if( num_files > 1 && fname != NULL ) {
         const char msg_fmt[] = "Defaulted to file name \"%s\".";
         const size_t msg_len = strlen(fname) + strlen(msg_fmt) - 1;
-        char* message = (char*)malloc(msg_len*sizeof(char));
+        char message[msg_len];
 
         sprintf(message, msg_fmt, fname);
         mexWarnMsgIdAndTxt("msndfile:read:ambiguousname", message);
-
-        free(message);
     }
 
     return fname;

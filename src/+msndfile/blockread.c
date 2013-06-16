@@ -36,8 +36,8 @@ void mexFunction(int nlhs, mxArray *plhs[],
                  int nrhs, const mxArray *prhs[])
 {
     const int   cmd_size = (nrhs > 0 ? mxGetN(prhs[0])+1 : 0); /* length of the command */
+    char        cmd_str[cmd_size];
     int         cmd_id = -1;
-    char        *cmd_str;
     char        *sf_in_fname=NULL; /* input file name */
 
     mexAtExit(&clear_static_vars);
@@ -48,13 +48,8 @@ void mexFunction(int nlhs, mxArray *plhs[],
     if( mxIsEmpty(prhs[0]) || !mxIsChar(prhs[0]))
         mexErrMsgIdAndTxt("msndfile:argerror", "Argument error: command may not be empty.");
 
-    if( (cmd_str = (char*)malloc(cmd_size*sizeof(char))) == NULL )
-        mexErrMsgIdAndTxt("msndfile:argerror", strerror(errno));
-
-    if( mxGetString(prhs[0], cmd_str, cmd_size) == 1 ) {
-        free(cmd_str);
+    if( mxGetString(prhs[0], cmd_str, cmd_size) == 1 )
         mexErrMsgIdAndTxt("msndfile:argerror", "Error getting command string.");
-    }
 
     if(      strcmp(cmd_str, "open") == 0 )     cmd_id = CMD_OPEN;
     else if( strcmp(cmd_str, "read") == 0 )     cmd_id = CMD_READ;
@@ -62,7 +57,6 @@ void mexFunction(int nlhs, mxArray *plhs[],
     else if( strcmp(cmd_str, "tell") == 0 )     cmd_id = CMD_TELL;
     else if( strcmp(cmd_str, "close") == 0 )    cmd_id = CMD_CLOSE;
     else if( strcmp(cmd_str, "closeall") == 0 ) cmd_id = CMD_CLOSEALL;
-    free(cmd_str);
 
     if( cmd_id == -1 )
         mexErrMsgIdAndTxt("msndfile:argerror", "Unknown command.");
