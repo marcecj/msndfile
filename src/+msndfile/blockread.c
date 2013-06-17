@@ -63,7 +63,8 @@ void mexFunction(int nlhs, mxArray *plhs[],
     if( nrhs > 1 && mxIsChar(prhs[1]) && cmd_id != CMD_CLOSEALL )
     {
         /* get input filename */
-        sf_in_fname = mxArrayToString(prhs[1]);
+        if( (sf_in_fname = mxArrayToString(prhs[1])) == NULL )
+            mexErrMsgIdAndTxt("msndfile:system", strerror(errno));
     }
     else if( cmd_id != CMD_CLOSEALL )
         mexErrMsgIdAndTxt("msndfile:argerror", "Missing argument: you need to pass a file name.");
