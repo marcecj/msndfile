@@ -239,7 +239,6 @@ void get_opts(const SF_INFO* const restrict sf_file_info, SNDFILE* const restric
     const short num_bext_fields = sizeof(bext_fields)/sizeof(char*);
     short info_count = SF_STR_LAST-SF_STR_FIRST+1;
 
-    double fmt_data[6];
     SF_BROADCAST_INFO bwv_data = {"", "", "", "", "", 0, 0, 0, "", "", 0, ""};
 
     mxArray *fmt           = mxCreateStructArray(1, ndims, num_fmt_fields, fmt_fields);
@@ -249,12 +248,14 @@ void get_opts(const SF_INFO* const restrict sf_file_info, SNDFILE* const restric
      * set fmt field
      */
 
-    fmt_data[0] = (double)get_wformattag(sf_file_info);
-    fmt_data[1] = (double)sf_file_info->channels;
-    fmt_data[2] = (double)sf_file_info->samplerate;
-    fmt_data[3] = (double)(sf_file_info->samplerate*(nbits/8)*sf_file_info->channels);
-    fmt_data[4] = (double)(sf_file_info->channels*nbits/8); /* see wavread() */
-    fmt_data[5] = (double)nbits;
+    double fmt_data[] = {
+        (double)get_wformattag(sf_file_info),
+        (double)sf_file_info->channels,
+        (double)sf_file_info->samplerate,
+        (double)(sf_file_info->samplerate*(nbits/8)*sf_file_info->channels),
+        (double)(sf_file_info->channels*nbits/8), /* see wavread() */
+        (double)nbits
+    };
 
     for( int i = 0; i < num_fmt_fields; i++ )
         mxSetField(fmt, 0, fmt_fields[i], mxCreateDoubleScalar(fmt_data[i]));
