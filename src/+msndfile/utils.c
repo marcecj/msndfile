@@ -160,7 +160,7 @@ void get_file_info(SF_INFO* sf_file_info, char* sf_in_fname, const mxArray *cons
 /* get the number of frames to be read and check for valid ranges */
 int get_num_frames(const SF_INFO* const sf_file_info, SNDFILE* sf_input_file, const mxArray *const arg)
 {
-    const double *start_end_idx = mxGetPr(arg);
+    const double * const start_end_idx = mxGetPr(arg);
     const int    range_size     = mxGetN(arg);
     int          num_frames     = 0;
 
