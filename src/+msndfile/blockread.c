@@ -1,3 +1,10 @@
+/*
+ * Copyright (C) 2010-2013 Marc Joliet
+ *
+ * Full license information can be found in the file LICENSE in the top-level
+ * directory of the source repository.
+ */
+
 #include <errno.h>
 #include <string.h>
 #include <mex.h>
