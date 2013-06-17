@@ -243,7 +243,7 @@ void get_opts(const SF_INFO* const sf_file_info, SNDFILE* const sf_input_file, m
     short info_count = SF_STR_LAST-SF_STR_FIRST+1;
 
     double fmt_data[6];
-    SF_BROADCAST_INFO bwv_data;
+    SF_BROADCAST_INFO bwv_data = {"", "", "", "", "", 0, 0, 0, "", "", 0, ""};
 
     mxArray *fmt           = mxCreateStructArray(1, ndims, num_fmt_fields, fmt_fields);
     mxArray *info          = mxCreateStructArray(1, ndims, 0, NULL);
@@ -302,44 +302,15 @@ void get_opts(const SF_INFO* const sf_file_info, SNDFILE* const sf_input_file, m
         mxArray *bext = mxCreateStructArray(1, ndims, num_bext_fields, bext_fields);
         const double time_ref_samples = 4294967296.l*bwv_data.time_reference_high + bwv_data.time_reference_low;
 
-        /*
-         * Each char[] field needs to be copied, because if a field is "full",
-         * the lack of null byte leads to "overlapping" strings in opts.bext.
-         * (calloc() and num_elements+1 account for the trailing null byte.)
-         * */
-        char* description          = (char*)calloc(sizeof(bwv_data.description)/sizeof(char)+1, sizeof(char));
-        char* originator           = (char*)calloc(sizeof(bwv_data.originator)/sizeof(char)+1, sizeof(char));
-        char* originator_reference = (char*)calloc(sizeof(bwv_data.originator_reference)/sizeof(char)+1, sizeof(char));
-        char* origination_date     = (char*)calloc(sizeof(bwv_data.origination_date)/sizeof(char)+1, sizeof(char));
-        char* origination_time     = (char*)calloc(sizeof(bwv_data.origination_time)/sizeof(char)+1, sizeof(char));
-        char* umid                 = (char*)calloc(sizeof(bwv_data.umid)/sizeof(char)+1, sizeof(char));
-        char* coding_history       = (char*)calloc(sizeof(bwv_data.coding_history)/sizeof(char)+1, sizeof(char));
-
-        description          = (char*)memcpy(description          , bwv_data.description          , sizeof(bwv_data.description));
-        originator           = (char*)memcpy(originator           , bwv_data.originator           , sizeof(bwv_data.originator));
-        originator_reference = (char*)memcpy(originator_reference , bwv_data.originator_reference , sizeof(bwv_data.originator_reference));
-        origination_date     = (char*)memcpy(origination_date     , bwv_data.origination_date     , sizeof(bwv_data.origination_date));
-        origination_time     = (char*)memcpy(origination_time     , bwv_data.origination_time     , sizeof(bwv_data.origination_time));
-        umid                 = (char*)memcpy(umid                 , bwv_data.umid                 , sizeof(bwv_data.umid));
-        coding_history       = (char*)memcpy(coding_history       , bwv_data.coding_history       , bwv_data.coding_history_size);
-
-        mxSetField(bext, 0, bext_fields[0], mxCreateString(description));
-        mxSetField(bext, 0, bext_fields[1], mxCreateString(originator));
-        mxSetField(bext, 0, bext_fields[2], mxCreateString(originator_reference));
-        mxSetField(bext, 0, bext_fields[3], mxCreateString(origination_date));
-        mxSetField(bext, 0, bext_fields[4], mxCreateString(origination_time));
+        mxSetField(bext, 0, bext_fields[0], mxCreateString(bwv_data.description));
+        mxSetField(bext, 0, bext_fields[1], mxCreateString(bwv_data.originator));
+        mxSetField(bext, 0, bext_fields[2], mxCreateString(bwv_data.originator_reference));
+        mxSetField(bext, 0, bext_fields[3], mxCreateString(bwv_data.origination_date));
+        mxSetField(bext, 0, bext_fields[4], mxCreateString(bwv_data.origination_time));
         mxSetField(bext, 0, bext_fields[5], mxCreateDoubleScalar(time_ref_samples));
         mxSetField(bext, 0, bext_fields[6], mxCreateDoubleScalar(bwv_data.version));
-        mxSetField(bext, 0, bext_fields[7], mxCreateString(umid));
-        mxSetField(bext, 0, bext_fields[8], mxCreateString(coding_history));
-
-        free(description);
-        free(originator);
-        free(originator_reference);
-        free(origination_date);
-        free(origination_time);
-        free(umid);
-        free(coding_history);
+        mxSetField(bext, 0, bext_fields[7], mxCreateString(bwv_data.umid));
+        mxSetField(bext, 0, bext_fields[8], mxCreateString(bwv_data.coding_history));
 
         mxAddField(opts, "bext");
         mxSetField(opts, 0, "bext", bext);
