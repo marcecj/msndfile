@@ -101,9 +101,9 @@ int remove_file_info(AUDIO_FILES *file_list, const char *const name)
 /* deallocate an AUDIO_FILE_INFO structure */
 void destroy_file_info(AUDIO_FILE_INFO* file_info)
 {
-    int status;
-
     if( file_info != NULL ) {
+        int status;
+
         free(file_info->name);
         free(file_info->info);
 
