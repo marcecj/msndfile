@@ -29,8 +29,10 @@ void clear_memory(void)
 void mexFunction(int nlhs, mxArray *plhs[],
                  int nrhs, const mxArray *prhs[])
 {
+    /* "format" needs to be set to 0 before a file is opened for reading,
+     * unless the file is a RAW file */
+    SF_INFO     sf_file_info = { .format = 0 };
     sf_count_t  num_frames=0;
-    SF_INFO     sf_file_info;
     int         do_read_raw = 0;
     mxClassID   class_id = mxDOUBLE_CLASS;
 
@@ -55,10 +57,6 @@ void mexFunction(int nlhs, mxArray *plhs[],
     if( (sf_in_fname = gen_filename(sf_in_fname)) == NULL )
         mexErrMsgIdAndTxt("msndfile:read:ambiguousname",
                           "No file extension specified and no WAV file found.");
-
-    /* "format" needs to be set to 0 before a file is opened for reading,
-     * unless the file is a RAW file */
-    sf_file_info.format = 0;
 
     /* handle the fourth input argument */
     if( nrhs >= 4 && !mxIsEmpty(prhs[3]) )
