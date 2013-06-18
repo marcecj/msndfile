@@ -1,6 +1,9 @@
 # vim:ft=python
 # TODO: Test Mac.
 
+# some of the third party tools require at least Python 2.5
+EnsurePythonVersion(2,5)
+
 import os
 import platform
 
