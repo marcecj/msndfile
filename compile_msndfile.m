@@ -76,8 +76,8 @@ src2 = [src_dir '/blockread.c ' ...
         src_dir '/audio_files.c'];
 
 if ispc
-    cmd1 = ['mex ' mex_opts ' -LWin -l''sndfile-1'' -IWin ' extra_flags ' ' src1 ' -outdir ''' out_dir ''''];
-    cmd2 = ['mex ' mex_opts ' -LWin -l''sndfile-1'' -IWin ' extra_flags ' ' src2 ' -outdir ''' out_dir ''''];
+    cmd1 = ['mex ' mex_opts ' -LWin -l''sndfile-1'' -IWin ' src1 ' -outdir ' out_dir ' COMPFLAGS="$COMPFLAGS ' extra_flags '"'];
+    cmd2 = ['mex ' mex_opts ' -LWin -l''sndfile-1'' -IWin ' src2 ' -outdir ' out_dir ' COMPFLAGS="$COMPFLAGS ' extra_flags '"'];
 elseif isunix
     cmd1 = ['mex ' mex_opts ' -lsndfile ' src1 ' -outdir ' out_dir ' CFLAGS="\$CFLAGS ' extra_flags '"'];
     cmd2 = ['mex ' mex_opts ' -lsndfile ' src2 ' -outdir ' out_dir ' CFLAGS="\$CFLAGS ' extra_flags '"'];
