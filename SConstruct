@@ -75,8 +75,11 @@ env['pkg_dir'] = "+msndfile"
 # assume a GCC-compatible compiler on Unix like platforms
 if env['PLATFORM'] in ("posix", "darwin"):
 
-    env.Append(CCFLAGS   = "-DNDEBUG -ansi -O2 -pedantic -Wall -Wextra",
-               LINKFLAGS = "-Wl,-O1 -Wl,--no-copy-dt-needed-entries -Wl,--as-needed")
+    env.Append(
+        CCFLAGS    = "-ansi -O2 -pedantic -Wall -Wextra",
+        LINKFLAGS  = "-Wl,-O1 -Wl,--no-copy-dt-needed-entries -Wl,--as-needed",
+        CPPDEFINES = "NDEBUG"
+    )
 
     # activate optimizations in GCC 4.5
     if env['CC'] == 'gcc' and env['CCVERSION'] >= '4.5':
