@@ -22,6 +22,7 @@ graphics
 *.mex*
 *.zip
 *.log
+*.pyc
 
 # documentation output
 doc/*.html
