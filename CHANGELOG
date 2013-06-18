@@ -3,6 +3,40 @@
 This document records the changes made in each release of msndfile, and in all
 release candidates.  For the full list of changes, see the git log.
 
+## Version 1.1 (2013.??.??)
+
+I decided to throw in another release before working on write support.  It only
+brings one new feature: the "transpose" option to `msndfile.blockread`; the rest
+consists mostly of "infrastructural" changes.
+
+The most invasive change (code-wise) is the migration to C99, which allows
+various simplifications to the code; note also the addition of the "restrict"
+keyword.  Note that since you can use other compilers with Visual Studio (e.g.,
+the Intel compiler, or MinGW), I did *not* remove support for VS from the build
+system.  However, due to lack of C99 support in the Visual Compiler, msndfile
+will no longer compile with it.
+
+Another large change is the rewrite of the test suite.  The way it is structured
+now, missing FLAC support will not mask any other errors and vice versa.
+
+Changes since 1.0:
+
+- infrastructural changes to the source code:
+    - the `AUDIO_FILES` data structure used in msndfile.blockread has been
+      reimplemented as a linked list.
+    - port the code base to C99 (which further simplifies it)
+    - simplify various bits of code
+- `compile_msndfile.m` is now a function
+- fix some bugs in the test suite
+- restructure the test suite, which basically did the following:
+    - split FLAC tests from the WAV tests
+    - add some tests that it turned out were missing
+    - remove redundant tests
+- various stylistic changes to the build system
+- various improvements and updates to the manual
+- various bug fixes
+- miscellaneous other changes
+
 ## Version 1.0 (2012.11.30)
 
 This is the first release of msndfile. It supports all functionality of wavread,
