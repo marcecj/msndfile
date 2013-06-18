@@ -17,19 +17,24 @@ Prerequisites
 :mtest: http://www.mathworks.com/matlabcentral/fileexchange/22846[MTest]
 :pywin32: http://starship.python.net/crew/mhammond/win32/[Python Win32 extensions]
 :ideintegration: http://www.scons.org/wiki/IDEIntegration
+:gnumex: http://gnumex.sourceforge.net[gnumex]
 
 The basic dependencies of msndfile are:
 
 - MATLAB (tested with 2010a Student Edition)
 - {libsndfile}
+- a C compiler that supports C99 (e.g., GCC, clang)
 - `stdint.h` (a C99 header file; required for reading files in their native
   format, à la `wavread(..., 'native')`)
 - {mtest} (needed only for the test suite)
 
-The `stdint.h` header is available in Visual Studio 2010 and up.  Otherwise, all
-somewhat recent compilers/libc's should support it (especially those that
-support C99).  If `stdint.h` is not available, a compatibility header
-(`stdint_compat.h`) is used instead.
+The requirement for a compiler that supports C99 means that the Microsoft
+Visual Compiler cannot be supported anymore.  However, you can still generate
+Visual Studio projects with the SCons based build system; they will simply use
+another compiler footnote:[I do not know if debugging in VS is possible this
+way; it might be with the appropriate add-ins, e.g., VisualGDB.].  If
+`stdint.h` is not available (as might be the case for older compilers), a
+compatibility header (`stdint_compat.h`) is used instead.
 
 To obtain libsndfile, you may try the following steps:
 
@@ -48,7 +53,7 @@ Mac OS X::
 If you are going to use the SCons based build system, you will also need
 
 - http://www.python.org[Python] (whatever version SCons works with, though at
-  least 2.5)
+  least 2.5 is required)
 - {scons} (tested with SCons 2.2.x)
 - {pywin32} (optional, but necessary for some SCons features on Windows)
 - the https://github.com/marcecj/scons_matlab[SCons Matlab Tool]
@@ -76,6 +81,15 @@ In MATLAB, type `compile_msndfile` to compile all Mex extensions.  By default
 this will put the binaries in the `+msndfile` subdirectory (a Matlab package
 directory).  See the built-in help (`help compile_msndfile`) for overriding
 the defaults to your needs.
+
+[NOTE]
+==========================
+If `mex -setup` does not find a C99 compatible compiler, you will have
+to configure mex manually.  The options I know of are:
+
+- either create your own `mexopts.bat`/`mexopts.sh` file, or
+- use MinGW/Cygwin with {gnumex}.
+==========================
 
 Using the SCons based build system
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -117,9 +131,8 @@ If you need to work on the code and plan to compile often, you can speed up the
 process in general by using the interactive mode by passing the `--interactive`
 option to SCons.
 
-NOTE: To debug from within Visual Studio, you need to configure the project to
-call MATLAB with the `-wait` argument.  I could not find a way to do this
-automatically with SCons.
+NOTE: To debug from within an IDE, you need to be sure to call MATLAB with the
+`-wait` argument.
 
 Linux
 ^^^^^
@@ -138,8 +151,7 @@ the terminal window open.  It is expected that SCons is in your `$PATH`.
 
 Under Windows, the build system has an additional `vsproj` target.  This creates
 an MS Visual Studio Solution file with msndfile as a project.  For other IDEs,
-see {ideintegration}.  Also, there is an option to
-force the use of MinGW in case it is installed along with Visual Studio.
+see {ideintegration}.
 
 Mac OS X
 ^^^^^^^^
