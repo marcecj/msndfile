@@ -37,9 +37,8 @@ directory in the source repository).
 ## Copyrights
 
 msndfile is Copyright (C) 2010-2013 Marc Joliet <marcec@gmx.de> and licenced
-under the MIT licence.  See the file
-[LICENSE](https://github.com/marcecj/msndfile/blob/master/LICENSE) in the
-project repository.
+under the MIT licence.  See the file [LICENSE](LICENSE) in the project
+repository.
 
 The documentation of msndfile (including this README) is Copyright (C) 2010-2012
 Marc Joliet <marcec@gmx.de> and licenced under the [Attribution-ShareAlike 3.0
