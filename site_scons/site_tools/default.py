@@ -33,7 +33,10 @@ selection method.
 
 import SCons.Tool
 
-def tool_list(env):
+def tool_list(platform, env):
+
+    if platform != "win32":
+        return SCons.Tool.tool_list(platform, env)
 
     linkers     = ['gnulink', 'ilink', 'linkloc', 'ilink32' ]
     c_compilers = ['mingw', 'gcc', 'intelc', 'icl', 'icc', 'cc', 'bcc32']
@@ -58,12 +61,8 @@ def tool_list(env):
 
 def generate(env):
     """Add default tools."""
-    if env['PLATFORM'] == "win32":
-        for t in tool_list(env):
-            SCons.Tool.Tool(t)(env)
-    else:
-        for t in SCons.Tool.tool_list(env['PLATFORM'], env):
-            SCons.Tool.Tool(t)(env)
+    for t in tool_list(env['PLATFORM'], env):
+        SCons.Tool.Tool(t)(env)
 
 def exists(env):
     return 1
