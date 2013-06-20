@@ -208,19 +208,6 @@ void get_opts(const SF_INFO* const restrict sf_file_info, SNDFILE* const restric
         "nBitsPerSample"
     };
 
-    const char* bext_fields[] = {
-        "description",
-        "originator",
-        "originator_reference",
-        "origination_date",
-        "origination_time",
-        "time_reference",
-        "version",
-        "umid",
-        "coding_history"
-    };
-
-
     /* see e.g. http://www.kk.iij4u.or.jp/~kondo/wave/mpidata.txt */
     const char* info_fields[] = {
         "inam", /* Title */
@@ -236,7 +223,6 @@ void get_opts(const SF_INFO* const restrict sf_file_info, SNDFILE* const restric
     };
 
     const short num_fmt_fields  = sizeof(fmt_fields)/sizeof(char*);
-    const short num_bext_fields = sizeof(bext_fields)/sizeof(char*);
     short info_count = SF_STR_LAST-SF_STR_FIRST+1;
 
     SF_BROADCAST_INFO bwv_data = {"", "", "", "", "", 0, 0, 0, "", "", 0, ""};
@@ -297,6 +283,19 @@ void get_opts(const SF_INFO* const restrict sf_file_info, SNDFILE* const restric
 
     if( sf_command(sf_input_file, SFC_GET_BROADCAST_INFO, &bwv_data, sizeof(SF_BROADCAST_INFO)) == SF_TRUE )
     {
+        const char* bext_fields[] = {
+            "description",
+            "originator",
+            "originator_reference",
+            "origination_date",
+            "origination_time",
+            "time_reference",
+            "version",
+            "umid",
+            "coding_history"
+        };
+        const short num_bext_fields = sizeof(bext_fields)/sizeof(char*);
+
         mxArray *bext = mxCreateStructArray(1, ndims, num_bext_fields, bext_fields);
         const double time_ref_samples = 4294967296.l*bwv_data.time_reference_high + bwv_data.time_reference_low;
 
