@@ -172,4 +172,8 @@ default.  To run them, too, set `do_perf_tests` to `true` in
 NOTE: If you use SCons, you must run the `install` target first and make sure DESTDIR
 is in MATLABs path.
 
+NOTE: To run the bext chunk test you need the file `EBU_sample.wav` , which I
+found http://www.interlab.fr/docs/aaton/docs/indaw/BWF_aaton_samples/[here].
+Put it in the `test_files/bwf/` subdirectory.
+
 // vim:ft=asciidoc

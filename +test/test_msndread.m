@@ -172,6 +172,49 @@ for k=1:length(info_fields_ref)
     assertEqual(opts_ref.info.(info_fields_ref{k}), opts.info.(info_fields{k}));
 end
 
+function test_wav_output_opts_bext(~)
+% test the bext field of the opts struct
+
+bwf_file = 'test_files/bwf/EBU_sample.wav';
+
+assertTrue(logical(exist(bwf_file, 'file')), ...
+           sprintf('File "%s" missing.', bwf_file))
+
+[~, ~, ~, opts]      = msndfile.read(bwf_file, 'size');
+
+% for reference, the output of "sndfile-info -b
+% test_files/bwf/EBU_sample.wav":
+%
+% Description      : BWF file format, Test file
+% Originator       : EBU,SR,IRT,PHILIPS and DIGIGRAM
+% Origination ref  : TEST file #1
+% Origination date : 1997-01-20
+% Origination time : 14:20:10
+% Time ref         : 0x093a84b00 (51610.000000 seconds)
+% BWF version      : 0
+% UMID             : 
+% Coding history   : A=PCM,F=48000,W=16,M=stereo,T=PCX9
+bext_ref = struct( ...
+    'description',          'BWF file format, Test file', ...
+    'originator',           'EBU,SR,IRT,PHILIPS and DIGIGRAM', ...
+    'originator_reference', 'TEST file #1', ...
+    'origination_date',     '1997-01-20', ...
+    'origination_time',     '14:20:10', ...
+    'time_reference',       2477280000, ...
+    'version',              0, ...
+    'umid',                 '', ...
+    'coding_history',       'A=PCM,F=48000,W=16,M=stereo,T=PCX9');
+
+% compare bext fields
+bwf_fields_ref = fieldnames(bext_ref);
+bwf_fields = fieldnames(opts.bext);
+assertEqual(bwf_fields_ref, bwf_fields);
+assertEqual(length(bwf_fields_ref), length(bwf_fields));
+for k=1:length(bwf_fields_ref)
+    assertEqual(bwf_fields_ref{k}, bwf_fields{k});
+    assertEqual(bext_ref.(bwf_fields_ref{k}), opts.bext.(bwf_fields{k}));
+end
+
 function test_flac_output_opts(~)
 % test opts return value; doesn't make sense with FLAC because the meta-data
 % differs
