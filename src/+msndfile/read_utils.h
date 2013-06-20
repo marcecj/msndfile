@@ -22,7 +22,7 @@ char** get_format_extensions();
 
 /* helper function for gen_filename(): return whether a file extension was
  * already checked */
-unsigned int ext_already_checked(char** extensions, const char* const ext, const unsigned int num_ext);
+unsigned int ext_already_checked(char* restrict * restrict extensions, const char* const restrict ext, const unsigned int num_ext);
 
 /* function to get a valid file name; for wavread() compatibility, if the file
  * name does not have a suffix, file_name+".wav" is attempted, and if that
@@ -34,14 +34,14 @@ char* gen_filename(char* fname);
  */
 
 /* get the number of bits of an audio file */
-short get_bits(const SF_INFO* const sf_file_info);
+short get_bits(const SF_INFO* const restrict sf_file_info);
 
 /*
  * functions used to generate the opts output argument
  */
 
 /* create an opts structure a la wavread() */
-void get_opts(const SF_INFO* const sf_file_info, SNDFILE* const sf_input_file, mxArray* opts);
+void get_opts(const SF_INFO* const restrict sf_file_info, SNDFILE* const restrict sf_input_file, mxArray* restrict opts);
 
 /* The value of SF_STR_GENRE is a bit of a jump from the previous element of the
  * enum, which makes it difficult to us the SF_STR_* values as indices.  This
@@ -50,6 +50,6 @@ void get_opts(const SF_INFO* const sf_file_info, SNDFILE* const sf_input_file, m
 int sf_str_to_index(const int i);
 
 /* generate a value for the wFormatTag field based on the format subtype. */
-int get_wformattag(const SF_INFO* const sf_file_info);
+int get_wformattag(const SF_INFO* const restrict sf_file_info);
 
 #endif /* __READ_UTILS_H__ */

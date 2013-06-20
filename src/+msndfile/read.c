@@ -29,11 +29,10 @@ void clear_memory(void)
 void mexFunction(int nlhs, mxArray *plhs[],
                  int nrhs, const mxArray *prhs[])
 {
-    int         num_chns;
-    char        *sf_in_fname; /* input file name */
+    /* "format" needs to be set to 0 before a file is opened for reading,
+     * unless the file is a RAW file */
+    SF_INFO     sf_file_info = { .format = 0 };
     sf_count_t  num_frames=0;
-    double      *data, *output;
-    SF_INFO     sf_file_info;
     int         do_read_raw = 0;
     mxClassID   class_id = mxDOUBLE_CLASS;
 
@@ -54,15 +53,10 @@ void mexFunction(int nlhs, mxArray *plhs[],
                           "Missing argument: you need to pass a file name.");
 
     /* get input filename */
-    sf_in_fname = mxArrayToString(prhs[0]);
-
+    char *sf_in_fname = mxArrayToString(prhs[0]);
     if( (sf_in_fname = gen_filename(sf_in_fname)) == NULL )
         mexErrMsgIdAndTxt("msndfile:read:ambiguousname",
                           "No file extension specified and no WAV file found.");
-
-    /* "format" needs to be set to 0 before a file is opened for reading,
-     * unless the file is a RAW file */
-    sf_file_info.format = 0;
 
     /* handle the fourth input argument */
     if( nrhs >= 4 && !mxIsEmpty(prhs[3]) )
@@ -80,29 +74,21 @@ void mexFunction(int nlhs, mxArray *plhs[],
     if( nrhs >= 3 && !mxIsEmpty(prhs[2]) )
     {
         const short fmt_len = mxGetN(prhs[2])+1;
-        char* fmt;
-
-        if( (fmt = (char*)malloc(fmt_len*sizeof(char))) == NULL ) {
-            mxFree(sf_in_fname);
-            mexErrMsgIdAndTxt("msndfile:system", strerror(errno));
-        }
+        char fmt[fmt_len];
 
         if( !mxIsChar(prhs[2]) ) {
             mxFree(sf_in_fname);
-            free(fmt);
             mexErrMsgIdAndTxt("msndfile:argerror",
                               "The third argument has to be a string! (see help text)");
         }
 
         if( mxGetString(prhs[2], fmt, fmt_len) == 1 ) {
             mxFree(sf_in_fname);
-            free(fmt);
             mexErrMsgIdAndTxt("msndfile:argerror",
                               "Error getting 'fmt' string.");
         }
 
         do_read_raw = get_fmt(fmt);
-        free(fmt);
         if( do_read_raw == -1 )
             mexErrMsgIdAndTxt("msndfile:argerror", "Bad 'fmt' argument.");
     }
@@ -122,37 +108,25 @@ void mexFunction(int nlhs, mxArray *plhs[],
             && mxIsChar(prhs[1]))
     {
         const short cmd_size = mxGetN(prhs[1])+1;
-        char *cmd_str;
+        char cmd_str[cmd_size];
 
-        if( (cmd_str = (char*)malloc(cmd_size*sizeof(char))) == NULL )
-            mexErrMsgIdAndTxt("msndfile:system", strerror(errno));
-
-        if( mxGetString(prhs[1], cmd_str, cmd_size) == 1 ) {
-            free(cmd_str);
+        if( mxGetString(prhs[1], cmd_str, cmd_size) == 1 )
             mexErrMsgIdAndTxt("msndfile:argerror",
                               "Error getting command string.");
-        }
 
         if( strcmp(cmd_str, "size") == 0 ) {
-            double *dims;
-
-            plhs[0] = mxCreateDoubleMatrix(1, 2, mxREAL);
-            dims    = mxGetPr(plhs[0]);
+            plhs[0]      = mxCreateDoubleMatrix(1, 2, mxREAL);
+            double *dims = mxGetPr(plhs[0]);
 
             dims[0] = (double)(sf_file_info.frames);
             dims[1] = (double)(sf_file_info.channels);
 
             /* Skip everything else and close the SF_INFO file */
-            free(cmd_str);
             goto return_to_matlab;
-        } else if( !strcmp(cmd_str, "double") || !strcmp(cmd_str, "native") ) {
+        } else if( !strcmp(cmd_str, "double") || !strcmp(cmd_str, "native") )
             do_read_raw = get_fmt(cmd_str);
-        } else {
-            free(cmd_str);
+        else
             mexErrMsgIdAndTxt("msndfile:argerror", "Unknown command.");
-        }
-
-        free(cmd_str);
     }
 
     if( nrhs > 1
@@ -163,11 +137,11 @@ void mexFunction(int nlhs, mxArray *plhs[],
         num_frames = sf_file_info.frames;
 
     /* initialise Matlab output array */
-    num_chns = sf_file_info.channels;
+    const int num_chns = sf_file_info.channels;
     if( do_read_raw )
         class_id = get_class_id(&sf_file_info);
     plhs[0]  = mxCreateNumericMatrix((int)num_frames, num_chns, class_id, mxREAL);
-    output   = (double*)mxGetPr(plhs[0]);
+    const double* output = (double*)mxGetPr(plhs[0]);
 
     /* read the entire file in one go
      *
@@ -177,7 +151,8 @@ void mexFunction(int nlhs, mxArray *plhs[],
      * NOTE: Matlab 2010a returns the whole file when num_frames == 0, but warns
      * that in the future, an empty matrix will be returned. This implements
      * that future behaviour. */
-    if( (data = (double*)malloc((int)num_frames*num_chns*sizeof(double))) == NULL )
+    double *data = (double*)malloc((int)num_frames*num_chns*sizeof(double));
+    if( data == NULL )
         mexErrMsgIdAndTxt("msndfile:system", strerror(errno));
 
     if( do_read_raw )
@@ -206,20 +181,16 @@ return_to_matlab:
 
     /* return sampling rate if requested */
     if( nlhs > 1 ) {
-        double *fs;
-
         plhs[1] = mxCreateDoubleMatrix(1, 1, mxREAL);
-        fs      = mxGetPr(plhs[1]);
+        double *fs = mxGetPr(plhs[1]);
 
         *fs = (double)sf_file_info.samplerate;
     }
 
     /* return bit rate if requested */
     if( nlhs > 2 ) {
-        double *nbits;
-
         plhs[2] = mxCreateDoubleMatrix(1, 1, mxREAL);
-        nbits   = mxGetPr(plhs[2]);
+        double *nbits = mxGetPr(plhs[2]);
 
         *nbits = (double)get_bits(&sf_file_info);
     }

@@ -11,7 +11,7 @@ function compile_msndfile(varargin)
 %
 %   Name        | Type    | Description                                  | Default
 %   ==================================================================================
-%   HaveStdintH | logical | whether the system has the stdint.h C header | false
+%   HaveStdintH | logical | whether the system has the stdint.h C header | true
 %   Debug       | logical | whether to build msndfile with debug symbols | false
 %   Destdir     | char    | where to install the package directory       | '.'
 %   PkgDir      | char    | the name of the package directory            | '+msndfile'
@@ -21,7 +21,7 @@ function compile_msndfile(varargin)
 %
 
 p = inputParser();
-p.addParamValue('HaveStdintH' , false       , @islogical);
+p.addParamValue('HaveStdintH' , true        , @islogical);
 p.addParamValue('Debug'       , false       , @islogical);
 p.addParamValue('Destdir'     , '.'         , @(x) ischar(x) && isdir(x));
 p.addParamValue('PkgDir'      , '+msndfile' , @ischar);
@@ -49,12 +49,10 @@ if ~verLessThan('matlab', '7.1')
     mex_opts = [mex_opts ' -largeArrayDims'];
 end
 
-extra_flags = '';
-if ispc && have_stdint_h
-    extra_flags = '-DHAVE_STDINT_H';
-elseif ~ispc
-    % assume stdint.h; needed with GCC >= 4.5, otherwise Matlab crashes
-    extra_flags = '-DHAVE_STDINT_H -fno-reorder-blocks';
+% -fno-reorder-blocks needed with GCC >= 4.5, otherwise Matlab crashes
+extra_flags = '-std=c99 -fno-reorder-blocks';
+if have_stdint_h
+    extra_flags = [extra_flags ' -DHAVE_STDINT_H'];
 end
 
 src_dir     = 'src/+msndfile';

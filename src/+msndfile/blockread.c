@@ -36,9 +36,9 @@ void mexFunction(int nlhs, mxArray *plhs[],
                  int nrhs, const mxArray *prhs[])
 {
     const int   cmd_size = (nrhs > 0 ? mxGetN(prhs[0])+1 : 0); /* length of the command */
+    char        cmd_str[cmd_size];
     int         cmd_id = -1;
-    char        *cmd_str;
-    char        *sf_in_fname=NULL; /* input file name */
+    char        *arg1=NULL; /* input file name */
 
     mexAtExit(&clear_static_vars);
 
@@ -48,13 +48,8 @@ void mexFunction(int nlhs, mxArray *plhs[],
     if( mxIsEmpty(prhs[0]) || !mxIsChar(prhs[0]))
         mexErrMsgIdAndTxt("msndfile:argerror", "Argument error: command may not be empty.");
 
-    if( (cmd_str = (char*)malloc(cmd_size*sizeof(char))) == NULL )
-        mexErrMsgIdAndTxt("msndfile:argerror", strerror(errno));
-
-    if( mxGetString(prhs[0], cmd_str, cmd_size) == 1 ) {
-        free(cmd_str);
+    if( mxGetString(prhs[0], cmd_str, cmd_size) == 1 )
         mexErrMsgIdAndTxt("msndfile:argerror", "Error getting command string.");
-    }
 
     if(      strcmp(cmd_str, "open") == 0 )     cmd_id = CMD_OPEN;
     else if( strcmp(cmd_str, "read") == 0 )     cmd_id = CMD_READ;
@@ -62,7 +57,6 @@ void mexFunction(int nlhs, mxArray *plhs[],
     else if( strcmp(cmd_str, "tell") == 0 )     cmd_id = CMD_TELL;
     else if( strcmp(cmd_str, "close") == 0 )    cmd_id = CMD_CLOSE;
     else if( strcmp(cmd_str, "closeall") == 0 ) cmd_id = CMD_CLOSEALL;
-    free(cmd_str);
 
     if( cmd_id == -1 )
         mexErrMsgIdAndTxt("msndfile:argerror", "Unknown command.");
@@ -70,11 +64,18 @@ void mexFunction(int nlhs, mxArray *plhs[],
     if( nrhs > 1 && mxIsChar(prhs[1]) && cmd_id != CMD_CLOSEALL )
     {
         /* get input filename */
-        if( (sf_in_fname = mxArrayToString(prhs[1])) == NULL )
+        if( (arg1 = mxArrayToString(prhs[1])) == NULL )
             mexErrMsgIdAndTxt("msndfile:system", strerror(errno));
     }
     else if( cmd_id != CMD_CLOSEALL )
         mexErrMsgIdAndTxt("msndfile:argerror", "Missing argument: you need to pass a file name.");
+
+    /* copy the input file name to a VLA to avoid free()'s after error checks */
+    char sf_in_fname[(arg1 != NULL ? strlen(arg1)+1 : 0)];
+    if( arg1 != NULL ) {
+        strcpy(sf_in_fname, arg1);
+        mxFree(arg1);
+    }
 
     if( cmd_id == CMD_OPEN )
     {
@@ -82,16 +83,12 @@ void mexFunction(int nlhs, mxArray *plhs[],
         SNDFILE* sf_input_file     = NULL;
         SF_INFO* sf_file_info      = NULL;
 
-        if( lookup_file_info(file_list, sf_in_fname) != NULL ) {
-            mxFree(sf_in_fname);
+        if( lookup_file_info(file_list, sf_in_fname) != NULL )
             mexErrMsgIdAndTxt("msndfile:blockread:fileopen", "File already open!");
-        }
 
         /* initialize sf_file_info struct pointer */
-        if( (sf_file_info = (SF_INFO*)malloc(sizeof(SF_INFO))) == NULL ) {
-            mxFree(sf_in_fname);
+        if( (sf_file_info = (SF_INFO*)malloc(sizeof(SF_INFO))) == NULL )
             mexErrMsgIdAndTxt("msndfile:system", strerror(errno));
-        }
 
         /* "format" needs to be set to 0 before a file is opened for reading,
          * unless the file is a RAW file */
@@ -100,7 +97,6 @@ void mexFunction(int nlhs, mxArray *plhs[],
         {
             /* handle RAW files */
             if( !mxIsStruct(prhs[2]) ) {
-                mxFree(sf_in_fname);
                 free(sf_file_info);
                 mexErrMsgIdAndTxt("msndfile:argerror", "The second argument has to be a struct! (see help text)");
             }
@@ -109,7 +105,6 @@ void mexFunction(int nlhs, mxArray *plhs[],
         }
 
         if( (sf_input_file = sf_open(sf_in_fname, SFM_READ, sf_file_info)) == NULL ) {
-            mxFree(sf_in_fname);
             free(sf_file_info);
             mexErrMsgIdAndTxt("msndfile:sndfile", sf_strerror(sf_input_file));
         }
@@ -120,7 +115,6 @@ void mexFunction(int nlhs, mxArray *plhs[],
     else if( cmd_id == CMD_SEEK )
     {
         AUDIO_FILE_INFO* file_info = NULL;
-        double *seek_idx;
 
         if( (file_info = lookup_file_info(file_list, sf_in_fname)) == NULL )
             mexErrMsgIdAndTxt("msndfile:blockread:filenotopen", "File not open!");
@@ -131,7 +125,7 @@ void mexFunction(int nlhs, mxArray *plhs[],
         if( mxIsEmpty(prhs[2]) && !mxIsDouble(prhs[2]))
             mexErrMsgIdAndTxt("msndfile:argerror", "Frame index is empty!");
 
-        seek_idx = mxGetPr(prhs[2]);
+        const double *seek_idx = mxGetPr(prhs[2]);
 
         if( seek_idx[0] > file_info->info->frames
                 || sf_seek(file_info->file, seek_idx[0]-1, SEEK_SET) == -1 )
@@ -140,13 +134,12 @@ void mexFunction(int nlhs, mxArray *plhs[],
     else if( cmd_id == CMD_TELL )
     {
         AUDIO_FILE_INFO* file_info = NULL;
-        double *cur_pos;
 
         if( (file_info = lookup_file_info(file_list, sf_in_fname)) == NULL )
             mexErrMsgIdAndTxt("msndfile:blockread:filenotopen", "File not open!");
 
         plhs[0] = mxCreateDoubleMatrix((int)1, 1, mxREAL);
-        cur_pos = mxGetPr(plhs[0]);
+        double *cur_pos = mxGetPr(plhs[0]);
 
         if( (*cur_pos = sf_seek(file_info->file, 0, SEEK_CUR)) == -1 )
             mexErrMsgIdAndTxt("msndfile:sndfile", sf_error_number(*cur_pos));
@@ -167,7 +160,6 @@ void mexFunction(int nlhs, mxArray *plhs[],
         AUDIO_FILE_INFO* file_info = NULL;
         bool        do_transpose=true;
         double*     temp_array;
-        int         num_chns;
         sf_count_t  num_frames=0;
         int         sndfile_err; /* libsndfile error status */
 
@@ -186,15 +178,13 @@ void mexFunction(int nlhs, mxArray *plhs[],
             do_transpose = *(bool*)mxGetPr(prhs[3]);
 
         /* initialise Matlab output array */
-        num_chns = file_info->info->channels;
+        const int num_chns = file_info->info->channels;
 
         if( do_transpose ) {
             plhs[0]    = mxCreateDoubleMatrix((int)num_frames, num_chns, mxREAL);
             temp_array = (double*)malloc((int)num_frames*num_chns*sizeof(double));
-            if( temp_array == NULL ) {
-                mxFree(sf_in_fname);
+            if( temp_array == NULL )
                 mexErrMsgIdAndTxt("msndfile:system", strerror(errno));
-            }
         } else {
             plhs[0]    = mxCreateDoubleMatrix(num_chns, (int)num_frames, mxREAL);
             temp_array = mxGetPr(plhs[0]);
@@ -211,12 +201,9 @@ void mexFunction(int nlhs, mxArray *plhs[],
         {
             double* output = mxGetPr(plhs[0]);
 
-            int i;
-            for( i=0; i<num_frames; i++ ) {
-                int j;
-                for( j=0; j<num_chns; j++ )
+            for( int i=0; i<num_frames; i++ )
+                for( int j=0; j<num_chns; j++ )
                     output[i+j*num_frames] = temp_array[i*num_chns+j];
-            }
 
             free(temp_array);
         }
@@ -225,7 +212,4 @@ void mexFunction(int nlhs, mxArray *plhs[],
         if( (sndfile_err = sf_error(file_info->file)) != SF_ERR_NO_ERROR )
             mexErrMsgIdAndTxt("msndfile:sndfile", sf_error_number(sndfile_err));
     }
-
-    /* free memory */
-    mxFree(sf_in_fname);
 }

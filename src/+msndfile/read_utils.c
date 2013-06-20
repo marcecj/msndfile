@@ -31,13 +31,12 @@ unsigned int get_num_formats(void)
 /* returns a list of file extensions to simple formats + RAW */
 char** get_format_extensions(void)
 {
-    unsigned int i;
     const unsigned int num_formats = get_num_formats();
     char** file_exts = (char**)malloc(num_formats*sizeof(char*));
     SF_FORMAT_INFO format_info;
 
     /* handle the libsndfile simple formats */
-    for( i = 0; i < num_formats-1; i++ ) {
+    for( unsigned int i = 0; i < num_formats-1; i++ ) {
         format_info.format = i;
 
         sf_command(0, SFC_GET_SIMPLE_FORMAT, &format_info, sizeof(SF_FORMAT_INFO));
@@ -48,17 +47,16 @@ char** get_format_extensions(void)
 
     /* RAW is not a simple format, but we want to handle it */
     file_exts[num_formats-1] = (char*)malloc(4*sizeof(char));
-    file_exts[num_formats-1] = strcpy(file_exts[i], "raw");
+    file_exts[num_formats-1] = strcpy(file_exts[num_formats-1], "raw");
 
     return file_exts;
 }
 
 /* helper function for gen_filename(): return whether a file extension was
  * already checked */
-unsigned int ext_already_checked(char** extensions, const char* const ext, const unsigned int num_ext)
+unsigned int ext_already_checked(char *restrict *restrict extensions, const char* const restrict ext, const unsigned int num_ext)
 {
-    unsigned int i;
-    for( i = 0; i < num_ext; i++ )
+    for( unsigned int i = 0; i < num_ext; i++ )
         if( strcmp(extensions[i], ext) == 0 )
             return 1;
 
@@ -68,7 +66,7 @@ unsigned int ext_already_checked(char** extensions, const char* const ext, const
 /* function to get a valid file name; for wavread() compatibility, if the file
  * name does not have a suffix, file_name+".wav" is attempted, and if that
  * fails, NULL is returned */
-char* gen_filename(char* fname)
+char* gen_filename(char* restrict fname)
 {
     const size_t N                 = strlen(fname);
     const unsigned int num_formats = get_num_formats();
@@ -77,7 +75,6 @@ char* gen_filename(char* fname)
     FILE* audio_file               = NULL;
     unsigned int num_read_exts     = 0;
     unsigned int num_files         = 0; /* file name ambiguity if num_files>1 */
-    unsigned int i;
 
     /* if the file name (probably) has a suffix, the file name is OK */
     if( strrchr(fname, '.') != NULL )
@@ -89,11 +86,11 @@ char* gen_filename(char* fname)
      * to WAV.  If no WAV file exists, return NULL.
      */
 
-    for( i = 0; i < num_formats; i++ ) {
-        char* tmp_fname      = NULL;
+    for( unsigned int i = 0; i < num_formats; i++ ) {
         const char* cur_ext  = file_exts[i];
         const size_t ext_len = strlen(cur_ext)+1; /* '.' + extension */
         const size_t new_len = N+ext_len+1;
+        char tmp_fname[new_len];
 
         /* get_format_extensions() returns duplicate entries, so check here if
          * the extension has already been tried */
@@ -107,25 +104,21 @@ char* gen_filename(char* fname)
         num_read_exts++;
 
         /* copy the original N chars from fname into tmp_fname */
-        tmp_fname = (char*)calloc(new_len, sizeof(char));
-        tmp_fname = strncpy(tmp_fname, fname, N);
+        strncpy(tmp_fname, fname, N);
 
         /* append the file type extension */
-        tmp_fname = strcat(tmp_fname, ".");
-        tmp_fname = strcat(tmp_fname, cur_ext);
+        strcpy(&tmp_fname[N], ".");
+        strcpy(&tmp_fname[N+1], cur_ext);
 
         /* try to open the file; continue with next extension on failure */
-        if( (audio_file = fopen(tmp_fname, "r")) == NULL ) {
-            free(tmp_fname);
+        if( (audio_file = fopen(tmp_fname, "r")) == NULL )
             continue;
-        }
+        fclose(audio_file);
+        num_files++;
 
         /*  overwrite the original file name */
-        fclose(audio_file); /* close temporary file */
-        num_files++;
         fname = (char*)mxRealloc(fname, new_len*sizeof(char));
         fname = strcpy(fname, tmp_fname);
-        free(tmp_fname);
 
         /* break as soon as a WAV file is found */
         if( strcmp(cur_ext, "wav") == 0 )
@@ -134,13 +127,13 @@ char* gen_filename(char* fname)
 
 get_filename_cleanup:
     if( read_exts ) {
-        for( i = 0; i < num_read_exts; i++ )
+        for( unsigned int i = 0; i < num_read_exts; i++ )
             free(read_exts[i]);
         free(read_exts);
     }
 
     if( file_exts ) {
-        for( i = 0; i < num_formats; i++ )
+        for( unsigned int i = 0; i < num_formats; i++ )
             free(file_exts[i]);
         free(file_exts);
     }
@@ -154,12 +147,10 @@ get_filename_cleanup:
     if( num_files > 1 && fname != NULL ) {
         const char msg_fmt[] = "Defaulted to file name \"%s\".";
         const size_t msg_len = strlen(fname) + strlen(msg_fmt) - 1;
-        char* message = (char*)malloc(msg_len*sizeof(char));
+        char message[msg_len];
 
         sprintf(message, msg_fmt, fname);
         mexWarnMsgIdAndTxt("msndfile:read:ambiguousname", message);
-
-        free(message);
     }
 
     return fname;
@@ -170,7 +161,7 @@ get_filename_cleanup:
  */
 
 /* get the number of bits of an audio file */
-short get_bits(const SF_INFO* const sf_file_info)
+short get_bits(const SF_INFO* const restrict sf_file_info)
 {
     /* a best effort attempt to get the number of bits of an audio file */
     short bits = 0;
@@ -203,9 +194,8 @@ short get_bits(const SF_INFO* const sf_file_info)
  */
 
 /* create an opts structure a la wavread() */
-void get_opts(const SF_INFO* const sf_file_info, SNDFILE* const sf_input_file, mxArray* opts)
+void get_opts(const SF_INFO* const restrict sf_file_info, SNDFILE* const restrict sf_input_file, mxArray* restrict opts)
 {
-    int i;
     const short nbits      = get_bits(sf_file_info);
     const mwSize ndims[]   = {1, 1};
 
@@ -249,7 +239,6 @@ void get_opts(const SF_INFO* const sf_file_info, SNDFILE* const sf_input_file, m
     const short num_bext_fields = sizeof(bext_fields)/sizeof(char*);
     short info_count = SF_STR_LAST-SF_STR_FIRST+1;
 
-    double fmt_data[6];
     SF_BROADCAST_INFO bwv_data = {"", "", "", "", "", 0, 0, 0, "", "", 0, ""};
 
     mxArray *fmt           = mxCreateStructArray(1, ndims, num_fmt_fields, fmt_fields);
@@ -259,14 +248,16 @@ void get_opts(const SF_INFO* const sf_file_info, SNDFILE* const sf_input_file, m
      * set fmt field
      */
 
-    fmt_data[0] = (double)get_wformattag(sf_file_info);
-    fmt_data[1] = (double)sf_file_info->channels;
-    fmt_data[2] = (double)sf_file_info->samplerate;
-    fmt_data[3] = (double)(sf_file_info->samplerate*(nbits/8)*sf_file_info->channels);
-    fmt_data[4] = (double)(sf_file_info->channels*nbits/8); /* see wavread() */
-    fmt_data[5] = (double)nbits;
+    double fmt_data[] = {
+        (double)get_wformattag(sf_file_info),
+        (double)sf_file_info->channels,
+        (double)sf_file_info->samplerate,
+        (double)(sf_file_info->samplerate*(nbits/8)*sf_file_info->channels),
+        (double)(sf_file_info->channels*nbits/8), /* see wavread() */
+        (double)nbits
+    };
 
-    for( i = 0; i < num_fmt_fields; i++ )
+    for( int i = 0; i < num_fmt_fields; i++ )
         mxSetField(fmt, 0, fmt_fields[i], mxCreateDoubleScalar(fmt_data[i]));
 
     /* remove the wFormatTag field if the file is not a WAV file */
@@ -279,7 +270,7 @@ void get_opts(const SF_INFO* const sf_file_info, SNDFILE* const sf_input_file, m
      * set info field
      */
 
-    for( i = SF_STR_FIRST; i <= SF_STR_LAST; i++ )
+    for( int i = SF_STR_FIRST; i <= SF_STR_LAST; i++ )
     {
         const char* info_data = sf_get_string(sf_input_file, i);
 
@@ -348,7 +339,7 @@ int sf_str_to_index(const int i)
 }
 
 /* generate a value for the wFormatTag field based on the format subtype. */
-int get_wformattag(const SF_INFO* const sf_file_info)
+int get_wformattag(const SF_INFO* const restrict sf_file_info)
 {
     /* TODO: maybe add exceptions for other WAV-like formats? */
     if( (sf_file_info->format & SF_FORMAT_TYPEMASK) != SF_FORMAT_WAV)

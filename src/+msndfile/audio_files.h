@@ -30,22 +30,22 @@ typedef struct {
  */
 
 /* create an AUDIO_FILE_INFO struct */
-AUDIO_FILE_INFO* create_file_info(const char *const name, SF_INFO* const file_info, SNDFILE* const file);
+AUDIO_FILE_INFO* create_file_info(const char *const restrict name, SF_INFO* const restrict file_info, SNDFILE* const restrict file);
 
 /* add an AUDIO_FILE_INFO structure to an AUDIO_FILES linked list */
-AUDIO_FILES* store_file_info(AUDIO_FILES* file_list, AUDIO_FILE_INFO* const file_info);
+AUDIO_FILES* store_file_info(AUDIO_FILES* restrict file_list, AUDIO_FILE_INFO* const restrict file_info);
 
 /* Get an AUDIO_FILE_INFO structure from an AUDIO_FILES linked list  Returns
  * NULL if the file is not open. */
-AUDIO_FILE_INFO* lookup_file_info(AUDIO_FILES* file_list, const char *const name);
+AUDIO_FILE_INFO* lookup_file_info(AUDIO_FILES* file_list, const char *const restrict name);
 
 /* remove an AUDIO_FILE_INFO structure from an AUDIO_FILES linked list */
-int remove_file_info(AUDIO_FILES* file_list, const char *const name);
+int remove_file_info(AUDIO_FILES* file_list, const char *const restrict name);
 
 /* deallocate an AUDIO_FILE_INFO structure */
-void destroy_file_info(AUDIO_FILE_INFO* file_info);
+void destroy_file_info(AUDIO_FILE_INFO* restrict file_info);
 
 /* deallocate an AUDIO_FILES linked list */
-AUDIO_FILES* destroy_file_list(AUDIO_FILES* file_list);
+AUDIO_FILES* destroy_file_list(AUDIO_FILES* restrict file_list);
 
 #endif /* __AUDIO_FILE_LOOKUP_H__ */

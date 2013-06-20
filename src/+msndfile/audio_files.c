@@ -16,7 +16,7 @@
  */
 
 /* create an AUDIO_FILE_INFO struct */
-AUDIO_FILE_INFO* create_file_info(const char *const name, SF_INFO* const sf_file_info, SNDFILE* const file)
+AUDIO_FILE_INFO* create_file_info(const char *const restrict name, SF_INFO* const restrict sf_file_info, SNDFILE* const restrict file)
 {
     AUDIO_FILE_INFO* file_info = (AUDIO_FILE_INFO*)malloc(sizeof(AUDIO_FILE_INFO));
 
@@ -34,7 +34,7 @@ AUDIO_FILE_INFO* create_file_info(const char *const name, SF_INFO* const sf_file
 }
 
 /* append an AUDIO_FILE_INFO structure to an AUDIO_FILE_INFO linked list */
-AUDIO_FILES* store_file_info(AUDIO_FILES *file_list, AUDIO_FILE_INFO* const file_info)
+AUDIO_FILES* store_file_info(AUDIO_FILES* restrict file_list, AUDIO_FILE_INFO* const restrict file_info)
 {
     AUDIO_FILE_INFO *ptr;
 
@@ -63,7 +63,7 @@ AUDIO_FILES* store_file_info(AUDIO_FILES *file_list, AUDIO_FILE_INFO* const file
 
 /* Get an AUDIO_FILE_INFO structure from an AUDIO_FILES linked list
  * Returns NULL if the file is not open. */
-AUDIO_FILE_INFO* lookup_file_info(AUDIO_FILES *file_list, const char *const name)
+AUDIO_FILE_INFO* lookup_file_info(AUDIO_FILES* restrict file_list, const char *const restrict name)
 {
     AUDIO_FILE_INFO *ptr;
 
@@ -78,7 +78,7 @@ AUDIO_FILE_INFO* lookup_file_info(AUDIO_FILES *file_list, const char *const name
 }
 
 /* remove an AUDIO_FILE_INFO structure from an AUDIO_FILES linked list */
-int remove_file_info(AUDIO_FILES *file_list, const char *const name)
+int remove_file_info(AUDIO_FILES* restrict file_list, const char *const restrict name)
 {
     AUDIO_FILE_INFO *ptr=NULL, *prev=NULL;
 
@@ -106,7 +106,7 @@ int remove_file_info(AUDIO_FILES *file_list, const char *const name)
 }
 
 /* deallocate an AUDIO_FILE_INFO structure */
-void destroy_file_info(AUDIO_FILE_INFO* file_info)
+void destroy_file_info(AUDIO_FILE_INFO* restrict file_info)
 {
     if( file_info != NULL ) {
         int status;
@@ -128,7 +128,7 @@ void destroy_file_info(AUDIO_FILE_INFO* file_info)
 }
 
 /* deallocate an AUDIO_FILES linked list */
-AUDIO_FILES* destroy_file_list(AUDIO_FILES *file_list)
+AUDIO_FILES* destroy_file_list(AUDIO_FILES* restrict file_list)
 {
     if( file_list != NULL ) {
         AUDIO_FILE_INFO *ptr, *next;

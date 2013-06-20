@@ -37,28 +37,18 @@ env_vars.AddVariables(
     ('A2X_FLAGS', 'Extra flags passed to a2x'),
 )
 
-AddOption('--force-mingw',
-          dest='forcemingw',
-          default=False,
-          action='store_true',
-          help='Force the use of mingw on Windows platforms.'
-         )
-
 #####################
 # set the environment
 #####################
 
-# add platform dependent tools
-if os.name == 'nt' and GetOption('forcemingw'):
-    my_tools = ['mingw', 'filesystem', 'zip']
-else:
-    my_tools = ['default']
-
-# append required tools
-my_tools.extend(['packaging', 'matlab'])
-
 # initialise the environment
-env = Environment(tools = my_tools, variables = env_vars)
+#
+# NOTE: this uses a custom "default" tool that removes the Microsoft tools from
+# the default tool lists, since msndfile requires C99 support
+#
+# TODO: find a better way to remove MSVC support
+env = Environment(tools = ['default', 'packaging', 'matlab'],
+                  variables = env_vars)
 
 # if AsciiDoc is installed, add the asciidoc tool to the environment
 ad_tool = Tool('asciidoc')
@@ -75,42 +65,44 @@ env['pkg_dir'] = "+msndfile"
 # platform dependent environment configuration
 ##############################################
 
-# assume a GCC-compatible compiler on Unix like platforms
-if env['PLATFORM'] in ("posix", "darwin"):
+# assume a GCC-compatible compiler
+env.Append(
+    CCFLAGS    = "-std=c99 -O2 -pedantic -Wall -Wextra",
+    LINKFLAGS  = "-Wl,-O1 -Wl,--no-copy-dt-needed-entries -Wl,--as-needed",
+    CPPDEFINES = "NDEBUG"
+)
 
-    env.Append(
-        CCFLAGS    = "-ansi -O2 -pedantic -Wall -Wextra",
-        LINKFLAGS  = "-Wl,-O1 -Wl,--no-copy-dt-needed-entries -Wl,--as-needed",
-        CPPDEFINES = "NDEBUG"
-    )
+# activate optimizations in GCC 4.5
+if env['CC'] == 'gcc' and env['CCVERSION'] >= '4.5':
+    env.Append(CCFLAGS=[
+        "-ftree-vectorize",
+        "-fno-reorder-blocks", # Matlab crashes without this!
+    ])
 
-    # activate optimizations in GCC 4.5
-    if env['CC'] == 'gcc' and env['CCVERSION'] >= '4.5':
+    if env['PLATFORM'] != "win32":
         env.Append(CCFLAGS=[
-            "-ftree-vectorize",
             "-floop-interchange",
             "-floop-strip-mine",
             "-floop-block",
-            "-fno-reorder-blocks", # Matlab crashes without this!
         ])
 
-        if env['verbose']:
-            env.Append(CCFLAGS="-ftree-vectorizer-verbose=2")
+    if env['verbose']:
+        env.Append(CCFLAGS="-ftree-vectorizer-verbose=2")
 
-    # if the system is 64 bit and Matlab is 32 bit, compile for 32 bit; since
-    # Matlab currently only runs on x86 architectures, checking for x86_64
-    # should suffice
-    if platform.machine() == "x86_64" \
-       and not env['MATLAB']['ARCH'].endswith('64'):
-        env.Append(
-            CCFLAGS    = "-m32",
-            LINKFLAGS  = "-m32",
-            CPPDEFINES = "_FILE_OFFSET_BITS=64"
-        )
+# if the system is 64 bit and Matlab is 32 bit, compile for 32 bit; since
+# Matlab currently only runs on x86 architectures, checking for x86_64
+# should suffice
+if platform.machine() == "x86_64" \
+   and not env['MATLAB']['ARCH'].endswith('64'):
+    env.Append(
+        CCFLAGS    = "-m32",
+        LINKFLAGS  = "-m32",
+        CPPDEFINES = "_FILE_OFFSET_BITS=64"
+    )
 
-    sndfile_lib = "sndfile"
+sndfile_lib = "sndfile"
 
-elif env['PLATFORM'] == "win32":
+if env['PLATFORM'] == "win32":
 
     # enforce searching in the top-level Win directory
     win_path = os.sep.join([os.path.abspath(os.path.curdir), 'Win'])
@@ -119,10 +111,6 @@ elif env['PLATFORM'] == "win32":
     env.Replace(WINDOWS_INSERT_DEF = True)
 
     sndfile_lib = "libsndfile-1"
-
-else:
-
-    exit("Oops, not a supported platform.")
 
 ########################################
 # check the system for required features
@@ -250,9 +238,6 @@ Default(msndfile)
 
 Help(
 """\n
-The following options may be set:
-    --force-mingw   ->  Force the use of mingw (Windows only).
-
 The following environment variables can be overridden by passing them *after*
 the call to scons, e.g., "scons CC=gcc":
 """
