@@ -163,7 +163,7 @@ if env['PLATFORM'] == 'win32' and 'msvs' in env['TOOLS']:
     msndfile_vs = env.MSVSProject(
         target      = "msndfile${MSVSPROJECTSUFFIX}",
         buildtarget = ["msndfile", "msndfile-dbg"],
-        runfile     = os.sep.join(["${MATLAB['ROOT']}", "bin", "matlab.exe"]),
+        runfile     = os.sep.join([env['MATLAB']['ROOT'], "bin", "matlab.exe"]),
         srcs        = env.Glob(os.sep.join(["src", '$pkg_dir', "*.c"]), strings=True),
         localincs   = env.Glob(os.sep.join(["src", '$pkg_dir', "*.h"]), strings=True),
         incs        = os.sep.join(["Win", "sndfile.h"]),
