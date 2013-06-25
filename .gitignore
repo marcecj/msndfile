@@ -31,6 +31,9 @@ doc/*.pdf
 # documentation intermediaries
 doc/*.xml
 
+# test files with an unclear license
+test_files/bwf/EBU_sample.wav
+
 # VS files
 *.sln*
 *.vcproj*
