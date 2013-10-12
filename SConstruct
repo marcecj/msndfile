@@ -23,7 +23,7 @@ the following build targets:
 ###################################
 
 # modifiable environment variables
-env_vars = Variables()
+env_vars = Variables(['variables.cache'])
 env_vars.AddVariables(
     ('CC', 'The C compiler'),
     PathVariable('DESTDIR', 'The install destination', os.curdir,
@@ -49,6 +49,9 @@ env_vars.AddVariables(
 # TODO: find a better way to remove MSVC support
 env = Environment(tools = ['default', 'packaging', 'matlab'],
                   variables = env_vars)
+
+# cache the modifiable environment variables
+env_vars.Save('variables.cache', env)
 
 # if AsciiDoc is installed, add the asciidoc tool to the environment
 ad_tool = Tool('asciidoc')
@@ -239,7 +242,9 @@ Default(msndfile)
 Help(
 """\n
 The following environment variables can be overridden by passing them *after*
-the call to scons, e.g., "scons CC=gcc":
+the call to scons, e.g., "scons CC=gcc". They are cached in the file
+"variables.cache"; delete it if you want to reset all settings to their
+defaults.
 """
 + env_vars.GenerateHelpText(env)
 )

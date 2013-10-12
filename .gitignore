@@ -9,6 +9,7 @@
 .matlab_output
 .sconf_temp/*
 .sconsign.dblite
+variables.cache
 build/*
 debug/*
 +msndfile/*
