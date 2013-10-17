@@ -313,13 +313,13 @@ void get_opts(const SF_INFO* const restrict sf_file_info, SNDFILE* const restric
         char umid[sizeof(bwv_data.umid)/sizeof(char)+1];
         char coding_history[sizeof(bwv_data.coding_history)/sizeof(char)+1];
 
-        sprintf(description          , "%.*s" , sizeof(bwv_data.description)          , bwv_data.description);
-        sprintf(originator           , "%.*s" , sizeof(bwv_data.originator)           , bwv_data.originator);
-        sprintf(originator_reference , "%.*s" , sizeof(bwv_data.originator_reference) , bwv_data.originator_reference);
-        sprintf(origination_date     , "%.*s" , sizeof(bwv_data.origination_date)     , bwv_data.origination_date);
-        sprintf(origination_time     , "%.*s" , sizeof(bwv_data.origination_time)     , bwv_data.origination_time);
-        sprintf(umid                 , "%.*s" , sizeof(bwv_data.umid)                 , bwv_data.umid);
-        sprintf(coding_history       , "%.*s" , sizeof(bwv_data.coding_history)       , bwv_data.coding_history);
+        sprintf(description          , "%.*s" , (int)sizeof(bwv_data.description)          , bwv_data.description);
+        sprintf(originator           , "%.*s" , (int)sizeof(bwv_data.originator)           , bwv_data.originator);
+        sprintf(originator_reference , "%.*s" , (int)sizeof(bwv_data.originator_reference) , bwv_data.originator_reference);
+        sprintf(origination_date     , "%.*s" , (int)sizeof(bwv_data.origination_date)     , bwv_data.origination_date);
+        sprintf(origination_time     , "%.*s" , (int)sizeof(bwv_data.origination_time)     , bwv_data.origination_time);
+        sprintf(umid                 , "%.*s" , (int)sizeof(bwv_data.umid)                 , bwv_data.umid);
+        sprintf(coding_history       , "%.*s" , (int)sizeof(bwv_data.coding_history)       , bwv_data.coding_history);
 
         mxSetField(bext, 0, bext_fields[0], mxCreateString(description));
         mxSetField(bext, 0, bext_fields[1], mxCreateString(originator));
