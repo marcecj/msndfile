@@ -8,6 +8,7 @@ Document revision history
 | 1.0     | 2012.11.05 | First version.
 | 1.0.1   | 2012.11.05 | Add credit to Git and MTest, miscellaneous edits/improvements, update copyrights.
 | 1.0.2   | 2012.11.30 | Update for 1.0 release.  Lot's of improvements and updates.
+| 1.1.0   | 2013.11.30 | Update for 1.1 release.  Lot's of improvements and updates.
 |========================================
 
 // vim:ft=asciidoc
