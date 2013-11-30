@@ -3,7 +3,7 @@
 This document records the changes made in each release of msndfile, and in all
 release candidates.  For the full list of changes, see the git log.
 
-## Version 1.1 (2013.??.??)
+## Version 1.1 (2013.11.30)
 
 I decided to throw in another release before working on write support.  It only
 brings one new feature: the "transpose" option to `msndfile.blockread`; the rest
