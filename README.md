@@ -40,7 +40,7 @@ msndfile is Copyright (C) 2010-2013 Marc Joliet <marcec@gmx.de> and licenced
 under the MIT licence.  See the file [LICENSE](LICENSE) in the project
 repository.
 
-The documentation of msndfile (including this README) is Copyright (C) 2010-2012
+The documentation of msndfile (including this README) is Copyright (C) 2010-2013
 Marc Joliet <marcec@gmx.de> and licenced under the [Attribution-ShareAlike 3.0
 Unported (CC BY-SA 3.0)](http://creativecommons.org/licenses/by-sa/3.0/)
 license.
