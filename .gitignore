@@ -14,7 +14,7 @@ build/*
 debug/*
 +msndfile/*
 
-msndfile-0.1*
+msndfile-1.1*/
 
 # misc files
 /releases/
