@@ -54,7 +54,7 @@ If you are going to use the SCons based build system, you will also need
 
 - http://www.python.org[Python] (whatever version SCons works with, though at
   least 2.5 is required)
-- {scons} (tested with SCons 2.2.x)
+- {scons} (tested with SCons 2.3.x)
 - {pywin32} (optional, but necessary for some SCons features on Windows)
 - the https://github.com/marcecj/scons_matlab[SCons Matlab Tool]
 
