@@ -77,10 +77,12 @@ env.Append(
 
 # activate optimizations in GCC 4.5
 if env['CC'] == 'gcc' and env['CCVERSION'] >= '4.5':
-    env.Append(CCFLAGS=[
-        "-ftree-vectorize",
-        "-fno-reorder-blocks", # Matlab crashes without this!
-    ])
+
+    env.Append(CCFLAGS=["-ftree-vectorize"])
+
+    if not env['MATLAB']['ARCH'].endswith('64'):
+        # Matlab crashes without this!
+        env.Append(CCFLAGS=["-fno-reorder-blocks"])
 
     if env['PLATFORM'] != "win32":
         env.Append(CCFLAGS=[
