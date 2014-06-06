@@ -53,6 +53,9 @@ env = Environment(tools = ['default', 'packaging', 'matlab'],
 # cache the modifiable environment variables
 env_vars.Save('variables.cache', env)
 
+# allow overriding CC via the OS environment
+env['CC'] = os.getenv('CC', env['CC'])
+
 # if AsciiDoc is installed, add the asciidoc tool to the environment
 ad_tool = Tool('asciidoc')
 ad_exists = ad_tool.exists(env)
@@ -247,6 +250,11 @@ The following environment variables can be overridden by passing them *after*
 the call to scons, e.g., "scons CC=gcc". They are cached in the file
 "variables.cache"; delete it if you want to reset all settings to their
 defaults.
+
+NOTE: in order to support the Clang static analyser, CC can be overridden by
+the OS environment.  Be aware, however, that it is *not* stored in the variable
+cache when set this way, so scons reverts back to the cached value as soon as
+it is unset.
 """
 + env_vars.GenerateHelpText(env)
 )
