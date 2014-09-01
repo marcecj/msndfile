@@ -10,6 +10,7 @@ Document revision history
 | 1.0.2   | 2012.11.30 | Update for 1.0 release.  Lots of improvements and updates.
 | 1.1.0   | 2013.11.30 | Update for 1.1 release.  Lots of improvements and updates.
 | 1.1.1   | 2014.01.22 | Provide link to 64 bit Linux binaries.
+| 1.1.2   | 2014.09.01 | Update copyrights, fix "lot's" -> "lots" in revision history.
 |========================================
 
 // vim:ft=asciidoc

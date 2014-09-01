@@ -1,7 +1,7 @@
 The msndfile Mex extension
 ==========================
 Marc Joliet <marcec@gmx.de>
-v1.1.1, 22nd January 2014: Provide link to 64 bit Linux binaries.
+v1.1.2, 1st September 2014: Update copyrights, fix "lot's" -> "lots" in revision history.
 :toc2:
 :max-width: 50em
 :numbered:
