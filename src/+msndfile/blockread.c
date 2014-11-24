@@ -36,7 +36,7 @@ void clear_static_vars()
 void mexFunction(int nlhs, mxArray *plhs[],
                  int nrhs, const mxArray *prhs[])
 {
-    const int   cmd_size = (nrhs > 0 ? mxGetN(prhs[0])+1 : 0); /* length of the command */
+    const int   cmd_size = (nrhs > 0 ? mxGetN(prhs[0])+1 : 1); /* length of the command */
     char        cmd_str[cmd_size];
     int         cmd_id = -1;
     char        *arg1=NULL; /* input file name */
@@ -71,8 +71,9 @@ void mexFunction(int nlhs, mxArray *plhs[],
     else if( cmd_id != CMD_CLOSEALL )
         mexErrMsgIdAndTxt("msndfile:argerror", "Missing argument: you need to pass a file name.");
 
-    /* copy the input file name to a VLA to avoid free()'s after error checks */
-    char sf_in_fname[(arg1 != NULL ? strlen(arg1)+1 : 0)];
+    /* copy the input file name to a VLA to avoid free()'s after error checks;
+     * arg1 can still be NULL here if cmd_id == CMD_CLOSEALL */
+    char sf_in_fname[(arg1 != NULL ? strlen(arg1)+1 : 1)];
     if( arg1 != NULL ) {
         strcpy(sf_in_fname, arg1);
         mxFree(arg1);
