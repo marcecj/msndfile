@@ -43,10 +43,10 @@ void mexFunction(int nlhs, mxArray *plhs[],
 
     mexAtExit(&clear_static_vars);
 
-    if( nrhs < 1 || !mxIsChar(prhs[0]))
+    if( nrhs < 1 || !mxIsChar(prhs[0]) )
         mexErrMsgIdAndTxt("msndfile:argerror", "Missing argument: you need to pass a command (see help).");
 
-    if( mxIsEmpty(prhs[0]) || !mxIsChar(prhs[0]))
+    if( mxIsEmpty(prhs[0]) || !mxIsChar(prhs[0]) )
         mexErrMsgIdAndTxt("msndfile:argerror", "Argument error: command may not be empty.");
 
     if( mxGetString(prhs[0], cmd_str, cmd_size) == 1 )
