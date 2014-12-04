@@ -20,6 +20,16 @@ function teardown(~)
 % "File already open" errors
 msndfile.blockread('closeall');
 
+function test_missing_command(ref_data)
+% test that a missing command will lead to an exception
+
+assertExceptionThrown(@() msndfile.blockread(), 'msndfile:argerror');
+
+function test_empty_command(ref_data)
+% test that an empty command will lead to an exception
+
+assertExceptionThrown(@() msndfile.blockread(''), 'msndfile:argerror');
+
 function test_wav_open(ref_data)
 % test open command
 
@@ -186,6 +196,16 @@ msndfile.blockread('closeall');
 
 assertExceptionThrown(@() msndfile.blockread('read', 'test_files/test.wav', [kk kk+block_size-1]), 'msndfile:blockread:filenotopen');
 assertExceptionThrown(@() msndfile.blockread('read', 'test_files/test.raw', [kk kk+block_size-1]), 'msndfile:blockread:filenotopen');
+
+function test_wav_missing_filename(ref_data)
+% test that a missing file name will lead to an exception
+
+assertExceptionThrown(@() msndfile.blockread('open'), 'msndfile:argerror');
+
+function test_wav_empty_filename(ref_data)
+% test that an empty file name will lead to an exception
+
+assertExceptionThrown(@() msndfile.blockread('open', ''), 'msndfile:sndfile');
 
 function test_wav_multibyte_filename(ref_data)
 % test multibyte file name support; just do some regular stuff
