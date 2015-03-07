@@ -26,9 +26,7 @@ AUDIO_FILE_INFO* create_file_info(const char *const restrict name, SF_INFO* cons
     file_info->info = sf_file_info;
     file_info->file = file;
     file_info->next = NULL;
-
-    file_info->name = (char*)calloc(strlen(name)+1, sizeof(char));
-    file_info->name = strcpy(file_info->name, name);
+    file_info->name = strdup(name);
 
     return file_info;
 }

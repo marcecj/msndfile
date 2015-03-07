@@ -41,13 +41,11 @@ char** get_format_extensions(void)
 
         sf_command(0, SFC_GET_SIMPLE_FORMAT, &format_info, sizeof(SF_FORMAT_INFO));
 
-        file_exts[i] = (char*)malloc((strlen(format_info.extension)+1)*sizeof(char));
-        file_exts[i] = strcpy(file_exts[i], format_info.extension);
+        file_exts[i] = strdup(format_info.extension);
     }
 
     /* RAW is not a simple format, but we want to handle it */
-    file_exts[num_formats-1] = (char*)malloc(4*sizeof(char));
-    file_exts[num_formats-1] = strcpy(file_exts[num_formats-1], "raw");
+    file_exts[num_formats-1] = strdup("raw");
 
     return file_exts;
 }
@@ -88,8 +86,7 @@ char* gen_filename(char* restrict fname)
 
     for( unsigned int i = 0; i < num_formats; i++ ) {
         const char* cur_ext  = file_exts[i];
-        const size_t ext_len = strlen(cur_ext)+1; /* '.' + extension */
-        const size_t new_len = N+ext_len+1;
+        const size_t new_len = N+strlen(cur_ext)+2; /* +1 for the '.' */
         char tmp_fname[new_len];
 
         /* get_format_extensions() returns duplicate entries, so check here if
@@ -99,8 +96,7 @@ char* gen_filename(char* restrict fname)
 
         /* append the current extension to the list of checked extensions */
         read_exts = (char**)realloc(read_exts, (num_read_exts+1)*sizeof(char*));
-        read_exts[num_read_exts] = (char*)malloc(ext_len*sizeof(char));
-        read_exts[num_read_exts] = strcpy(read_exts[num_read_exts], cur_ext);
+        read_exts[num_read_exts] = strdup(cur_ext);
         num_read_exts++;
 
         /* copy the original N chars from fname into tmp_fname */

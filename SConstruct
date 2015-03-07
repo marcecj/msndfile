@@ -75,7 +75,7 @@ env['pkg_dir'] = "+msndfile"
 env.Append(
     CCFLAGS    = "-std=c99 -O2 -pedantic -Wall -Wextra",
     LINKFLAGS  = "-Wl,-O1 -Wl,--no-copy-dt-needed-entries -Wl,--as-needed",
-    CPPDEFINES = "NDEBUG"
+    CPPDEFINES = ["NDEBUG", "_POSIX_C_SOURCE=200809L"]
 )
 
 # activate optimizations in GCC 4.5
