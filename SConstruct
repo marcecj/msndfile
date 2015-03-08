@@ -73,7 +73,7 @@ env['pkg_dir'] = "+msndfile"
 
 # assume a GCC-compatible compiler
 env.Append(
-    CCFLAGS    = "-std=c99 -O2 -pedantic -Wall -Wextra",
+    CCFLAGS    = "-std=c11 -O2 -pedantic -Wall -Wextra",
     LINKFLAGS  = "-Wl,-O1 -Wl,--no-copy-dt-needed-entries -Wl,--as-needed",
     CPPDEFINES = ["NDEBUG", "_POSIX_C_SOURCE=200809L"]
 )

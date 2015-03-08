@@ -8,6 +8,7 @@
 #include <string.h>
 #include <stdlib.h>
 #include <sndfile.h>
+#include <uchar.h>
 #include <mex.h>
 #include "audio_files.h"
 

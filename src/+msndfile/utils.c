@@ -12,6 +12,7 @@
 #endif
 #include <string.h>
 #include <stdio.h>
+#include <uchar.h>
 #include <mex.h>
 #include <sndfile.h>
 #include "utils.h"

@@ -7,6 +7,7 @@
 
 #include <errno.h>
 #include <string.h>
+#include <uchar.h>
 #include <mex.h>
 #include <matrix.h>
 #include <sndfile.h>

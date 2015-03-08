@@ -7,6 +7,7 @@
 
 #include <string.h>
 #include <sndfile.h>
+#include <uchar.h>
 #include <mex.h>
 #include "read_utils.h"
 
