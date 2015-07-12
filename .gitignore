@@ -1,1 +1,48 @@
+*~
+*.os
 
+# vim files
+*.swp
+
+# scons files
+.matlab_vars_cache
+.matlab_output
+.sconf_temp/*
+.sconsign.dblite
+variables.cache
+build/*
+debug/*
++msndfile/*
+
+msndfile-1.1*/
+
+# misc files
+/releases/
+graphics
+*.expand
+*.mex*
+*.zip
+*.log
+*.pyc
+
+# documentation output
+doc/*.html
+doc/*.pdf
+
+# documentation intermediaries
+doc/*.xml
+
+# test files with an unclear license
+test_files/bwf/EBU_sample.wav
+
+# VS files
+*.sln*
+*.vcproj*
+*.suo*
+*.ncb
+*.pdb
+_UpgradeReport_Files
+UpgradeLog*.XML
+debug
+release
+Win
