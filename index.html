@@ -1,1 +1,2103 @@
-Test
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+<meta name="generator" content="AsciiDoc 8.6.9">
+<meta name="keywords" content="matlab, mex, libsndfile, audio">
+<title>The msndfile Mex extension</title>
+<style type="text/css">
+/* Shared CSS for AsciiDoc xhtml11 and html5 backends */
+
+/* Default font. */
+body {
+  font-family: Georgia,serif;
+}
+
+/* Title font. */
+h1, h2, h3, h4, h5, h6,
+div.title, caption.title,
+thead, p.table.header,
+#toctitle,
+#author, #revnumber, #revdate, #revremark,
+#footer {
+  font-family: Arial,Helvetica,sans-serif;
+}
+
+body {
+  margin: 1em 5% 1em 5%;
+}
+
+a {
+  color: blue;
+  text-decoration: underline;
+}
+a:visited {
+  color: fuchsia;
+}
+
+em {
+  font-style: italic;
+  color: navy;
+}
+
+strong {
+  font-weight: bold;
+  color: #083194;
+}
+
+h1, h2, h3, h4, h5, h6 {
+  color: #527bbd;
+  margin-top: 1.2em;
+  margin-bottom: 0.5em;
+  line-height: 1.3;
+}
+
+h1, h2, h3 {
+  border-bottom: 2px solid silver;
+}
+h2 {
+  padding-top: 0.5em;
+}
+h3 {
+  float: left;
+}
+h3 + * {
+  clear: left;
+}
+h5 {
+  font-size: 1.0em;
+}
+
+div.sectionbody {
+  margin-left: 0;
+}
+
+hr {
+  border: 1px solid silver;
+}
+
+p {
+  margin-top: 0.5em;
+  margin-bottom: 0.5em;
+}
+
+ul, ol, li > p {
+  margin-top: 0;
+}
+ul > li     { color: #aaa; }
+ul > li > * { color: black; }
+
+.monospaced, code, pre {
+  font-family: "Courier New", Courier, monospace;
+  font-size: inherit;
+  color: navy;
+  padding: 0;
+  margin: 0;
+}
+pre {
+  white-space: pre-wrap;
+}
+
+#author {
+  color: #527bbd;
+  font-weight: bold;
+  font-size: 1.1em;
+}
+#email {
+}
+#revnumber, #revdate, #revremark {
+}
+
+#footer {
+  font-size: small;
+  border-top: 2px solid silver;
+  padding-top: 0.5em;
+  margin-top: 4.0em;
+}
+#footer-text {
+  float: left;
+  padding-bottom: 0.5em;
+}
+#footer-badges {
+  float: right;
+  padding-bottom: 0.5em;
+}
+
+#preamble {
+  margin-top: 1.5em;
+  margin-bottom: 1.5em;
+}
+div.imageblock, div.exampleblock, div.verseblock,
+div.quoteblock, div.literalblock, div.listingblock, div.sidebarblock,
+div.admonitionblock {
+  margin-top: 1.0em;
+  margin-bottom: 1.5em;
+}
+div.admonitionblock {
+  margin-top: 2.0em;
+  margin-bottom: 2.0em;
+  margin-right: 10%;
+  color: #606060;
+}
+
+div.content { /* Block element content. */
+  padding: 0;
+}
+
+/* Block element titles. */
+div.title, caption.title {
+  color: #527bbd;
+  font-weight: bold;
+  text-align: left;
+  margin-top: 1.0em;
+  margin-bottom: 0.5em;
+}
+div.title + * {
+  margin-top: 0;
+}
+
+td div.title:first-child {
+  margin-top: 0.0em;
+}
+div.content div.title:first-child {
+  margin-top: 0.0em;
+}
+div.content + div.title {
+  margin-top: 0.0em;
+}
+
+div.sidebarblock > div.content {
+  background: #ffffee;
+  border: 1px solid #dddddd;
+  border-left: 4px solid #f0f0f0;
+  padding: 0.5em;
+}
+
+div.listingblock > div.content {
+  border: 1px solid #dddddd;
+  border-left: 5px solid #f0f0f0;
+  background: #f8f8f8;
+  padding: 0.5em;
+}
+
+div.quoteblock, div.verseblock {
+  padding-left: 1.0em;
+  margin-left: 1.0em;
+  margin-right: 10%;
+  border-left: 5px solid #f0f0f0;
+  color: #888;
+}
+
+div.quoteblock > div.attribution {
+  padding-top: 0.5em;
+  text-align: right;
+}
+
+div.verseblock > pre.content {
+  font-family: inherit;
+  font-size: inherit;
+}
+div.verseblock > div.attribution {
+  padding-top: 0.75em;
+  text-align: left;
+}
+/* DEPRECATED: Pre version 8.2.7 verse style literal block. */
+div.verseblock + div.attribution {
+  text-align: left;
+}
+
+div.admonitionblock .icon {
+  vertical-align: top;
+  font-size: 1.1em;
+  font-weight: bold;
+  text-decoration: underline;
+  color: #527bbd;
+  padding-right: 0.5em;
+}
+div.admonitionblock td.content {
+  padding-left: 0.5em;
+  border-left: 3px solid #dddddd;
+}
+
+div.exampleblock > div.content {
+  border-left: 3px solid #dddddd;
+  padding-left: 0.5em;
+}
+
+div.imageblock div.content { padding-left: 0; }
+span.image img { border-style: none; vertical-align: text-bottom; }
+a.image:visited { color: white; }
+
+dl {
+  margin-top: 0.8em;
+  margin-bottom: 0.8em;
+}
+dt {
+  margin-top: 0.5em;
+  margin-bottom: 0;
+  font-style: normal;
+  color: navy;
+}
+dd > *:first-child {
+  margin-top: 0.1em;
+}
+
+ul, ol {
+    list-style-position: outside;
+}
+ol.arabic {
+  list-style-type: decimal;
+}
+ol.loweralpha {
+  list-style-type: lower-alpha;
+}
+ol.upperalpha {
+  list-style-type: upper-alpha;
+}
+ol.lowerroman {
+  list-style-type: lower-roman;
+}
+ol.upperroman {
+  list-style-type: upper-roman;
+}
+
+div.compact ul, div.compact ol,
+div.compact p, div.compact p,
+div.compact div, div.compact div {
+  margin-top: 0.1em;
+  margin-bottom: 0.1em;
+}
+
+tfoot {
+  font-weight: bold;
+}
+td > div.verse {
+  white-space: pre;
+}
+
+div.hdlist {
+  margin-top: 0.8em;
+  margin-bottom: 0.8em;
+}
+div.hdlist tr {
+  padding-bottom: 15px;
+}
+dt.hdlist1.strong, td.hdlist1.strong {
+  font-weight: bold;
+}
+td.hdlist1 {
+  vertical-align: top;
+  font-style: normal;
+  padding-right: 0.8em;
+  color: navy;
+}
+td.hdlist2 {
+  vertical-align: top;
+}
+div.hdlist.compact tr {
+  margin: 0;
+  padding-bottom: 0;
+}
+
+.comment {
+  background: yellow;
+}
+
+.footnote, .footnoteref {
+  font-size: 0.8em;
+}
+
+span.footnote, span.footnoteref {
+  vertical-align: super;
+}
+
+#footnotes {
+  margin: 20px 0 20px 0;
+  padding: 7px 0 0 0;
+}
+
+#footnotes div.footnote {
+  margin: 0 0 5px 0;
+}
+
+#footnotes hr {
+  border: none;
+  border-top: 1px solid silver;
+  height: 1px;
+  text-align: left;
+  margin-left: 0;
+  width: 20%;
+  min-width: 100px;
+}
+
+div.colist td {
+  padding-right: 0.5em;
+  padding-bottom: 0.3em;
+  vertical-align: top;
+}
+div.colist td img {
+  margin-top: 0.3em;
+}
+
+@media print {
+  #footer-badges { display: none; }
+}
+
+#toc {
+  margin-bottom: 2.5em;
+}
+
+#toctitle {
+  color: #527bbd;
+  font-size: 1.1em;
+  font-weight: bold;
+  margin-top: 1.0em;
+  margin-bottom: 0.1em;
+}
+
+div.toclevel0, div.toclevel1, div.toclevel2, div.toclevel3, div.toclevel4 {
+  margin-top: 0;
+  margin-bottom: 0;
+}
+div.toclevel2 {
+  margin-left: 2em;
+  font-size: 0.9em;
+}
+div.toclevel3 {
+  margin-left: 4em;
+  font-size: 0.9em;
+}
+div.toclevel4 {
+  margin-left: 6em;
+  font-size: 0.9em;
+}
+
+span.aqua { color: aqua; }
+span.black { color: black; }
+span.blue { color: blue; }
+span.fuchsia { color: fuchsia; }
+span.gray { color: gray; }
+span.green { color: green; }
+span.lime { color: lime; }
+span.maroon { color: maroon; }
+span.navy { color: navy; }
+span.olive { color: olive; }
+span.purple { color: purple; }
+span.red { color: red; }
+span.silver { color: silver; }
+span.teal { color: teal; }
+span.white { color: white; }
+span.yellow { color: yellow; }
+
+span.aqua-background { background: aqua; }
+span.black-background { background: black; }
+span.blue-background { background: blue; }
+span.fuchsia-background { background: fuchsia; }
+span.gray-background { background: gray; }
+span.green-background { background: green; }
+span.lime-background { background: lime; }
+span.maroon-background { background: maroon; }
+span.navy-background { background: navy; }
+span.olive-background { background: olive; }
+span.purple-background { background: purple; }
+span.red-background { background: red; }
+span.silver-background { background: silver; }
+span.teal-background { background: teal; }
+span.white-background { background: white; }
+span.yellow-background { background: yellow; }
+
+span.big { font-size: 2em; }
+span.small { font-size: 0.6em; }
+
+span.underline { text-decoration: underline; }
+span.overline { text-decoration: overline; }
+span.line-through { text-decoration: line-through; }
+
+div.unbreakable { page-break-inside: avoid; }
+
+
+/*
+ * xhtml11 specific
+ *
+ * */
+
+div.tableblock {
+  margin-top: 1.0em;
+  margin-bottom: 1.5em;
+}
+div.tableblock > table {
+  border: 3px solid #527bbd;
+}
+thead, p.table.header {
+  font-weight: bold;
+  color: #527bbd;
+}
+p.table {
+  margin-top: 0;
+}
+/* Because the table frame attribute is overriden by CSS in most browsers. */
+div.tableblock > table[frame="void"] {
+  border-style: none;
+}
+div.tableblock > table[frame="hsides"] {
+  border-left-style: none;
+  border-right-style: none;
+}
+div.tableblock > table[frame="vsides"] {
+  border-top-style: none;
+  border-bottom-style: none;
+}
+
+
+/*
+ * html5 specific
+ *
+ * */
+
+table.tableblock {
+  margin-top: 1.0em;
+  margin-bottom: 1.5em;
+}
+thead, p.tableblock.header {
+  font-weight: bold;
+  color: #527bbd;
+}
+p.tableblock {
+  margin-top: 0;
+}
+table.tableblock {
+  border-width: 3px;
+  border-spacing: 0px;
+  border-style: solid;
+  border-color: #527bbd;
+  border-collapse: collapse;
+}
+th.tableblock, td.tableblock {
+  border-width: 1px;
+  padding: 4px;
+  border-style: solid;
+  border-color: #527bbd;
+}
+
+table.tableblock.frame-topbot {
+  border-left-style: hidden;
+  border-right-style: hidden;
+}
+table.tableblock.frame-sides {
+  border-top-style: hidden;
+  border-bottom-style: hidden;
+}
+table.tableblock.frame-none {
+  border-style: hidden;
+}
+
+th.tableblock.halign-left, td.tableblock.halign-left {
+  text-align: left;
+}
+th.tableblock.halign-center, td.tableblock.halign-center {
+  text-align: center;
+}
+th.tableblock.halign-right, td.tableblock.halign-right {
+  text-align: right;
+}
+
+th.tableblock.valign-top, td.tableblock.valign-top {
+  vertical-align: top;
+}
+th.tableblock.valign-middle, td.tableblock.valign-middle {
+  vertical-align: middle;
+}
+th.tableblock.valign-bottom, td.tableblock.valign-bottom {
+  vertical-align: bottom;
+}
+
+
+/*
+ * manpage specific
+ *
+ * */
+
+body.manpage h1 {
+  padding-top: 0.5em;
+  padding-bottom: 0.5em;
+  border-top: 2px solid silver;
+  border-bottom: 2px solid silver;
+}
+body.manpage h2 {
+  border-style: none;
+}
+body.manpage div.sectionbody {
+  margin-left: 3em;
+}
+
+@media print {
+  body.manpage div#toc { display: none; }
+}
+.highlight .hll { background-color: #ffffcc }
+.highlight  { background: #f8f8f8; }
+.highlight .c { color: #408080; font-style: italic } /* Comment */
+.highlight .err { border: 1px solid #FF0000 } /* Error */
+.highlight .k { color: #008000; font-weight: bold } /* Keyword */
+.highlight .o { color: #666666 } /* Operator */
+.highlight .cm { color: #408080; font-style: italic } /* Comment.Multiline */
+.highlight .cp { color: #BC7A00 } /* Comment.Preproc */
+.highlight .c1 { color: #408080; font-style: italic } /* Comment.Single */
+.highlight .cs { color: #408080; font-style: italic } /* Comment.Special */
+.highlight .gd { color: #A00000 } /* Generic.Deleted */
+.highlight .ge { font-style: italic } /* Generic.Emph */
+.highlight .gr { color: #FF0000 } /* Generic.Error */
+.highlight .gh { color: #000080; font-weight: bold } /* Generic.Heading */
+.highlight .gi { color: #00A000 } /* Generic.Inserted */
+.highlight .go { color: #808080 } /* Generic.Output */
+.highlight .gp { color: #000080; font-weight: bold } /* Generic.Prompt */
+.highlight .gs { font-weight: bold } /* Generic.Strong */
+.highlight .gu { color: #800080; font-weight: bold } /* Generic.Subheading */
+.highlight .gt { color: #0040D0 } /* Generic.Traceback */
+.highlight .kc { color: #008000; font-weight: bold } /* Keyword.Constant */
+.highlight .kd { color: #008000; font-weight: bold } /* Keyword.Declaration */
+.highlight .kn { color: #008000; font-weight: bold } /* Keyword.Namespace */
+.highlight .kp { color: #008000 } /* Keyword.Pseudo */
+.highlight .kr { color: #008000; font-weight: bold } /* Keyword.Reserved */
+.highlight .kt { color: #B00040 } /* Keyword.Type */
+.highlight .m { color: #666666 } /* Literal.Number */
+.highlight .s { color: #BA2121 } /* Literal.String */
+.highlight .na { color: #7D9029 } /* Name.Attribute */
+.highlight .nb { color: #008000 } /* Name.Builtin */
+.highlight .nc { color: #0000FF; font-weight: bold } /* Name.Class */
+.highlight .no { color: #880000 } /* Name.Constant */
+.highlight .nd { color: #AA22FF } /* Name.Decorator */
+.highlight .ni { color: #999999; font-weight: bold } /* Name.Entity */
+.highlight .ne { color: #D2413A; font-weight: bold } /* Name.Exception */
+.highlight .nf { color: #0000FF } /* Name.Function */
+.highlight .nl { color: #A0A000 } /* Name.Label */
+.highlight .nn { color: #0000FF; font-weight: bold } /* Name.Namespace */
+.highlight .nt { color: #008000; font-weight: bold } /* Name.Tag */
+.highlight .nv { color: #19177C } /* Name.Variable */
+.highlight .ow { color: #AA22FF; font-weight: bold } /* Operator.Word */
+.highlight .w { color: #bbbbbb } /* Text.Whitespace */
+.highlight .mf { color: #666666 } /* Literal.Number.Float */
+.highlight .mh { color: #666666 } /* Literal.Number.Hex */
+.highlight .mi { color: #666666 } /* Literal.Number.Integer */
+.highlight .mo { color: #666666 } /* Literal.Number.Oct */
+.highlight .sb { color: #BA2121 } /* Literal.String.Backtick */
+.highlight .sc { color: #BA2121 } /* Literal.String.Char */
+.highlight .sd { color: #BA2121; font-style: italic } /* Literal.String.Doc */
+.highlight .s2 { color: #BA2121 } /* Literal.String.Double */
+.highlight .se { color: #BB6622; font-weight: bold } /* Literal.String.Escape */
+.highlight .sh { color: #BA2121 } /* Literal.String.Heredoc */
+.highlight .si { color: #BB6688; font-weight: bold } /* Literal.String.Interpol */
+.highlight .sx { color: #008000 } /* Literal.String.Other */
+.highlight .sr { color: #BB6688 } /* Literal.String.Regex */
+.highlight .s1 { color: #BA2121 } /* Literal.String.Single */
+.highlight .ss { color: #19177C } /* Literal.String.Symbol */
+.highlight .bp { color: #008000 } /* Name.Builtin.Pseudo */
+.highlight .vc { color: #19177C } /* Name.Variable.Class */
+.highlight .vg { color: #19177C } /* Name.Variable.Global */
+.highlight .vi { color: #19177C } /* Name.Variable.Instance */
+.highlight .il { color: #666666 } /* Literal.Number.Integer.Long */
+
+
+@media screen {
+  body {
+    max-width: 50em; /* approximately 80 characters wide */
+    margin-left: 16em;
+  }
+
+  #toc {
+    position: fixed;
+    top: 0;
+    left: 0;
+    bottom: 0;
+    width: 13em;
+    padding: 0.5em;
+    padding-bottom: 1.5em;
+    margin: 0;
+    overflow: auto;
+    border-right: 3px solid #f8f8f8;
+    background-color: white;
+  }
+
+  #toc .toclevel1 {
+    margin-top: 0.5em;
+  }
+
+  #toc .toclevel2 {
+    margin-top: 0.25em;
+    display: list-item;
+    color: #aaaaaa;
+  }
+
+  #toctitle {
+    margin-top: 0.5em;
+  }
+}
+</style>
+<script type="text/javascript">
+/*<![CDATA[*/
+var asciidoc = {  // Namespace.
+
+/////////////////////////////////////////////////////////////////////
+// Table Of Contents generator
+/////////////////////////////////////////////////////////////////////
+
+/* Author: Mihai Bazon, September 2002
+ * http://students.infoiasi.ro/~mishoo
+ *
+ * Table Of Content generator
+ * Version: 0.4
+ *
+ * Feel free to use this script under the terms of the GNU General Public
+ * License, as long as you do not remove or alter this notice.
+ */
+
+ /* modified by Troy D. Hanson, September 2006. License: GPL */
+ /* modified by Stuart Rackham, 2006, 2009. License: GPL */
+
+// toclevels = 1..4.
+toc: function (toclevels) {
+
+  function getText(el) {
+    var text = "";
+    for (var i = el.firstChild; i != null; i = i.nextSibling) {
+      if (i.nodeType == 3 /* Node.TEXT_NODE */) // IE doesn't speak constants.
+        text += i.data;
+      else if (i.firstChild != null)
+        text += getText(i);
+    }
+    return text;
+  }
+
+  function TocEntry(el, text, toclevel) {
+    this.element = el;
+    this.text = text;
+    this.toclevel = toclevel;
+  }
+
+  function tocEntries(el, toclevels) {
+    var result = new Array;
+    var re = new RegExp('[hH]([1-'+(toclevels+1)+'])');
+    // Function that scans the DOM tree for header elements (the DOM2
+    // nodeIterator API would be a better technique but not supported by all
+    // browsers).
+    var iterate = function (el) {
+      for (var i = el.firstChild; i != null; i = i.nextSibling) {
+        if (i.nodeType == 1 /* Node.ELEMENT_NODE */) {
+          var mo = re.exec(i.tagName);
+          if (mo && (i.getAttribute("class") || i.getAttribute("className")) != "float") {
+            result[result.length] = new TocEntry(i, getText(i), mo[1]-1);
+          }
+          iterate(i);
+        }
+      }
+    }
+    iterate(el);
+    return result;
+  }
+
+  var toc = document.getElementById("toc");
+  if (!toc) {
+    return;
+  }
+
+  // Delete existing TOC entries in case we're reloading the TOC.
+  var tocEntriesToRemove = [];
+  var i;
+  for (i = 0; i < toc.childNodes.length; i++) {
+    var entry = toc.childNodes[i];
+    if (entry.nodeName.toLowerCase() == 'div'
+     && entry.getAttribute("class")
+     && entry.getAttribute("class").match(/^toclevel/))
+      tocEntriesToRemove.push(entry);
+  }
+  for (i = 0; i < tocEntriesToRemove.length; i++) {
+    toc.removeChild(tocEntriesToRemove[i]);
+  }
+
+  // Rebuild TOC entries.
+  var entries = tocEntries(document.getElementById("content"), toclevels);
+  for (var i = 0; i < entries.length; ++i) {
+    var entry = entries[i];
+    if (entry.element.id == "")
+      entry.element.id = "_toc_" + i;
+    var a = document.createElement("a");
+    a.href = "#" + entry.element.id;
+    a.appendChild(document.createTextNode(entry.text));
+    var div = document.createElement("div");
+    div.appendChild(a);
+    div.className = "toclevel" + entry.toclevel;
+    toc.appendChild(div);
+  }
+  if (entries.length == 0)
+    toc.parentNode.removeChild(toc);
+},
+
+
+/////////////////////////////////////////////////////////////////////
+// Footnotes generator
+/////////////////////////////////////////////////////////////////////
+
+/* Based on footnote generation code from:
+ * http://www.brandspankingnew.net/archive/2005/07/format_footnote.html
+ */
+
+footnotes: function () {
+  // Delete existing footnote entries in case we're reloading the footnodes.
+  var i;
+  var noteholder = document.getElementById("footnotes");
+  if (!noteholder) {
+    return;
+  }
+  var entriesToRemove = [];
+  for (i = 0; i < noteholder.childNodes.length; i++) {
+    var entry = noteholder.childNodes[i];
+    if (entry.nodeName.toLowerCase() == 'div' && entry.getAttribute("class") == "footnote")
+      entriesToRemove.push(entry);
+  }
+  for (i = 0; i < entriesToRemove.length; i++) {
+    noteholder.removeChild(entriesToRemove[i]);
+  }
+
+  // Rebuild footnote entries.
+  var cont = document.getElementById("content");
+  var spans = cont.getElementsByTagName("span");
+  var refs = {};
+  var n = 0;
+  for (i=0; i<spans.length; i++) {
+    if (spans[i].className == "footnote") {
+      n++;
+      var note = spans[i].getAttribute("data-note");
+      if (!note) {
+        // Use [\s\S] in place of . so multi-line matches work.
+        // Because JavaScript has no s (dotall) regex flag.
+        note = spans[i].innerHTML.match(/\s*\[([\s\S]*)]\s*/)[1];
+        spans[i].innerHTML =
+          "[<a id='_footnoteref_" + n + "' href='#_footnote_" + n +
+          "' title='View footnote' class='footnote'>" + n + "</a>]";
+        spans[i].setAttribute("data-note", note);
+      }
+      noteholder.innerHTML +=
+        "<div class='footnote' id='_footnote_" + n + "'>" +
+        "<a href='#_footnoteref_" + n + "' title='Return to text'>" +
+        n + "</a>. " + note + "</div>";
+      var id =spans[i].getAttribute("id");
+      if (id != null) refs["#"+id] = n;
+    }
+  }
+  if (n == 0)
+    noteholder.parentNode.removeChild(noteholder);
+  else {
+    // Process footnoterefs.
+    for (i=0; i<spans.length; i++) {
+      if (spans[i].className == "footnoteref") {
+        var href = spans[i].getElementsByTagName("a")[0].getAttribute("href");
+        href = href.match(/#.*/)[0];  // Because IE return full URL.
+        n = refs[href];
+        spans[i].innerHTML =
+          "[<a href='#_footnote_" + n +
+          "' title='View footnote' class='footnote'>" + n + "</a>]";
+      }
+    }
+  }
+},
+
+install: function(toclevels) {
+  var timerId;
+
+  function reinstall() {
+    asciidoc.footnotes();
+    if (toclevels) {
+      asciidoc.toc(toclevels);
+    }
+  }
+
+  function reinstallAndRemoveTimer() {
+    clearInterval(timerId);
+    reinstall();
+  }
+
+  timerId = setInterval(reinstall, 500);
+  if (document.addEventListener)
+    document.addEventListener("DOMContentLoaded", reinstallAndRemoveTimer, false);
+  else
+    window.onload = reinstallAndRemoveTimer;
+}
+
+}
+asciidoc.install(2);
+/*]]>*/
+</script>
+</head>
+<body class="article" style="max-width:50em">
+<div id="header">
+<h1>The msndfile Mex extension</h1>
+<span id="author">Marc Joliet</span><br>
+<span id="email" class="monospaced">&lt;<a href="mailto:marcec@gmx.de">marcec@gmx.de</a>&gt;</span><br>
+<span id="revnumber">version 1.1.2,</span>
+<span id="revdate">1st September 2014</span>
+<br><span id="revremark">Update copyrights, fix "lot&#8217;s" &#8594; "lots" in revision history.</span>
+<div id="toc">
+  <div id="toctitle">Table of Contents</div>
+  <noscript><p><b>JavaScript must be enabled in your browser to display the table of contents.</b></p></noscript>
+</div>
+</div>
+<div id="content">
+<div id="preamble">
+<div class="sectionbody">
+<div class="paragraph"><p>msndfile is a suite of MATLAB Mex wrappers of the <a href="http://www.mega-nerd.com/libsndfile">libsndfile</a> C library for
+reading and writing audio files.</p></div>
+<div class="paragraph"><p>This project is split between SourceForge.net and github.com.  The SF.net
+<a href="http://sourceforge.net/projects/msndfile/">project page</a> hosts downloads, this website and the git repository.  The
+<a href="http://github.com/marcecj/msndfile/">github page</a> also hosts the git repository (isn&#8217;t git nice?) and a bug tracker
+and is basically where development happens.</p></div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="_introduction">1. Introduction</h2>
+<div class="sectionbody">
+<div class="paragraph"><p>The MATLAB built-in functions for reading and writing WAV files (i.e., <span class="monospaced">wavread</span>
+and <span class="monospaced">wavwrite</span>) have their limitations.  They do not support files larger than 4
+GB, and do not support certain non-Microsoft WAV formats (e.g., RF64).  This
+leads to users editing <span class="monospaced">wavread</span> to support whatever formats they need to use.
+This project, msndfile, aims to provide <span class="monospaced">wavread</span> and <span class="monospaced">wavwrite</span> compatible
+functions using the <a href="http://www.mega-nerd.com/libsndfile">libsndfile</a> C library, which supports various formats,
+including many WAV variants, and has a track record of robustness <span class="footnote"><br>[I
+received informal feedback from one user who had WAV files that <span class="monospaced">wavread()</span>
+had trouble reading, but which libsndfile handled fine.]<br></span>.  This also means
+that msndfile supports <a href="http://www.vorbis.com/">Ogg Vorbis</a> and (in my opinion much more interesting) the
+Free Lossless Audio Codec <a href="http://flac.sourceforge.net">FLAC</a>.</p></div>
+<div class="paragraph"><p>Currently, the suite consists of two functions: <span class="monospaced">msndfile.read</span> and
+<span class="monospaced">msndfile.blockread</span>.  The latter is intended solely for reading audio files
+block-wise, for instance to process large files that do not fit in RAM.  Still
+missing are the corresponding functions for writing data: <span class="monospaced">msndfile.write</span> and
+<span class="monospaced">msndfile.blockwrite</span>.  Just as with <span class="monospaced">msndfile.read</span>, <span class="monospaced">msndfile.write</span> is
+supposed to be API-compatible with <span class="monospaced">wavwrite</span>.</p></div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="_features">2. Features</h2>
+<div class="sectionbody">
+<div class="paragraph"><p>The msndfile suite currently has the following features:</p></div>
+<div class="ulist"><ul>
+<li>
+<p>
+Can read any file type supported by libsndfile, such as <a href="http://flac.sourceforge.net">FLAC</a> and <a href="http://www.vorbis.com/">Ogg Vorbis</a>,
+  but also various WAV formats not supported by the <span class="monospaced">wavread</span> function, e.g.
+  Riff64 (RF64), and has no (known) file size limit.
+</p>
+</li>
+<li>
+<p>
+Supports BWF metadata (the <span class="monospaced">bext</span> chunk).
+</p>
+</li>
+<li>
+<p>
+Can read multiple files in a block-wise manner via the function
+  <span class="monospaced">msndfile.blockread</span>.
+</p>
+</li>
+<li>
+<p>
+It is in general more efficient (read: faster) than pure-MATLAB code, except
+  under special circumstances which favour the JIT compiler <span class="footnote"><br>[The one
+  example I can think of is a pure-MATLAB function for block-wise reading of WAV
+  files that becomes <strong>extremely</strong> fast when reading the same range of samples
+  repeatedly.]<br></span>.
+</p>
+</li>
+</ul></div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="_compatibility_with_span_class_monospaced_wavread_span">3. Compatibility with <span class="monospaced">wavread</span></h2>
+<div class="sectionbody">
+<div class="paragraph"><p>While the goal of <span class="monospaced">msndfile.read</span> is to be API-compatible with <span class="monospaced">wavread</span>,
+there are special cases where this cannot be (completely) achieved.  These are
+detailed in the following sections.</p></div>
+<div class="sect2">
+<h3 id="_leaving_off_the_file_type_extension">3.1. Leaving off the file type extension</h3>
+<div class="paragraph"><p>While <span class="monospaced">msndfile</span> supports reading files without the file type extension, i.e.</p></div>
+<div class="listingblock">
+<div class="content monospaced">
+<pre>&gt;&gt; msndfile.read('some_file');</pre>
+</div></div>
+<div class="paragraph"><p>works, the following conditions must be met:</p></div>
+<div class="ulist"><ul>
+<li>
+<p>
+There may be no ambiguity with regards to which file is meant, unless one of
+  the files with the same basename is a WAV file.  For example: if you try to
+  read <span class="monospaced">some_file</span> and there are two files, <span class="monospaced">some_file.aiff</span> and <span class="monospaced">some_file.flac</span>,
+  msndfile will abort with an error.  However, if there is also a file
+  <span class="monospaced">some_file.wav</span>, msndfile will read that.
+</p>
+</li>
+<li>
+<p>
+The format must be what the libsndfile documentation refers to as &#8220;simple&#8221;.
+  These &#8220;simple formats&#8221; are: AIF{F,C}, AU, CAF, FLAC, VOX, Ogg and WAV.
+  Additionally, msndfile explicitly supports RAW files.
+</p>
+</li>
+</ul></div>
+<div class="paragraph"><p>For other, more &#8220;exotic&#8221; file types, it is therefor necessary to provide the
+file type extension.</p></div>
+</div>
+<div class="sect2">
+<h3 id="_differences_when_the_file_is_not_a_wav_file">3.2. Differences when the file is not a WAV file</h3>
+<div class="paragraph"><p>Msndfile may differ in behaviour a bit if a file is not a WAV file.  In these
+cases, the following differences to <span class="monospaced">wavread</span> hold:</p></div>
+<div class="ulist"><ul>
+<li>
+<p>
+The opts.fmt struct has no &#8220;wFormatTag&#8221; field if the file type is not a WAV
+  file (which is completely logical).
+</p>
+</li>
+<li>
+<p>
+Broadcast WAV files produce an additional <span class="monospaced">opts.bext</span> field.
+</p>
+</li>
+<li>
+<p>
+The opts.info struct may contain fields unique to non-WAV formats.
+</p>
+</li>
+<li>
+<p>
+RAW files require an additional argument: a <span class="monospaced">struct</span> detailing the file
+  format.
+</p>
+</li>
+</ul></div>
+</div>
+<div class="sect2">
+<h3 id="_warnings_and_errors">3.3. Warnings and errors</h3>
+<div class="paragraph"><p>Msndfile will of course have its own unique warnings and errors, but might also
+print different warnings and errors in identical situations.  This might be less
+of a problem in situations where the error is a system error, in which case it
+seems that <span class="monospaced">wavread</span> and msndfile both print the system error (i.e.,
+<span class="monospaced">strerror(errno)</span>).</p></div>
+<div class="paragraph"><p>More importantly, though, the error and warning IDs will be different, since
+msndfile uses its own ID component <em>msndfile:</em>, as per MATLAB documentation
+<span class="footnote"><br>[If requested, I could at least make the mnemonics identical to
+<span class="monospaced">wavread</span>]<br></span>.</p></div>
+</div>
+<div class="sect2">
+<h3 id="_changes_in_the_behaviour_of_span_class_monospaced_wavread_span">3.4. Changes in the behaviour of <span class="monospaced">wavread</span></h3>
+<div class="paragraph"><p>It may be that some <span class="monospaced">wavread()</span> behaviour may change over time or may have
+changed in the (recent) past.  Msndfile will for simplicity only implement one
+type of behaviour.  Here is a list of all known examples:</p></div>
+<div class="ulist"><ul>
+<li>
+<p>
+In older versions of MATLAB trying to read zero samples will instead read a
+  file in its entirety.  Newer versions return an empty matrix, which is what
+  msndfile does.  Note that some versions of MATLAB (e.g., 2010a) print a
+  large warning that the behaviour will change.
+</p>
+</li>
+</ul></div>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="_download">4. Download</h2>
+<div class="sectionbody">
+<div class="paragraph"><p>The most recent version of msndfile is 1.1. You can download the source
+package, binaries (32 bit Windows, 32 bit and 64 bit Linux) and a PDF version
+of this website here:</p></div>
+<div class="dlist"><dl>
+<dt class="hdlist1">
+Windows
+</dt>
+<dd>
+<p>
+<a href="http://sourceforge.net/projects/msndfile/files/1.1/msndfile-1.1-win32.zip/download">http://sourceforge.net/projects/msndfile/files/1.1/msndfile-1.1-win32.zip/download</a>
+</p>
+</dd>
+<dt class="hdlist1">
+Linux (32 bit)
+</dt>
+<dd>
+<p>
+<a href="http://sourceforge.net/projects/msndfile/files/1.1/msndfile-1.1-glnx86.zip/download">http://sourceforge.net/projects/msndfile/files/1.1/msndfile-1.1-glnx86.zip/download</a>
+</p>
+</dd>
+<dt class="hdlist1">
+Linux (64 bit)
+</dt>
+<dd>
+<p>
+<a href="http://sourceforge.net/projects/msndfile/files/1.1/msndfile-1.1-glnxa64.zip/download">http://sourceforge.net/projects/msndfile/files/1.1/msndfile-1.1-glnxa64.zip/download</a>
+</p>
+</dd>
+<dt class="hdlist1">
+Source
+</dt>
+<dd>
+<p>
+<a href="http://sourceforge.net/projects/msndfile/files/1.1/msndfile-1.1-src.zip/download">http://sourceforge.net/projects/msndfile/files/1.1/msndfile-1.1-src.zip/download</a>
+</p>
+</dd>
+<dt class="hdlist1">
+Manual
+</dt>
+<dd>
+<p>
+<a href="http://sourceforge.net/projects/msndfile/files/1.1/msndfile-1.1-manual.pdf/download">http://sourceforge.net/projects/msndfile/files/1.1/msndfile-1.1-manual.pdf/download</a>
+</p>
+</dd>
+</dl></div>
+<div class="paragraph"><p>The 32 bit binaries were compiled using MATLAB 2010a Student Edition, the
+64 bit Linux binaries using 2013a Student Edition.</p></div>
+<div class="paragraph"><p>Older versions can be found at the SourceForge <a href="http://sourceforge.net/projects/msndfile/">project page</a>.  The Windows
+binaries bundle the libsndfile DLL.  Under Linux and Mac it is expected that
+libsndfile is already installed (e.g., via a package manager).</p></div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="_source_code_repository">5. Source code repository</h2>
+<div class="sectionbody">
+<div class="paragraph"><p>The msndfile source code is managed with <a href="http://git-scm.com">Git</a>.  The repository is hosted on
+github, see the <a href="http://github.com/marcecj/msndfile/">github page</a>.  If you would like to contribute (be it with bug
+reports or patches), this is the place to go.  The repository is also hosted
+on SourceForge.net for redundancy, see the <a href="http://sourceforge.net/projects/msndfile/">project page</a>.</p></div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="_installing_msndfile_from_source">6. Installing msndfile from source</h2>
+<div class="sectionbody">
+<div class="paragraph"><p>There are two ways to compile msndfile.  The easy way is to call the m-file
+<span class="monospaced">compile_msndfile.m</span> from MATLAB.  This is probably the way to go if you only
+want to <em>use</em> msndfile, but none of the binary downloads satisfy your needs.
+There is also a more flexible build system based on SCons available, that can
+also generate a Visual Studio IDE project file and can be integrated into
+other IDEs like Eclipse.  You will most likely want to use this if you want to
+<em>work on</em> msndfile.  For details on both methods, see their corresponding
+subsections.</p></div>
+<div class="sect2">
+<h3 id="_prerequisites">6.1. Prerequisites</h3>
+<div class="paragraph"><p>The basic dependencies of msndfile are:</p></div>
+<div class="ulist"><ul>
+<li>
+<p>
+MATLAB (tested with 2010a Student Edition)
+</p>
+</li>
+<li>
+<p>
+<a href="http://www.mega-nerd.com/libsndfile">libsndfile</a>
+</p>
+</li>
+<li>
+<p>
+a C compiler that supports C99 (e.g., GCC, clang)
+</p>
+</li>
+<li>
+<p>
+<span class="monospaced">stdint.h</span> (a C99 header file; required for reading files in their native
+  format, à la <span class="monospaced">wavread(..., 'native')</span>)
+</p>
+</li>
+<li>
+<p>
+<a href="http://www.mathworks.com/matlabcentral/fileexchange/22846">MTest</a> (needed only for the test suite)
+</p>
+</li>
+</ul></div>
+<div class="paragraph"><p>The requirement for a compiler that supports C99 means that the Microsoft
+Visual Compiler cannot be supported anymore.  However, you can still generate
+Visual Studio projects with the SCons based build system; they will simply use
+another compiler <span class="footnote"><br>[I do not know if debugging in VS is possible this
+way; it might be with the appropriate add-ins, e.g., VisualGDB.]<br></span>.  If
+<span class="monospaced">stdint.h</span> is not available (as might be the case for older compilers), a
+compatibility header (<span class="monospaced">stdint_compat.h</span>) is used instead.</p></div>
+<div class="paragraph"><p>To obtain libsndfile, you may try the following steps:</p></div>
+<div class="dlist"><dl>
+<dt class="hdlist1">
+Linux
+</dt>
+<dd>
+<p>
+    Install the libsndfile development package via your distributions package
+    manager (typically a package with a <em>-devel</em> or <em>-dev</em> suffix).
+</p>
+</dd>
+<dt class="hdlist1">
+Windows
+</dt>
+<dd>
+<p>
+    Follow the instructions at <a href="http://www.mega-nerd.com/libsndfile">http://www.mega-nerd.com/libsndfile</a>).  After you have done that, copy
+    the files <span class="monospaced">libsndfile-1.dll</span>, <span class="monospaced">libsndfile-1.lib</span> and <span class="monospaced">sndfile.h</span> into the
+    <span class="monospaced">Win</span> subdirectory.
+</p>
+</dd>
+<dt class="hdlist1">
+Mac OS X
+</dt>
+<dd>
+<p>
+    Either download the sources from <a href="http://www.mega-nerd.com/libsndfile">http://www.mega-nerd.com/libsndfile</a> and compile them yourself
+    or use a package management system like fink or macports or whatever
+    system you already use.
+</p>
+</dd>
+</dl></div>
+<div class="paragraph"><p>If you are going to use the SCons based build system, you will also need</p></div>
+<div class="ulist"><ul>
+<li>
+<p>
+<a href="http://www.python.org">Python</a> (whatever version SCons works with, though at
+  least 2.5 is required)
+</p>
+</li>
+<li>
+<p>
+<a href="http://scons.org">SCons</a> (tested with SCons 2.3.x)
+</p>
+</li>
+<li>
+<p>
+<a href="http://starship.python.net/crew/mhammond/win32/">Python Win32 extensions</a> (optional, but necessary for some SCons features on Windows)
+</p>
+</li>
+<li>
+<p>
+the <a href="https://github.com/marcecj/scons_matlab">SCons Matlab Tool</a>
+</p>
+</li>
+</ul></div>
+<div class="paragraph"><p>The MATLAB Tool is a submodule of this repository.  To install it, just run</p></div>
+<div class="listingblock">
+<div class="content monospaced">
+<pre>$ git submodule update --init</pre>
+</div></div>
+<div class="paragraph"><p>Finally, if you want to build the documentation, you need these additional
+dependencies:</p></div>
+<div class="ulist"><ul>
+<li>
+<p>
+<a href="http://www.methods.co.nz/asciidoc/">AsciiDoc</a> (and <em>its</em> dependencies, which can be vast, depending on the
+  output format&#8201;&#8212;&#8201;it is probably easiest to do this on a Linux system)
+</p>
+</li>
+<li>
+<p>
+the <a href="https://github.com/marcecj/scons_asciidoc">SCons AsciiDoc Tool</a>
+</p>
+</li>
+</ul></div>
+<div class="paragraph"><p>The SCons Tool is, again, a submodule of this repository and will be installed
+by running the above git command.</p></div>
+</div>
+<div class="sect2">
+<h3 id="_using_the_span_class_monospaced_compile_msndfile_m_span_script">6.2. Using the <span class="monospaced">compile_msndfile.m</span> script</h3>
+<div class="paragraph"><p>In MATLAB, type <span class="monospaced">compile_msndfile</span> to compile all Mex extensions.  By default
+this will put the binaries in the <span class="monospaced">+msndfile</span> subdirectory (a Matlab package
+directory).  See the built-in help (<span class="monospaced">help compile_msndfile</span>) for overriding
+the defaults to your needs.</p></div>
+<div class="admonitionblock">
+<table><tr>
+<td class="icon">
+<div class="title">Note</div>
+</td>
+<td class="content">
+<div class="paragraph"><p>If <span class="monospaced">mex -setup</span> does not find a C99 compatible compiler, you will have
+to configure mex manually.  The options I know of are:</p></div>
+<div class="ulist"><ul>
+<li>
+<p>
+either create your own <span class="monospaced">mexopts.bat</span>/<span class="monospaced">mexopts.sh</span> file, or
+</p>
+</li>
+<li>
+<p>
+use MinGW/Cygwin with <a href="http://gnumex.sourceforge.net">gnumex</a>.
+</p>
+</li>
+</ul></div>
+</td>
+</tr></table>
+</div>
+</div>
+<div class="sect2">
+<h3 id="_using_the_scons_based_build_system">6.3. Using the SCons based build system</h3>
+<div class="paragraph"><p>The SCons based build system is in general more robust and flexibel than calling
+Mex in <span class="monospaced">compile_msndfile.m</span>.  It uses an extension that properly presets some
+environment variables, though it slows compilation down the first time it is run
+because it starts a MATLAB subprocess to obtain them.</p></div>
+<div class="paragraph"><p>Anyway, to use SCons, call it from the command line like so:</p></div>
+<div class="listingblock">
+<div class="content monospaced">
+<pre>$ scons [--interactive] [options] [target]</pre>
+</div></div>
+<div class="paragraph"><p>As to why I wrote a complicated SCons <span class="footnote"><br>[A CMake based build system was
+also attempted, but CMake proved difficult to extend, at least in comparison
+with SCons.]<br></span> build system in the first place, well&#8230;  Apart from the usual
+features of real build systems (proper dependency tracking, parallel builds,
+platform dependent configuration à la autoconf, etc.) it can do the following
+things:</p></div>
+<div class="ulist"><ul>
+<li>
+<p>
+create a Visual Studio solution file with Release and Debug Variants
+</p>
+</li>
+<li>
+<p>
+create a ZIP file for distribution
+</p>
+</li>
+<li>
+<p>
+separates release from debug builds
+</p>
+</li>
+<li>
+<p>
+<strong>could</strong> support cross-compiling to other architectures/operating systems to
+  provide binaries for them
+</p>
+</li>
+<li>
+<p>
+builds the <a href="http://www.methods.co.nz/asciidoc/">AsciiDoc</a> documentation you are currently reading
+</p>
+</li>
+<li>
+<p>
+supports whatever compilers SCons (or third party extensions) supports, and
+  not just what The Mathworks supports, which is incomplete and quite outdated
+  anyway <span class="footnote"><br>[Fun fact: the most recent minor version of GCC officially
+  supported by The Mathworks for MATLAB 2012a (GCC 4.4) is not even supported by
+  the <em>compiler vendor</em> anymore, though I suppose this may be deliberate.]<br></span>.
+</p>
+</li>
+</ul></div>
+<div class="paragraph"><p>For more information (such as available build targets, options and overridable
+environment variables), see the output of <span class="monospaced">scons --help</span>.</p></div>
+<div class="paragraph"><p>If you need to work on the code and plan to compile often, you can speed up the
+process in general by using the interactive mode by passing the <span class="monospaced">--interactive</span>
+option to SCons.</p></div>
+<div class="admonitionblock">
+<table><tr>
+<td class="icon">
+<div class="title">Note</div>
+</td>
+<td class="content">To debug from within an IDE, you need to be sure to call MATLAB with the
+<span class="monospaced">-wait</span> argument.</td>
+</tr></table>
+</div>
+<div class="sect3">
+<h4 id="_linux">6.3.1. Linux</h4>
+<div class="paragraph"><p>Just open a terminal, navigate to the top-level project directory, and type</p></div>
+<div class="listingblock">
+<div class="content monospaced">
+<pre>$ scons</pre>
+</div></div>
+</div>
+<div class="sect3">
+<h4 id="_windows">6.3.2. Windows</h4>
+<div class="paragraph"><p>You can launch the batch file <span class="monospaced">start_scons.bat</span>, which launches scons and keeps
+the terminal window open.  It is expected that SCons is in your <span class="monospaced">$PATH</span>.</p></div>
+<div class="paragraph"><p>Under Windows, the build system has an additional <span class="monospaced">vsproj</span> target.  This creates
+an MS Visual Studio Solution file with msndfile as a project.  For other IDEs,
+see <a href="http://www.scons.org/wiki/IDEIntegration">http://www.scons.org/wiki/IDEIntegration</a>.</p></div>
+</div>
+<div class="sect3">
+<h4 id="_mac_os_x">6.3.3. Mac OS X</h4>
+<div class="paragraph"><p>Follow the same steps as under Linux, or look into integrating SCons into your
+IDE of choice (see <a href="http://www.scons.org/wiki/IDEIntegration">http://www.scons.org/wiki/IDEIntegration</a>).</p></div>
+</div>
+</div>
+<div class="sect2">
+<h3 id="testsuite">6.4. Testing</h3>
+<div class="paragraph"><p>Msndfile comes with a comprehensive test suite (based on <a href="http://www.mathworks.com/matlabcentral/fileexchange/22846">MTest</a>) that is run
+by executing <span class="monospaced">test_msndfile.m</span> from MATLAB.  There are also performance
+evaluation scripts, however they take several minutes and so are not run by
+default.  To run them, too, set <span class="monospaced">do_perf_tests</span> to <span class="monospaced">true</span> in
+<span class="monospaced">test_msndfile.m</span>.</p></div>
+<div class="admonitionblock">
+<table><tr>
+<td class="icon">
+<div class="title">Note</div>
+</td>
+<td class="content">If you use SCons, you must run the <span class="monospaced">install</span> target first and make sure DESTDIR
+is in MATLABs path.</td>
+</tr></table>
+</div>
+<div class="admonitionblock">
+<table><tr>
+<td class="icon">
+<div class="title">Note</div>
+</td>
+<td class="content">To run the bext chunk test you need the file <span class="monospaced">EBU_sample.wav</span> , which I
+found <a href="http://www.interlab.fr/docs/aaton/docs/indaw/BWF_aaton_samples/">here</a>.
+Put it in the <span class="monospaced">test_files/bwf/</span> subdirectory.</td>
+</tr></table>
+</div>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="_examples">7. Examples</h2>
+<div class="sectionbody">
+<div class="paragraph"><p>Here are some examples demonstrating <span class="monospaced">msndfile.read</span> and <span class="monospaced">msndfile.blockread</span>.</p></div>
+<div class="admonitionblock">
+<table><tr>
+<td class="icon">
+<div class="title">Note</div>
+</td>
+<td class="content">See the help text (<span class="monospaced">help msndfile.read</span> and <span class="monospaced">help msndfile.blockread</span>)
+for the full documentation, including all available options.</td>
+</tr></table>
+</div>
+<div class="sect2">
+<h3 id="_span_class_monospaced_msndfile_read_span">7.1. <span class="monospaced">msndfile.read</span></h3>
+<div class="paragraph"><p>First some API compatibility examples:</p></div>
+<div class="paragraph"><p>For starters, we verify that the <span class="monospaced">'size'</span> command yields identical results.
+First <span class="monospaced">wavread</span>:</p></div>
+<div class="exampleblock">
+<div class="title">Example 1. Output of <span class="monospaced">wavread(..., 'size')</span></div>
+<div class="content">
+<div class="listingblock">
+<div class="content"><div class="highlight"><pre><span class="n">EDU</span><span class="o">&gt;&gt;</span> <span class="p">[</span><span class="n">dim</span><span class="p">,</span> <span class="n">fs</span><span class="p">,</span> <span class="n">nbits</span><span class="p">,</span> <span class="n">opts</span><span class="p">]</span> <span class="p">=</span> <span class="n">wavread</span><span class="p">(</span><span class="s">&#39;test_files/test.wav&#39;</span><span class="p">,</span> <span class="s">&#39;size&#39;</span><span class="p">);</span>
+<span class="n">EDU</span><span class="o">&gt;&gt;</span> <span class="n">dim</span>
+<span class="n">dim</span> <span class="p">=</span>
+      <span class="mi">418853</span>           <span class="mi">2</span>
+<span class="n">EDU</span><span class="o">&gt;&gt;</span> <span class="n">fs</span>
+<span class="n">fs</span> <span class="p">=</span>
+       <span class="mi">44100</span>
+<span class="n">EDU</span><span class="o">&gt;&gt;</span> <span class="n">nbits</span>
+<span class="n">nbits</span> <span class="p">=</span>
+    <span class="mi">16</span>
+<span class="n">EDU</span><span class="o">&gt;&gt;</span> <span class="n">opts</span>
+<span class="n">opts</span> <span class="p">=</span>
+     <span class="n">fmt</span><span class="p">:</span> <span class="p">[</span><span class="mi">1</span><span class="n">x1</span> <span class="n">struct</span><span class="p">]</span>
+    <span class="n">info</span><span class="p">:</span> <span class="p">[</span><span class="mi">1</span><span class="n">x1</span> <span class="n">struct</span><span class="p">]</span>
+<span class="n">EDU</span><span class="o">&gt;&gt;</span> <span class="n">opts</span><span class="p">.</span><span class="n">fmt</span>
+<span class="nb">ans</span> <span class="p">=</span>
+         <span class="n">wFormatTag</span><span class="p">:</span> <span class="mi">1</span>
+          <span class="n">nChannels</span><span class="p">:</span> <span class="mi">2</span>
+     <span class="n">nSamplesPerSec</span><span class="p">:</span> <span class="mi">44100</span>
+    <span class="n">nAvgBytesPerSec</span><span class="p">:</span> <span class="mi">176400</span>
+        <span class="n">nBlockAlign</span><span class="p">:</span> <span class="mi">4</span>
+     <span class="n">nBitsPerSample</span><span class="p">:</span> <span class="mi">16</span>
+<span class="n">EDU</span><span class="o">&gt;&gt;</span> <span class="n">opts</span><span class="p">.</span><span class="n">info</span>
+<span class="nb">ans</span> <span class="p">=</span>
+    <span class="n">inam</span><span class="p">:</span> <span class="s">&#39;glass cafe&#39;</span>
+    <span class="n">iart</span><span class="p">:</span> <span class="s">&#39;Jon 7&#39;</span>
+    <span class="n">icrd</span><span class="p">:</span> <span class="s">&#39;2006&#39;</span>
+</pre></div></div></div>
+</div></div>
+<div class="paragraph"><p>Now <span class="monospaced">msndfile.read</span>:</p></div>
+<div class="exampleblock">
+<div class="title">Example 2. Output of <span class="monospaced">msndfile.read(..., 'size')</span>&#8201;&#8212;&#8201;WAV file</div>
+<div class="content">
+<div class="listingblock">
+<div class="content"><div class="highlight"><pre><span class="n">EDU</span><span class="o">&gt;&gt;</span> <span class="p">[</span><span class="n">dim</span><span class="p">,</span> <span class="n">fs</span><span class="p">,</span> <span class="n">nbits</span><span class="p">,</span> <span class="n">opts</span><span class="p">]</span> <span class="p">=</span> <span class="n">msndfile</span><span class="p">.</span><span class="n">read</span><span class="p">(</span><span class="s">&#39;test_files/test.wav&#39;</span><span class="p">,</span> <span class="s">&#39;size&#39;</span><span class="p">);</span>
+<span class="n">EDU</span><span class="o">&gt;&gt;</span> <span class="n">dim</span>
+<span class="n">dim</span> <span class="p">=</span>
+      <span class="mi">418853</span>           <span class="mi">2</span>
+<span class="n">EDU</span><span class="o">&gt;&gt;</span> <span class="n">fs</span>
+<span class="n">fs</span> <span class="p">=</span>
+       <span class="mi">44100</span>
+<span class="n">EDU</span><span class="o">&gt;&gt;</span> <span class="n">nbits</span>
+<span class="n">nbits</span> <span class="p">=</span>
+    <span class="mi">16</span>
+<span class="n">EDU</span><span class="o">&gt;&gt;</span> <span class="n">opts</span>
+<span class="n">opts</span> <span class="p">=</span>
+     <span class="n">fmt</span><span class="p">:</span> <span class="p">[</span><span class="mi">1</span><span class="n">x1</span> <span class="n">struct</span><span class="p">]</span>
+    <span class="n">info</span><span class="p">:</span> <span class="p">[</span><span class="mi">1</span><span class="n">x1</span> <span class="n">struct</span><span class="p">]</span>
+<span class="n">EDU</span><span class="o">&gt;&gt;</span> <span class="n">opts</span><span class="p">.</span><span class="n">fmt</span>
+<span class="nb">ans</span> <span class="p">=</span>
+         <span class="n">wFormatTag</span><span class="p">:</span> <span class="mi">1</span>
+          <span class="n">nChannels</span><span class="p">:</span> <span class="mi">2</span>
+     <span class="n">nSamplesPerSec</span><span class="p">:</span> <span class="mi">44100</span>
+    <span class="n">nAvgBytesPerSec</span><span class="p">:</span> <span class="mi">176400</span>
+        <span class="n">nBlockAlign</span><span class="p">:</span> <span class="mi">4</span>
+     <span class="n">nBitsPerSample</span><span class="p">:</span> <span class="mi">16</span>
+<span class="n">EDU</span><span class="o">&gt;&gt;</span> <span class="n">opts</span><span class="p">.</span><span class="n">info</span>
+<span class="nb">ans</span> <span class="p">=</span>
+    <span class="n">inam</span><span class="p">:</span> <span class="s">&#39;glass cafe&#39;</span>
+    <span class="n">iart</span><span class="p">:</span> <span class="s">&#39;Jon 7&#39;</span>
+    <span class="n">icrd</span><span class="p">:</span> <span class="s">&#39;2006&#39;</span>
+</pre></div></div></div>
+</div></div>
+<div class="paragraph"><p>And for comparison the same command, but with a FLAC file:</p></div>
+<div class="exampleblock">
+<div class="title">Example 3. Output of <span class="monospaced">msndfile.read(..., 'size')</span>&#8201;&#8212;&#8201;FLAC file</div>
+<div class="content">
+<div class="listingblock">
+<div class="content"><div class="highlight"><pre><span class="n">EDU</span><span class="o">&gt;&gt;</span> <span class="p">[</span><span class="n">dim</span><span class="p">,</span> <span class="n">fs</span><span class="p">,</span> <span class="n">nbits</span><span class="p">,</span> <span class="n">opts</span><span class="p">]</span> <span class="p">=</span> <span class="n">msndfile</span><span class="p">.</span><span class="n">read</span><span class="p">(</span><span class="s">&#39;test_files/test.flac&#39;</span><span class="p">,</span> <span class="s">&#39;size&#39;</span><span class="p">);</span>
+<span class="n">EDU</span><span class="o">&gt;&gt;</span> <span class="n">dim</span>
+<span class="n">dim</span> <span class="p">=</span>
+      <span class="mi">418853</span>           <span class="mi">2</span>
+<span class="n">EDU</span><span class="o">&gt;&gt;</span> <span class="n">fs</span>
+<span class="n">fs</span> <span class="p">=</span>
+       <span class="mi">44100</span>
+<span class="n">EDU</span><span class="o">&gt;&gt;</span> <span class="n">nbits</span>
+<span class="n">nbits</span> <span class="p">=</span>
+    <span class="mi">16</span>
+<span class="n">EDU</span><span class="o">&gt;&gt;</span> <span class="n">opts</span>
+<span class="n">opts</span> <span class="p">=</span>
+     <span class="n">fmt</span><span class="p">:</span> <span class="p">[</span><span class="mi">1</span><span class="n">x1</span> <span class="n">struct</span><span class="p">]</span>
+    <span class="n">info</span><span class="p">:</span> <span class="p">[</span><span class="mi">1</span><span class="n">x1</span> <span class="n">struct</span><span class="p">]</span>
+<span class="n">EDU</span><span class="o">&gt;&gt;</span> <span class="n">opts</span><span class="p">.</span><span class="n">fmt</span>
+<span class="nb">ans</span> <span class="p">=</span>
+          <span class="n">nChannels</span><span class="p">:</span> <span class="mi">2</span>
+     <span class="n">nSamplesPerSec</span><span class="p">:</span> <span class="mi">44100</span>
+    <span class="n">nAvgBytesPerSec</span><span class="p">:</span> <span class="mi">176400</span>
+        <span class="n">nBlockAlign</span><span class="p">:</span> <span class="mi">4</span>
+     <span class="n">nBitsPerSample</span><span class="p">:</span> <span class="mi">16</span>
+<span class="n">EDU</span><span class="o">&gt;&gt;</span> <span class="n">opts</span><span class="p">.</span><span class="n">info</span>
+<span class="nb">ans</span> <span class="p">=</span>
+    <span class="n">inam</span><span class="p">:</span> <span class="s">&#39;glass cafe&#39;</span>
+    <span class="n">iart</span><span class="p">:</span> <span class="s">&#39;Jon 7&#39;</span>
+    <span class="n">icrd</span><span class="p">:</span> <span class="s">&#39;2006&#39;</span>
+    <span class="n">ialb</span><span class="p">:</span> <span class="s">&#39;Sound Without Film [JON7NET015]&#39;</span>
+    <span class="n">inum</span><span class="p">:</span> <span class="s">&#39;1&#39;</span>
+    <span class="n">ignr</span><span class="p">:</span> <span class="s">&#39;(12)&#39;</span>
+</pre></div></div></div>
+</div></div>
+<div class="paragraph"><p>Notable differences are:</p></div>
+<div class="ulist"><ul>
+<li>
+<p>
+<span class="monospaced">opts.fmt</span> lacks the field <span class="monospaced">wFormatTag</span> (but is otherwise identical)
+</p>
+</li>
+<li>
+<p>
+<span class="monospaced">opts.info</span> contains more meta-data tags
+</p>
+</li>
+</ul></div>
+<div class="paragraph"><p>Next we read the first and last ten samples.  Again, first <span class="monospaced">wavread</span>:</p></div>
+<div class="exampleblock">
+<div class="title">Example 4. Reading the first and last ten samples&#8201;&#8212;&#8201;<span class="monospaced">wavread()</span></div>
+<div class="content">
+<div class="listingblock">
+<div class="content"><div class="highlight"><pre><span class="n">EDU</span><span class="o">&gt;&gt;</span> <span class="n">wavread</span><span class="p">(</span><span class="s">&#39;test_files/test.wav&#39;</span><span class="p">,</span> <span class="mi">10</span><span class="p">)</span>
+<span class="nb">ans</span> <span class="p">=</span>
+   <span class="mf">1.0e-03</span> <span class="o">*</span>
+   <span class="o">-</span><span class="mf">0.0305</span>         <span class="mi">0</span>
+         <span class="mi">0</span>         <span class="mi">0</span>
+    <span class="mf">0.0305</span>   <span class="o">-</span><span class="mf">0.0610</span>
+    <span class="mf">0.0916</span>   <span class="o">-</span><span class="mf">0.1526</span>
+    <span class="mf">0.1221</span>   <span class="o">-</span><span class="mf">0.0916</span>
+    <span class="mf">0.0916</span>   <span class="o">-</span><span class="mf">0.0916</span>
+    <span class="mf">0.0305</span>   <span class="o">-</span><span class="mf">0.0610</span>
+    <span class="mf">0.0305</span>         <span class="mi">0</span>
+   <span class="o">-</span><span class="mf">0.0305</span>   <span class="o">-</span><span class="mf">0.0610</span>
+    <span class="mf">0.0610</span>   <span class="o">-</span><span class="mf">0.1221</span>
+<span class="n">EDU</span><span class="o">&gt;&gt;</span> <span class="n">wavread</span><span class="p">(</span><span class="s">&#39;test_files/test.wav&#39;</span><span class="p">,</span> <span class="p">[</span><span class="mi">1</span> <span class="mi">10</span><span class="p">])</span>
+<span class="nb">ans</span> <span class="p">=</span>
+   <span class="mf">1.0e-03</span> <span class="o">*</span>
+   <span class="o">-</span><span class="mf">0.0305</span>         <span class="mi">0</span>
+         <span class="mi">0</span>         <span class="mi">0</span>
+    <span class="mf">0.0305</span>   <span class="o">-</span><span class="mf">0.0610</span>
+    <span class="mf">0.0916</span>   <span class="o">-</span><span class="mf">0.1526</span>
+    <span class="mf">0.1221</span>   <span class="o">-</span><span class="mf">0.0916</span>
+    <span class="mf">0.0916</span>   <span class="o">-</span><span class="mf">0.0916</span>
+    <span class="mf">0.0305</span>   <span class="o">-</span><span class="mf">0.0610</span>
+    <span class="mf">0.0305</span>         <span class="mi">0</span>
+   <span class="o">-</span><span class="mf">0.0305</span>   <span class="o">-</span><span class="mf">0.0610</span>
+    <span class="mf">0.0610</span>   <span class="o">-</span><span class="mf">0.1221</span>
+<span class="n">EDU</span><span class="o">&gt;&gt;</span> <span class="n">wavread</span><span class="p">(</span><span class="s">&#39;test_files/test.wav&#39;</span><span class="p">,</span> <span class="p">[</span><span class="n">dim</span><span class="p">(</span><span class="mi">1</span><span class="p">)</span><span class="o">-</span><span class="mi">9</span> <span class="n">dim</span><span class="p">(</span><span class="mi">1</span><span class="p">)])</span>
+<span class="nb">ans</span> <span class="p">=</span>
+   <span class="mf">1.0e-03</span> <span class="o">*</span>
+         <span class="mi">0</span>         <span class="mi">0</span>
+   <span class="o">-</span><span class="mf">0.1221</span>    <span class="mf">0.0610</span>
+   <span class="o">-</span><span class="mf">0.1221</span>    <span class="mf">0.0305</span>
+   <span class="o">-</span><span class="mf">0.0916</span>    <span class="mf">0.0305</span>
+   <span class="o">-</span><span class="mf">0.0916</span>    <span class="mf">0.0305</span>
+   <span class="o">-</span><span class="mf">0.0610</span>   <span class="o">-</span><span class="mf">0.0305</span>
+    <span class="mf">0.0305</span>   <span class="o">-</span><span class="mf">0.1221</span>
+    <span class="mf">0.1221</span>   <span class="o">-</span><span class="mf">0.1221</span>
+    <span class="mf">0.0305</span>         <span class="mi">0</span>
+         <span class="mi">0</span>         <span class="mi">0</span>
+</pre></div></div></div>
+</div></div>
+<div class="paragraph"><p>Now <span class="monospaced">msndfile.read</span>:</p></div>
+<div class="exampleblock">
+<div class="title">Example 5. Reading the first and last ten samples&#8201;&#8212;&#8201;<span class="monospaced">msndfile.read()</span></div>
+<div class="content">
+<div class="listingblock">
+<div class="content"><div class="highlight"><pre><span class="n">EDU</span><span class="o">&gt;&gt;</span> <span class="n">msndfile</span><span class="p">.</span><span class="n">read</span><span class="p">(</span><span class="s">&#39;test_files/test.wav&#39;</span><span class="p">,</span> <span class="mi">10</span><span class="p">)</span>
+<span class="nb">ans</span> <span class="p">=</span>
+   <span class="mf">1.0e-03</span> <span class="o">*</span>
+   <span class="o">-</span><span class="mf">0.0305</span>         <span class="mi">0</span>
+         <span class="mi">0</span>         <span class="mi">0</span>
+    <span class="mf">0.0305</span>   <span class="o">-</span><span class="mf">0.0610</span>
+    <span class="mf">0.0916</span>   <span class="o">-</span><span class="mf">0.1526</span>
+    <span class="mf">0.1221</span>   <span class="o">-</span><span class="mf">0.0916</span>
+    <span class="mf">0.0916</span>   <span class="o">-</span><span class="mf">0.0916</span>
+    <span class="mf">0.0305</span>   <span class="o">-</span><span class="mf">0.0610</span>
+    <span class="mf">0.0305</span>         <span class="mi">0</span>
+   <span class="o">-</span><span class="mf">0.0305</span>   <span class="o">-</span><span class="mf">0.0610</span>
+    <span class="mf">0.0610</span>   <span class="o">-</span><span class="mf">0.1221</span>
+<span class="n">EDU</span><span class="o">&gt;&gt;</span> <span class="n">msndfile</span><span class="p">.</span><span class="n">read</span><span class="p">(</span><span class="s">&#39;test_files/test.wav&#39;</span><span class="p">,</span> <span class="p">[</span><span class="mi">1</span> <span class="mi">10</span><span class="p">])</span>
+<span class="nb">ans</span> <span class="p">=</span>
+   <span class="mf">1.0e-03</span> <span class="o">*</span>
+   <span class="o">-</span><span class="mf">0.0305</span>         <span class="mi">0</span>
+         <span class="mi">0</span>         <span class="mi">0</span>
+    <span class="mf">0.0305</span>   <span class="o">-</span><span class="mf">0.0610</span>
+    <span class="mf">0.0916</span>   <span class="o">-</span><span class="mf">0.1526</span>
+    <span class="mf">0.1221</span>   <span class="o">-</span><span class="mf">0.0916</span>
+    <span class="mf">0.0916</span>   <span class="o">-</span><span class="mf">0.0916</span>
+    <span class="mf">0.0305</span>   <span class="o">-</span><span class="mf">0.0610</span>
+    <span class="mf">0.0305</span>         <span class="mi">0</span>
+   <span class="o">-</span><span class="mf">0.0305</span>   <span class="o">-</span><span class="mf">0.0610</span>
+    <span class="mf">0.0610</span>   <span class="o">-</span><span class="mf">0.1221</span>
+<span class="n">EDU</span><span class="o">&gt;&gt;</span> <span class="n">msndfile</span><span class="p">.</span><span class="n">read</span><span class="p">(</span><span class="s">&#39;test_files/test.wav&#39;</span><span class="p">,</span> <span class="p">[</span><span class="n">dim</span><span class="p">(</span><span class="mi">1</span><span class="p">)</span><span class="o">-</span><span class="mi">9</span> <span class="n">dim</span><span class="p">(</span><span class="mi">1</span><span class="p">)])</span>
+<span class="nb">ans</span> <span class="p">=</span>
+   <span class="mf">1.0e-03</span> <span class="o">*</span>
+         <span class="mi">0</span>         <span class="mi">0</span>
+   <span class="o">-</span><span class="mf">0.1221</span>    <span class="mf">0.0610</span>
+   <span class="o">-</span><span class="mf">0.1221</span>    <span class="mf">0.0305</span>
+   <span class="o">-</span><span class="mf">0.0916</span>    <span class="mf">0.0305</span>
+   <span class="o">-</span><span class="mf">0.0916</span>    <span class="mf">0.0305</span>
+   <span class="o">-</span><span class="mf">0.0610</span>   <span class="o">-</span><span class="mf">0.0305</span>
+    <span class="mf">0.0305</span>   <span class="o">-</span><span class="mf">0.1221</span>
+    <span class="mf">0.1221</span>   <span class="o">-</span><span class="mf">0.1221</span>
+    <span class="mf">0.0305</span>         <span class="mi">0</span>
+         <span class="mi">0</span>         <span class="mi">0</span>
+</pre></div></div></div>
+</div></div>
+<div class="paragraph"><p>And as a last comparison, the first ten samples read with the <span class="monospaced">'native'</span>
+option:</p></div>
+<div class="exampleblock">
+<div class="title">Example 6. Reading the first and last ten samples with the <span class="monospaced">native</span> option</div>
+<div class="content">
+<div class="listingblock">
+<div class="content"><div class="highlight"><pre><span class="n">EDU</span><span class="o">&gt;&gt;</span> <span class="n">wavread</span><span class="p">(</span><span class="s">&#39;test_files/test.wav&#39;</span><span class="p">,</span> <span class="p">[</span><span class="mi">1</span> <span class="mi">10</span><span class="p">],</span> <span class="s">&#39;native&#39;</span><span class="p">)</span>
+<span class="nb">ans</span> <span class="p">=</span>
+     <span class="o">-</span><span class="mi">1</span>      <span class="mi">0</span>
+      <span class="mi">0</span>      <span class="mi">0</span>
+      <span class="mi">1</span>     <span class="o">-</span><span class="mi">2</span>
+      <span class="mi">3</span>     <span class="o">-</span><span class="mi">5</span>
+      <span class="mi">4</span>     <span class="o">-</span><span class="mi">3</span>
+      <span class="mi">3</span>     <span class="o">-</span><span class="mi">3</span>
+      <span class="mi">1</span>     <span class="o">-</span><span class="mi">2</span>
+      <span class="mi">1</span>      <span class="mi">0</span>
+     <span class="o">-</span><span class="mi">1</span>     <span class="o">-</span><span class="mi">2</span>
+      <span class="mi">2</span>     <span class="o">-</span><span class="mi">4</span>
+<span class="n">EDU</span><span class="o">&gt;&gt;</span> <span class="n">msndfile</span><span class="p">.</span><span class="n">read</span><span class="p">(</span><span class="s">&#39;test_files/test.wav&#39;</span><span class="p">,</span> <span class="p">[</span><span class="mi">1</span> <span class="mi">10</span><span class="p">],</span> <span class="s">&#39;native&#39;</span><span class="p">)</span>
+<span class="nb">ans</span> <span class="p">=</span>
+     <span class="o">-</span><span class="mi">1</span>      <span class="mi">0</span>
+      <span class="mi">0</span>      <span class="mi">0</span>
+      <span class="mi">1</span>     <span class="o">-</span><span class="mi">2</span>
+      <span class="mi">3</span>     <span class="o">-</span><span class="mi">5</span>
+      <span class="mi">4</span>     <span class="o">-</span><span class="mi">3</span>
+      <span class="mi">3</span>     <span class="o">-</span><span class="mi">3</span>
+      <span class="mi">1</span>     <span class="o">-</span><span class="mi">2</span>
+      <span class="mi">1</span>      <span class="mi">0</span>
+     <span class="o">-</span><span class="mi">1</span>     <span class="o">-</span><span class="mi">2</span>
+      <span class="mi">2</span>     <span class="o">-</span><span class="mi">4</span>
+</pre></div></div></div>
+</div></div>
+<div class="paragraph"><p>And now, to show that using <span class="monospaced">'native'</span> does not always make sense, here the
+output using a FLAC file:</p></div>
+<div class="exampleblock">
+<div class="title">Example 7. Using <span class="monospaced">msndfile.read(..., 'native')</span> with a FLAC file</div>
+<div class="content">
+<div class="listingblock">
+<div class="content"><div class="highlight"><pre><span class="n">EDU</span><span class="o">&gt;&gt;</span> <span class="n">msndfile</span><span class="p">.</span><span class="n">read</span><span class="p">(</span><span class="s">&#39;test_files/test.flac&#39;</span><span class="p">,</span> <span class="mi">10</span><span class="p">,</span> <span class="s">&#39;native&#39;</span><span class="p">)</span>
+<span class="nb">ans</span> <span class="p">=</span>
+  <span class="o">-</span><span class="mi">8056</span> <span class="o">-</span><span class="mi">25196</span>
+   <span class="mi">9239</span>   <span class="mi">5111</span>
+  <span class="mi">27485</span> <span class="o">-</span><span class="mi">26301</span>
+   <span class="mi">3763</span>  <span class="mi">12444</span>
+  <span class="o">-</span><span class="mi">4953</span>  <span class="mi">20257</span>
+  <span class="mi">32212</span>   <span class="mi">8889</span>
+   <span class="o">-</span><span class="mi">368</span>  <span class="o">-</span><span class="mi">2329</span>
+  <span class="mi">15185</span>   <span class="mi">4621</span>
+  <span class="mi">11586</span>   <span class="mi">6946</span>
+   <span class="mi">9991</span>  <span class="mi">21003</span>
+</pre></div></div></div>
+</div></div>
+<div class="paragraph"><p>A unique feature of <span class="monospaced">msndfile.read</span> is support for RAW files. Here is an
+example showing how to set up the necessary <span class="monospaced">struct</span>.</p></div>
+<div class="exampleblock">
+<div class="title">Example 8. Using <span class="monospaced">msndfile.read(...)</span> to read a RAW file</div>
+<div class="content">
+<div class="paragraph"><p>You need to define a structure with at least three fields: <span class="monospaced">samplerate</span>,
+<span class="monospaced">channels</span> and <span class="monospaced">sampleformat</span>.  If either of these is not set, <span class="monospaced">msndfile.read</span>
+will output an error.</p></div>
+<div class="listingblock">
+<div class="content"><div class="highlight"><pre><span class="n">EDU</span><span class="o">&gt;&gt;</span> <span class="n">file_info</span><span class="p">.</span><span class="n">samplerate</span> <span class="p">=</span> <span class="mi">44100</span><span class="p">;</span>
+<span class="n">EDU</span><span class="o">&gt;&gt;</span> <span class="n">file_info</span><span class="p">.</span><span class="n">channels</span> <span class="p">=</span> <span class="mi">2</span><span class="p">;</span>
+<span class="n">EDU</span><span class="o">&gt;&gt;</span> <span class="n">msndfile</span><span class="p">.</span><span class="n">read</span><span class="p">(</span><span class="s">&#39;test_files/test.raw&#39;</span><span class="p">,</span> <span class="mi">10</span><span class="p">,</span> <span class="p">[],</span> <span class="n">file_info</span><span class="p">)</span>
+??? <span class="n">Error</span> <span class="n">using</span> <span class="o">==&gt;</span> <span class="n">read</span>
+<span class="n">Field</span> <span class="s">&#39;sampleformat&#39;</span> <span class="n">not</span> <span class="n">set</span><span class="p">.</span>
+</pre></div></div></div>
+<div class="paragraph"><p>Now with all required fields set:</p></div>
+<div class="listingblock">
+<div class="content"><div class="highlight"><pre><span class="n">EDU</span><span class="o">&gt;&gt;</span> <span class="n">file_info</span><span class="p">.</span><span class="n">sampleformat</span> <span class="p">=</span> <span class="s">&#39;PCM_16&#39;</span><span class="p">;</span>
+<span class="n">EDU</span><span class="o">&gt;&gt;</span> <span class="n">msndfile</span><span class="p">.</span><span class="n">read</span><span class="p">(</span><span class="s">&#39;test_files/test.raw&#39;</span><span class="p">,</span> <span class="mi">10</span><span class="p">,</span> <span class="p">[],</span> <span class="n">file_info</span><span class="p">)</span>
+<span class="nb">ans</span> <span class="p">=</span>
+   <span class="mf">1.0e-03</span> <span class="o">*</span>
+   <span class="o">-</span><span class="mf">0.0305</span>         <span class="mi">0</span>
+         <span class="mi">0</span>         <span class="mi">0</span>
+    <span class="mf">0.0305</span>   <span class="o">-</span><span class="mf">0.0610</span>
+    <span class="mf">0.0916</span>   <span class="o">-</span><span class="mf">0.1526</span>
+    <span class="mf">0.1221</span>   <span class="o">-</span><span class="mf">0.0916</span>
+    <span class="mf">0.0916</span>   <span class="o">-</span><span class="mf">0.0916</span>
+    <span class="mf">0.0305</span>   <span class="o">-</span><span class="mf">0.0610</span>
+    <span class="mf">0.0305</span>         <span class="mi">0</span>
+   <span class="o">-</span><span class="mf">0.0305</span>   <span class="o">-</span><span class="mf">0.0610</span>
+    <span class="mf">0.0610</span>   <span class="o">-</span><span class="mf">0.122</span>
+</pre></div></div></div>
+<div class="paragraph"><p>Of course <span class="monospaced">'native'</span> works here, too:</p></div>
+<div class="listingblock">
+<div class="content"><div class="highlight"><pre><span class="n">EDU</span><span class="o">&gt;&gt;</span> <span class="n">msndfile</span><span class="p">.</span><span class="n">read</span><span class="p">(</span><span class="s">&#39;test_files/test.raw&#39;</span><span class="p">,</span> <span class="mi">10</span><span class="p">,</span> <span class="s">&#39;native&#39;</span><span class="p">,</span> <span class="n">file_info</span><span class="p">)</span>
+<span class="nb">ans</span> <span class="p">=</span>
+     <span class="o">-</span><span class="mi">1</span>      <span class="mi">0</span>
+      <span class="mi">0</span>      <span class="mi">0</span>
+      <span class="mi">1</span>     <span class="o">-</span><span class="mi">2</span>
+      <span class="mi">3</span>     <span class="o">-</span><span class="mi">5</span>
+      <span class="mi">4</span>     <span class="o">-</span><span class="mi">3</span>
+      <span class="mi">3</span>     <span class="o">-</span><span class="mi">3</span>
+      <span class="mi">1</span>     <span class="o">-</span><span class="mi">2</span>
+      <span class="mi">1</span>      <span class="mi">0</span>
+     <span class="o">-</span><span class="mi">1</span>     <span class="o">-</span><span class="mi">2</span>
+      <span class="mi">2</span>     <span class="o">-</span><span class="mi">4</span>
+</pre></div></div></div>
+</div></div>
+</div>
+<div class="sect2">
+<h3 id="_span_class_monospaced_msndfile_blockread_span">7.2. <span class="monospaced">msndfile.blockread</span></h3>
+<div class="paragraph"><p>Here are some examples showing the use of <span class="monospaced">msndfile.blockread</span>.</p></div>
+<div class="paragraph"><p>First we open a file and read 10 samples twice in a row:</p></div>
+<div class="exampleblock">
+<div class="title">Example 9. Basic usage of <span class="monospaced">msndfile.blockread</span>&#8201;&#8212;&#8201;<span class="monospaced">open</span> and <span class="monospaced">read</span> commands</div>
+<div class="content">
+<div class="listingblock">
+<div class="content"><div class="highlight"><pre><span class="n">EDU</span><span class="o">&gt;&gt;</span> <span class="n">msndfile</span><span class="p">.</span><span class="n">blockread</span><span class="p">(</span><span class="s">&#39;open&#39;</span><span class="p">,</span> <span class="s">&#39;test_files/test.wav&#39;</span><span class="p">);</span>
+<span class="n">EDU</span><span class="o">&gt;&gt;</span> <span class="n">msndfile</span><span class="p">.</span><span class="n">blockread</span><span class="p">(</span><span class="s">&#39;read&#39;</span><span class="p">,</span> <span class="s">&#39;test_files/test.wav&#39;</span><span class="p">,</span> <span class="mi">10</span><span class="p">)</span>
+<span class="nb">ans</span> <span class="p">=</span>
+   <span class="mf">1.0e-03</span> <span class="o">*</span>
+   <span class="o">-</span><span class="mf">0.0305</span>         <span class="mi">0</span>
+         <span class="mi">0</span>         <span class="mi">0</span>
+    <span class="mf">0.0305</span>   <span class="o">-</span><span class="mf">0.0610</span>
+    <span class="mf">0.0916</span>   <span class="o">-</span><span class="mf">0.1526</span>
+    <span class="mf">0.1221</span>   <span class="o">-</span><span class="mf">0.0916</span>
+    <span class="mf">0.0916</span>   <span class="o">-</span><span class="mf">0.0916</span>
+    <span class="mf">0.0305</span>   <span class="o">-</span><span class="mf">0.0610</span>
+    <span class="mf">0.0305</span>         <span class="mi">0</span>
+   <span class="o">-</span><span class="mf">0.0305</span>   <span class="o">-</span><span class="mf">0.0610</span>
+    <span class="mf">0.0610</span>   <span class="o">-</span><span class="mf">0.1221</span>
+<span class="n">EDU</span><span class="o">&gt;&gt;</span> <span class="n">msndfile</span><span class="p">.</span><span class="n">blockread</span><span class="p">(</span><span class="s">&#39;read&#39;</span><span class="p">,</span> <span class="s">&#39;test_files/test.wav&#39;</span><span class="p">,</span> <span class="mi">10</span><span class="p">)</span>
+<span class="nb">ans</span> <span class="p">=</span>
+   <span class="mf">1.0e-03</span> <span class="o">*</span>
+    <span class="mf">0.0916</span>   <span class="o">-</span><span class="mf">0.1526</span>
+    <span class="mf">0.0916</span>   <span class="o">-</span><span class="mf">0.1526</span>
+    <span class="mf">0.0916</span>   <span class="o">-</span><span class="mf">0.1526</span>
+    <span class="mf">0.0610</span>   <span class="o">-</span><span class="mf">0.1526</span>
+    <span class="mf">0.0916</span>   <span class="o">-</span><span class="mf">0.1831</span>
+    <span class="mf">0.0610</span>   <span class="o">-</span><span class="mf">0.1221</span>
+   <span class="o">-</span><span class="mf">0.0305</span>   <span class="o">-</span><span class="mf">0.0305</span>
+   <span class="o">-</span><span class="mf">0.1221</span>         <span class="mi">0</span>
+   <span class="o">-</span><span class="mf">0.1221</span>   <span class="o">-</span><span class="mf">0.0610</span>
+         <span class="mi">0</span>   <span class="o">-</span><span class="mf">0.2136</span>
+</pre></div></div></div>
+</div></div>
+<div class="paragraph"><p>Now let us seek back to the beginning and read the first 20 samples again.</p></div>
+<div class="exampleblock">
+<div class="title">Example 10. Basic usage of <span class="monospaced">msndfile.blockread</span>&#8201;&#8212;&#8201;<span class="monospaced">seek</span> and <span class="monospaced">tell</span> commands</div>
+<div class="content">
+<div class="listingblock">
+<div class="content"><div class="highlight"><pre><span class="n">EDU</span><span class="o">&gt;&gt;</span> <span class="n">msndfile</span><span class="p">.</span><span class="n">blockread</span><span class="p">(</span><span class="s">&#39;seek&#39;</span><span class="p">,</span> <span class="s">&#39;test_files/test.wav&#39;</span><span class="p">,</span> <span class="mi">1</span><span class="p">)</span>
+<span class="n">EDU</span><span class="o">&gt;&gt;</span> <span class="n">msndfile</span><span class="p">.</span><span class="n">blockread</span><span class="p">(</span><span class="s">&#39;tell&#39;</span><span class="p">,</span> <span class="s">&#39;test_files/test.wav&#39;</span><span class="p">)</span>
+<span class="nb">ans</span> <span class="p">=</span>
+     <span class="mi">1</span>
+<span class="n">EDU</span><span class="o">&gt;&gt;</span> <span class="n">msndfile</span><span class="p">.</span><span class="n">blockread</span><span class="p">(</span><span class="s">&#39;read&#39;</span><span class="p">,</span> <span class="s">&#39;test_files/test.wav&#39;</span><span class="p">,</span> <span class="mi">20</span><span class="p">)</span>
+<span class="nb">ans</span> <span class="p">=</span>
+   <span class="mf">1.0e-03</span> <span class="o">*</span>
+   <span class="o">-</span><span class="mf">0.0305</span>         <span class="mi">0</span>
+         <span class="mi">0</span>         <span class="mi">0</span>
+    <span class="mf">0.0305</span>   <span class="o">-</span><span class="mf">0.0610</span>
+    <span class="mf">0.0916</span>   <span class="o">-</span><span class="mf">0.1526</span>
+    <span class="mf">0.1221</span>   <span class="o">-</span><span class="mf">0.0916</span>
+    <span class="mf">0.0916</span>   <span class="o">-</span><span class="mf">0.0916</span>
+    <span class="mf">0.0305</span>   <span class="o">-</span><span class="mf">0.0610</span>
+    <span class="mf">0.0305</span>         <span class="mi">0</span>
+   <span class="o">-</span><span class="mf">0.0305</span>   <span class="o">-</span><span class="mf">0.0610</span>
+    <span class="mf">0.0610</span>   <span class="o">-</span><span class="mf">0.1221</span>
+    <span class="mf">0.0916</span>   <span class="o">-</span><span class="mf">0.1526</span>
+    <span class="mf">0.0916</span>   <span class="o">-</span><span class="mf">0.1526</span>
+    <span class="mf">0.0916</span>   <span class="o">-</span><span class="mf">0.1526</span>
+    <span class="mf">0.0610</span>   <span class="o">-</span><span class="mf">0.1526</span>
+    <span class="mf">0.0916</span>   <span class="o">-</span><span class="mf">0.1831</span>
+    <span class="mf">0.0610</span>   <span class="o">-</span><span class="mf">0.1221</span>
+   <span class="o">-</span><span class="mf">0.0305</span>   <span class="o">-</span><span class="mf">0.0305</span>
+   <span class="o">-</span><span class="mf">0.1221</span>         <span class="mi">0</span>
+   <span class="o">-</span><span class="mf">0.1221</span>   <span class="o">-</span><span class="mf">0.0610</span>
+         <span class="mi">0</span>   <span class="o">-</span><span class="mf">0.2136</span>
+<span class="n">EDU</span><span class="o">&gt;&gt;</span> <span class="n">msndfile</span><span class="p">.</span><span class="n">blockread</span><span class="p">(</span><span class="s">&#39;tell&#39;</span><span class="p">,</span> <span class="s">&#39;test_files/test.wav&#39;</span><span class="p">)</span>
+<span class="nb">ans</span> <span class="p">=</span>
+    <span class="mi">21</span>
+</pre></div></div></div>
+</div></div>
+<div class="paragraph"><p>The <span class="monospaced">tell</span> command returns the current read position of the file, i.e., where
+the next read would occur if you do not pass the start position.</p></div>
+<div class="paragraph"><p>Now that we are done, we can close the file:</p></div>
+<div class="exampleblock">
+<div class="title">Example 11. Basic usage of <span class="monospaced">msndfile.blockread</span>&#8201;&#8212;&#8201;<span class="monospaced">close</span> command</div>
+<div class="content">
+<div class="listingblock">
+<div class="content"><div class="highlight"><pre><span class="n">EDU</span><span class="o">&gt;&gt;</span> <span class="n">msndfile</span><span class="p">.</span><span class="n">blockread</span><span class="p">(</span><span class="s">&#39;close&#39;</span><span class="p">,</span> <span class="s">&#39;test_files/test.wav&#39;</span><span class="p">)</span>
+<span class="n">EDU</span><span class="o">&gt;&gt;</span> <span class="n">msndfile</span><span class="p">.</span><span class="n">blockread</span><span class="p">(</span><span class="s">&#39;close&#39;</span><span class="p">,</span> <span class="s">&#39;test_files/test.wav&#39;</span><span class="p">)</span>
+??? <span class="n">Error</span> <span class="n">using</span> <span class="o">==&gt;</span> <span class="n">blockread</span>
+<span class="n">File</span> <span class="n">not</span> <span class="n">open</span><span class="p">.</span>
+</pre></div></div></div>
+</div></div>
+<div class="paragraph"><p>As you can see, attempting to close a file twice yields an error.</p></div>
+<div class="paragraph"><p>Now the final example: for compatibility with <span class="monospaced">wavread</span>, both <span class="monospaced">msndfile.read</span>
+and <span class="monospaced">msndfile.blockread</span> must internally transpose the output.  For a small
+performance boost, you can turn that off by passing a fourth argument to
+<span class="monospaced">msndfile.blockread</span>.</p></div>
+<div class="exampleblock">
+<div class="title">Example 12. Not transposing the output</div>
+<div class="content">
+<div class="listingblock">
+<div class="content"><div class="highlight"><pre><span class="n">EDU</span><span class="o">&gt;&gt;</span> <span class="n">msndfile</span><span class="p">.</span><span class="n">blockread</span><span class="p">(</span><span class="s">&#39;read&#39;</span><span class="p">,</span> <span class="s">&#39;test_files/test.wav&#39;</span><span class="p">,</span> <span class="mi">10</span><span class="p">,</span> <span class="n">false</span><span class="p">)</span>
+<span class="nb">ans</span> <span class="p">=</span>
+   <span class="mf">1.0e-03</span> <span class="o">*</span>
+  <span class="n">Columns</span> <span class="mi">1</span> <span class="n">through</span> <span class="mi">9</span>
+    <span class="mf">0.0610</span>    <span class="mf">0.0305</span>         <span class="mi">0</span>    <span class="mf">0.0305</span>    <span class="mf">0.0610</span>         <span class="mi">0</span>   <span class="o">-</span><span class="mf">0.0305</span>    <span class="mf">0.0305</span>   <span class="o">-</span><span class="mf">0.0305</span>
+   <span class="o">-</span><span class="mf">0.2136</span>   <span class="o">-</span><span class="mf">0.1831</span>   <span class="o">-</span><span class="mf">0.2136</span>   <span class="o">-</span><span class="mf">0.2441</span>   <span class="o">-</span><span class="mf">0.2441</span>   <span class="o">-</span><span class="mf">0.2136</span>   <span class="o">-</span><span class="mf">0.2136</span>   <span class="o">-</span><span class="mf">0.2747</span>   <span class="o">-</span><span class="mf">0.1526</span>
+  <span class="n">Column</span> <span class="mi">10</span>
+   <span class="o">-</span><span class="mf">0.1526</span>
+   <span class="o">-</span><span class="mf">0.0610</span>
+</pre></div></div></div>
+</div></div>
+<div class="admonitionblock">
+<table><tr>
+<td class="icon">
+<div class="title">Note</div>
+</td>
+<td class="content">To see the effect of the affect on performance, run the performance
+tests (see <a href="#testsuite">[testsuite]</a>).</td>
+</tr></table>
+</div>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="_bugs_feature_requests_amp_patches">8. Bugs, feature requests &amp; patches</h2>
+<div class="sectionbody">
+<div class="paragraph"><p>Bugs and features should ideally be reported/requested on the <a href="http://github.com/marcecj/msndfile/">github page</a>
+(using the issue tracker) or via <a href="mailto:marcec@gmx.de">marcec@gmx.de</a>.  Patches should ideally be handled
+via pull requests (either via the <a href="http://github.com/marcecj/msndfile/">github page</a> or by email), but I will also
+accept patches sent via email.</p></div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="_credits">9. Credits</h2>
+<div class="sectionbody">
+<div class="paragraph"><p>msndfile profits from the use of various other open-source projects.  These
+are credited here.</p></div>
+<table class="tableblock frame-none grid-none"
+style="
+">
+<col>
+<col>
+<tbody>
+<tr>
+<td class="tableblock halign-center valign-center" ><p class="tableblock">AsciiDoc</p></td>
+<td class="tableblock halign-left valign-center" ><p class="tableblock">This page was created using <a href="http://www.methods.co.nz/asciidoc/">AsciiDoc</a>, a great format for writing documentation.</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-center valign-center" ><p class="tableblock">MTest</p></td>
+<td class="tableblock halign-left valign-center" ><p class="tableblock">The test suite is implemented using <a href="http://www.mathworks.com/matlabcentral/fileexchange/22846">MTest</a>, the &#8220;MATLAB xUnit Test Framework&#8221;.</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-center valign-center" ><p class="tableblock"><span class="image">
+<img alt="./images/valgrind-link1.png"
+src="data:image/png;base64,
+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
+l77/BitByDOoQlo8AAAAAElFTkSuQmCC">
+</span></p></td>
+<td class="tableblock halign-left valign-center" ><p class="tableblock">The <a href="http://www.valgrind.org/">Valgrind</a> memory debugger proved useful in tracking down memory allocation bugs.</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-center valign-center" ><p class="tableblock"><span class="image">
+<img alt="./images/SCons-Bricks.png"
+src="data:image/png;base64,
+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
+2/pQJOwAAAAASUVORK5CYII=">
+</span></p></td>
+<td class="tableblock halign-left valign-center" ><p class="tableblock"><a href="http://scons.org">SCons</a> proved a flexible and relatively easy to use&#8201;&#8212;&#8201;and <em>extend</em>&#8201;&#8212;&#8201;build system.</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-center valign-center" ><p class="tableblock"><span class="image">
+<img alt="./images/git-logomark-orange.png" width="60"
+src="data:image/png;base64,
+iVBORw0KGgoAAAANSUhEUgAAAGQAAABkCAIAAAD/gAIDAAAAGXRFWHRTb2Z0d2FyZQBBZG9iZSBJ
+bWFnZVJlYWR5ccllPAAAA09pVFh0WE1MOmNvbS5hZG9iZS54bXAAAAAAADw/eHBhY2tldCBiZWdp
+bj0i77u/IiBpZD0iVzVNME1wQ2VoaUh6cmVTek5UY3prYzlkIj8+IDx4OnhtcG1ldGEgeG1sbnM6
+eD0iYWRvYmU6bnM6bWV0YS8iIHg6eG1wdGs9IkFkb2JlIFhNUCBDb3JlIDUuMy1jMDExIDY2LjE0
+NTY2MSwgMjAxMi8wMi8wNi0xNDo1NjoyNyAgICAgICAgIj4gPHJkZjpSREYgeG1sbnM6cmRmPSJo
+dHRwOi8vd3d3LnczLm9yZy8xOTk5LzAyLzIyLXJkZi1zeW50YXgtbnMjIj4gPHJkZjpEZXNjcmlw
+dGlvbiByZGY6YWJvdXQ9IiIgeG1sbnM6eG1wPSJodHRwOi8vbnMuYWRvYmUuY29tL3hhcC8xLjAv
+IiB4bWxuczp4bXBNTT0iaHR0cDovL25zLmFkb2JlLmNvbS94YXAvMS4wL21tLyIgeG1sbnM6c3RS
+ZWY9Imh0dHA6Ly9ucy5hZG9iZS5jb20veGFwLzEuMC9zVHlwZS9SZXNvdXJjZVJlZiMiIHhtcDpD
+cmVhdG9yVG9vbD0iQWRvYmUgUGhvdG9zaG9wIENTNiAoMTMuMCAyMDEyMDMwNS5tLjQxNSAyMDEy
+LzAzLzA1OjIxOjAwOjAwKSAgKE1hY2ludG9zaCkiIHhtcE1NOkluc3RhbmNlSUQ9InhtcC5paWQ6
+MENGQ0YyRTA3NUM0MTFFMUJEQTNFRTQ1NzJDNTU0RkMiIHhtcE1NOkRvY3VtZW50SUQ9InhtcC5k
+aWQ6MENGQ0YyRTE3NUM0MTFFMUJEQTNFRTQ1NzJDNTU0RkMiPiA8eG1wTU06RGVyaXZlZEZyb20g
+c3RSZWY6aW5zdGFuY2VJRD0ieG1wLmlpZDowQ0ZDRjJERTc1QzQxMUUxQkRBM0VFNDU3MkM1NTRG
+QyIgc3RSZWY6ZG9jdW1lbnRJRD0ieG1wLmRpZDowQ0ZDRjJERjc1QzQxMUUxQkRBM0VFNDU3MkM1
+NTRGQyIvPiA8L3JkZjpEZXNjcmlwdGlvbj4gPC9yZGY6UkRGPiA8L3g6eG1wbWV0YT4gPD94cGFj
+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">
+</span></p></td>
+<td class="tableblock halign-left valign-center" ><p class="tableblock"><a href="http://git-scm.com">Git</a> is simply an awesome version control system.</p></td>
+</tr>
+</tbody>
+</table>
+<div class="paragraph"><p>Also, thanks to <a href="http://bastibe.de/">Bastian Bechtold</a> for his feedback on this
+website and for testing msndfile under Mac.</p></div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="_copyrights">Appendix A: Copyrights</h2>
+<div class="sectionbody">
+<div class="paragraph"><p>msndfile is Copyright &#169; 2010-2014 Marc Joliet &lt;<a href="mailto:marcec@gmx.de">marcec@gmx.de</a>&gt; and licenced
+under the MIT licence.  See the file
+<a href="https://github.com/marcecj/msndfile/blob/master/LICENSE">LICENSE</a> in the
+project repository.</p></div>
+<div class="paragraph"><p>The documentation of msndfile (the AsciiDoc sources of this site and the file
+<span class="monospaced">README.md</span>) is Copyright &#169; 2010-2014 Marc Joliet &lt;<a href="mailto:marcec@gmx.de">marcec@gmx.de</a>&gt; and
+licenced under the
+<a href="http://creativecommons.org/licenses/by-sa/3.0/">Attribution-ShareAlike 3.0
+Unported (CC BY-SA 3.0)</a> license.</p></div>
+<div class="paragraph"><p>The SCons logo is licensed under the
+<a href="http://creativecommons.org/licenses/by-nc-sa/3.0/">Creative Commons
+Attribution-Noncommercial-Share Alike 3.0 Unported</a> license.</p></div>
+<div class="paragraph"><p>The Git Logo by <a href="http://twitter.com/jasonlong">Jason Long</a> is licensed under the
+<a href="http://creativecommons.org/licenses/by/3.0/">Creative Commons Attribution
+3.0 Unported</a> license.</p></div>
+<div class="paragraph"><p>The test files test.{raw,flac,wav} are an excerpt of &#8220;Glass Cafe&#8221; by Jon7
+and are licensed under the
+<a href="http://creativecommons.org/licenses/by-nc-sa/2.5/">Attribution-NonCommercial-ShareAlike
+2.5 Generic (CC BY-NC-SA 2.5)</a> license.</p></div>
+<div class="paragraph"><p>libsndfile is maintained by Erik de Castro Lopo &lt;<a href="mailto:erikd@mega-nerd.com">erikd@mega-nerd.com</a>&gt; and is
+licensed under the <a href="http://www.gnu.org/licenses/old-licenses/lgpl-2.1">LGPLv2.1</a>
+(included in the source directory in the file &#8220;LGPL-2.1&#8221;).</p></div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="_document_revision_history">Appendix B: Document revision history</h2>
+<div class="sectionbody">
+<table class="tableblock frame-all grid-all"
+style="
+margin-left:auto; margin-right:auto;
+">
+<col>
+<col>
+<col>
+<tbody>
+<tr>
+<td class="tableblock halign-left valign-top" ><p class="tableblock">Version</p></td>
+<td class="tableblock halign-left valign-top" ><p class="tableblock">Date</p></td>
+<td class="tableblock halign-left valign-top" ><p class="tableblock">Summary of changes</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top" ><p class="tableblock">1.0</p></td>
+<td class="tableblock halign-left valign-top" ><p class="tableblock">2012.11.05</p></td>
+<td class="tableblock halign-left valign-top" ><p class="tableblock">First version.</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top" ><p class="tableblock">1.0.1</p></td>
+<td class="tableblock halign-left valign-top" ><p class="tableblock">2012.11.05</p></td>
+<td class="tableblock halign-left valign-top" ><p class="tableblock">Add credit to Git and MTest, miscellaneous edits/improvements, update copyrights.</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top" ><p class="tableblock">1.0.2</p></td>
+<td class="tableblock halign-left valign-top" ><p class="tableblock">2012.11.30</p></td>
+<td class="tableblock halign-left valign-top" ><p class="tableblock">Update for 1.0 release.  Lots of improvements and updates.</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top" ><p class="tableblock">1.1.0</p></td>
+<td class="tableblock halign-left valign-top" ><p class="tableblock">2013.11.30</p></td>
+<td class="tableblock halign-left valign-top" ><p class="tableblock">Update for 1.1 release.  Lots of improvements and updates.</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top" ><p class="tableblock">1.1.1</p></td>
+<td class="tableblock halign-left valign-top" ><p class="tableblock">2014.01.22</p></td>
+<td class="tableblock halign-left valign-top" ><p class="tableblock">Provide link to 64 bit Linux binaries.</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top" ><p class="tableblock">1.1.2</p></td>
+<td class="tableblock halign-left valign-top" ><p class="tableblock">2014.09.01</p></td>
+<td class="tableblock halign-left valign-top" ><p class="tableblock">Update copyrights, fix "lot&#8217;s" &#8594; "lots" in revision history.</p></td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+</div>
+<div id="footnotes"><hr></div>
+<div id="footer">
+<div id="footer-text">
+Version 1.1.2<br>
+Last updated 2014-09-01 18:01:24 CEST
+</div>
+</div>
+</body>
+</html>
