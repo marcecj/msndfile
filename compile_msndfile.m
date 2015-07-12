@@ -50,7 +50,7 @@ if ~verLessThan('matlab', '7.1')
 end
 
 % -fno-reorder-blocks needed with GCC >= 4.5, otherwise Matlab crashes
-extra_flags = '-std=c99 -fno-reorder-blocks';
+extra_flags = '-std=c11 -fno-reorder-blocks';
 if have_stdint_h
     extra_flags = [extra_flags ' -DHAVE_STDINT_H'];
 end
