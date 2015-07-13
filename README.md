@@ -1,7 +1,8 @@
 # The msndfile Mex extension
 Marc Joliet <marcec@gmx.de>
 
-For more information, visit the [project homepage](http://msndfile.sf.net).
+For more information, visit the [project
+homepage](https://marcecj.github.io/msndfile/).
 
 ## Introduction
 
@@ -28,11 +29,11 @@ There are two ways to compile msndfile.  The easy way, in Matlab, is to type
 `compile_msndfile` to compile all Mex extensions.  The resulting package
 directory `+msndfile` should be copied to a location in MATLABs path.
 
-There is also a more flexible build system based on SCons that can also generate
-a Visual Studio IDE project file and can be integrated into other IDEs like
-Eclipse.  This build system is explained in more detail in the full
-documentation on the [project homepage](http://msndfile.sf.net) (or in the `doc`
-directory in the source repository).
+There is also a more flexible build system based on SCons that can also
+generate a Visual Studio IDE project file and can be integrated into other IDEs
+like Eclipse.  This build system is explained in more detail in the full
+documentation on the [project homepage](https://marcecj.github.io/msndfile/)
+(or in the `doc` directory in the source repository).
 
 ## Copyrights
 
