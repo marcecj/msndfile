@@ -832,9 +832,9 @@ asciidoc.install(2);
 <h1>The msndfile Mex extension</h1>
 <span id="author">Marc Joliet</span><br>
 <span id="email" class="monospaced">&lt;<a href="mailto:marcec@gmx.de">marcec@gmx.de</a>&gt;</span><br>
-<span id="revnumber">version 1.1.2,</span>
-<span id="revdate">1st September 2014</span>
-<br><span id="revremark">Update copyrights, fix "lot&#8217;s" &#8594; "lots" in revision history.</span>
+<span id="revnumber">version 1.1.3,</span>
+<span id="revdate">13th July 2015</span>
+<br><span id="revremark">Document move to GitHub Pages.  Update the FLAC homepage.</span>
 <div id="toc">
   <div id="toctitle">Table of Contents</div>
   <noscript><p><b>JavaScript must be enabled in your browser to display the table of contents.</b></p></noscript>
@@ -845,10 +845,11 @@ asciidoc.install(2);
 <div class="sectionbody">
 <div class="paragraph"><p>msndfile is a suite of MATLAB Mex wrappers of the <a href="http://www.mega-nerd.com/libsndfile">libsndfile</a> C library for
 reading and writing audio files.</p></div>
-<div class="paragraph"><p>This project is split between SourceForge.net and github.com.  The SF.net
-<a href="http://sourceforge.net/projects/msndfile/">project page</a> hosts downloads, this website and the git repository.  The
-<a href="http://github.com/marcecj/msndfile/">github page</a> also hosts the git repository (isn&#8217;t git nice?) and a bug tracker
-and is basically where development happens.</p></div>
+<div class="paragraph"><p>This project is split between SourceForge.net and github.com, although it is
+in the process of moving completely to the latter.  The <a href="http://github.com/marcecj/msndfile/">github page</a> hosts
+this website, the git repository, and a bug tracker, and is basically where
+development happens.  The SF.net <a href="http://sourceforge.net/projects/msndfile/">project page</a> currently still hosts
+downloads.</p></div>
 </div>
 </div>
 <div class="sect1">
@@ -864,7 +865,7 @@ including many WAV variants, and has a track record of robustness <span class="f
 received informal feedback from one user who had WAV files that <span class="monospaced">wavread()</span>
 had trouble reading, but which libsndfile handled fine.]<br></span>.  This also means
 that msndfile supports <a href="http://www.vorbis.com/">Ogg Vorbis</a> and (in my opinion much more interesting) the
-Free Lossless Audio Codec <a href="http://flac.sourceforge.net">FLAC</a>.</p></div>
+Free Lossless Audio Codec <a href="https://xiph.org/flac/">FLAC</a>.</p></div>
 <div class="paragraph"><p>Currently, the suite consists of two functions: <span class="monospaced">msndfile.read</span> and
 <span class="monospaced">msndfile.blockread</span>.  The latter is intended solely for reading audio files
 block-wise, for instance to process large files that do not fit in RAM.  Still
@@ -880,7 +881,7 @@ supposed to be API-compatible with <span class="monospaced">wavwrite</span>.</p>
 <div class="ulist"><ul>
 <li>
 <p>
-Can read any file type supported by libsndfile, such as <a href="http://flac.sourceforge.net">FLAC</a> and <a href="http://www.vorbis.com/">Ogg Vorbis</a>,
+Can read any file type supported by libsndfile, such as <a href="https://xiph.org/flac/">FLAC</a> and <a href="http://www.vorbis.com/">Ogg Vorbis</a>,
   but also various WAV formats not supported by the <span class="monospaced">wavread</span> function, e.g.
   Riff64 (RF64), and has no (known) file size limit.
 </p>
@@ -2017,12 +2018,12 @@ website and for testing msndfile under Mac.</p></div>
 <div class="sect1">
 <h2 id="_copyrights">Appendix A: Copyrights</h2>
 <div class="sectionbody">
-<div class="paragraph"><p>msndfile is Copyright &#169; 2010-2014 Marc Joliet &lt;<a href="mailto:marcec@gmx.de">marcec@gmx.de</a>&gt; and licenced
+<div class="paragraph"><p>msndfile is Copyright &#169; 2010-2015 Marc Joliet &lt;<a href="mailto:marcec@gmx.de">marcec@gmx.de</a>&gt; and licenced
 under the MIT licence.  See the file
 <a href="https://github.com/marcecj/msndfile/blob/master/LICENSE">LICENSE</a> in the
 project repository.</p></div>
 <div class="paragraph"><p>The documentation of msndfile (the AsciiDoc sources of this site and the file
-<span class="monospaced">README.md</span>) is Copyright &#169; 2010-2014 Marc Joliet &lt;<a href="mailto:marcec@gmx.de">marcec@gmx.de</a>&gt; and
+<span class="monospaced">README.md</span>) is Copyright &#169; 2010-2015 Marc Joliet &lt;<a href="mailto:marcec@gmx.de">marcec@gmx.de</a>&gt; and
 licenced under the
 <a href="http://creativecommons.org/licenses/by-sa/3.0/">Attribution-ShareAlike 3.0
 Unported (CC BY-SA 3.0)</a> license.</p></div>
@@ -2087,6 +2088,11 @@ margin-left:auto; margin-right:auto;
 <td class="tableblock halign-left valign-top" ><p class="tableblock">2014.09.01</p></td>
 <td class="tableblock halign-left valign-top" ><p class="tableblock">Update copyrights, fix "lot&#8217;s" &#8594; "lots" in revision history.</p></td>
 </tr>
+<tr>
+<td class="tableblock halign-left valign-top" ><p class="tableblock">1.1.3</p></td>
+<td class="tableblock halign-left valign-top" ><p class="tableblock">2015.07.13</p></td>
+<td class="tableblock halign-left valign-top" ><p class="tableblock">Document move to GitHub Pages.  Update the FLAC homepage.</p></td>
+</tr>
 </tbody>
 </table>
 </div>
@@ -2095,8 +2101,8 @@ margin-left:auto; margin-right:auto;
 <div id="footnotes"><hr></div>
 <div id="footer">
 <div id="footer-text">
-Version 1.1.2<br>
-Last updated 2014-09-01 18:01:24 CEST
+Version 1.1.3<br>
+Last updated 2015-07-13 14:17:48 CEST
 </div>
 </div>
 </body>
