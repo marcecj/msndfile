@@ -37,11 +37,11 @@ documentation on the [project homepage](https://marcecj.github.io/msndfile/)
 
 ## Copyrights
 
-msndfile is Copyright (C) 2010-2014 Marc Joliet <marcec@gmx.de> and licenced
+msndfile is Copyright (C) 2010-2015 Marc Joliet <marcec@gmx.de> and licenced
 under the MIT licence.  See the file [LICENSE](LICENSE) in the project
 repository.
 
-The documentation of msndfile (including this README) is Copyright (C) 2010-2014
+The documentation of msndfile (including this README) is Copyright (C) 2010-2015
 Marc Joliet <marcec@gmx.de> and licenced under the [Attribution-ShareAlike 3.0
 Unported (CC BY-SA 3.0)](http://creativecommons.org/licenses/by-sa/3.0/)
 license.

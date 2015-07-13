@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2010-2014 Marc Joliet
+ * Copyright (C) 2010-2015 Marc Joliet
  *
  * Full license information can be found in the file LICENSE in the top-level
  * directory of the source repository.
