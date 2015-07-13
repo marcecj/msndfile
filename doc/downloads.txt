@@ -3,24 +3,11 @@ Download
 
 The most recent version of msndfile is 1.1. You can download the source
 package, binaries (32 bit Windows, 32 bit and 64 bit Linux) and a PDF version
-of this website here:
-
-Windows::
-http://sourceforge.net/projects/msndfile/files/1.1/msndfile-1.1-win32.zip/download
-Linux (32 bit)::
-http://sourceforge.net/projects/msndfile/files/1.1/msndfile-1.1-glnx86.zip/download
-Linux (64 bit)::
-http://sourceforge.net/projects/msndfile/files/1.1/msndfile-1.1-glnxa64.zip/download
-Source::
-http://sourceforge.net/projects/msndfile/files/1.1/msndfile-1.1-src.zip/download
-Manual::
-http://sourceforge.net/projects/msndfile/files/1.1/msndfile-1.1-manual.pdf/download
-
+of this website https://github.com/marcecj/msndfile/releases/tag/v1.1[here].
 The 32 bit binaries were compiled using MATLAB 2010a Student Edition, the
 64 bit Linux binaries using 2013a Student Edition.
 
-Older versions can be found at the SourceForge {projectpage}.  The Windows
-binaries bundle the libsndfile DLL.  Under Linux and Mac it is expected that
-libsndfile is already installed (e.g., via a package manager).
+The Windows binaries bundle the libsndfile DLL.  Under Linux and Mac it is
+expected that libsndfile is already installed (e.g., via a package manager).
 
 // vim:ft=asciidoc
