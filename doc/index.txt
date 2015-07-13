@@ -1,14 +1,14 @@
 The msndfile Mex extension
 ==========================
 Marc Joliet <marcec@gmx.de>
-v1.1.2, 1st September 2014: Update copyrights, fix "lot's" -> "lots" in revision history.
+v1.1.3, 13th July 2015: Document move to GitHub Pages.
 :toc2:
 :max-width: 50em
 :numbered:
 :data-uri:
 :source-highlighter: pygments
 :keywords:      matlab, mex, libsndfile, audio
-:website:       http://msndfile.sourceforge.net
+:website:       https://marcecj.github.io/msndfile/
 :projectpage:   http://sourceforge.net/projects/msndfile/[project page]
 :githubpage:    http://github.com/marcecj/msndfile/[github page]
 :asciidoc:      http://www.methods.co.nz/asciidoc/[AsciiDoc]
@@ -21,10 +21,11 @@ v1.1.2, 1st September 2014: Update copyrights, fix "lot's" -> "lots" in revision
 msndfile is a suite of MATLAB Mex wrappers of the {libsndfile} C library for
 reading and writing audio files.
 
-This project is split between SourceForge.net and github.com.  The SF.net
-{projectpage} hosts downloads, this website and the git repository.  The
-{githubpage} also hosts the git repository (isn't git nice?) and a bug tracker
-and is basically where development happens.
+This project is split between SourceForge.net and github.com, although it is
+in the process of moving completely to the latter.  The {githubpage} hosts
+this website, the git repository, and a bug tracker, and is basically where
+development happens.  The SF.net {projectpage} currently still hosts
+downloads.
 
 include::intro.txt[]
 
