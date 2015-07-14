@@ -3,7 +3,6 @@ Source code repository
 
 The msndfile source code is managed with {git}.  The repository is hosted on
 github, see the {githubpage}.  If you would like to contribute (be it with bug
-reports or patches), this is the place to go.  The repository is also hosted
-on SourceForge.net for redundancy, see the {projectpage}.
+reports or patches), this is the place to go.
 
 // vim:ft=asciidoc
