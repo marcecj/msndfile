@@ -1,7 +1,7 @@
 The msndfile Mex extension
 ==========================
 Marc Joliet <marcec@gmx.de>
-v1.1.5, 15th July 2015: Remove the obsolete reference to the sf.net git repository.
+v1.1.6, 15th July 2015: Update for 1.1.1 release.  Minor reformulation.
 :toc2:
 :max-width: 50em
 :numbered:
