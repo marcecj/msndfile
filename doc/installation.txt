@@ -24,17 +24,13 @@ The basic dependencies of msndfile are:
 - MATLAB (tested with 2010a Student Edition)
 - {libsndfile}
 - a C compiler that supports C11 (e.g., GCC, clang)
-- `stdint.h` (a C99 header file; required for reading files in their native
-  format, à la `wavread(..., 'native')`)
 - {mtest} (needed only for the test suite)
 
 The requirement for a compiler that supports C11 means that the Microsoft
 Visual Compiler cannot be supported anymore.  However, you can still generate
 Visual Studio projects with the SCons based build system; they will simply use
 another compiler footnote:[I do not know if debugging in VS is possible this
-way; it might be with the appropriate add-ins, e.g., VisualGDB.].  If
-`stdint.h` is not available (as might be the case for older compilers), a
-compatibility header (`stdint_compat.h`) is used instead.
+way; it might be with the appropriate add-ins, e.g., VisualGDB.].
 
 To obtain libsndfile, you may try the following steps:
 
