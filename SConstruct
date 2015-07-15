@@ -44,7 +44,7 @@ env_vars.AddVariables(
 # initialise the environment
 #
 # NOTE: this uses a custom "default" tool that removes the Microsoft tools from
-# the default tool lists, since msndfile requires C99 support
+# the default tool lists, since msndfile requires C11 support
 #
 # TODO: find a better way to remove MSVC support
 env = Environment(tools = ['default', 'packaging', 'matlab'],
