@@ -3,6 +3,28 @@
 This document records the changes made in each release of msndfile, and in all
 release candidates.  For the full list of changes, see the git log.
 
+## Version 1.1.1 (2015.07.15)
+
+This is almost purely a bug fix release.  There is precisely one new "feature":
+the SCons build system now imports `CC` from the environment.
+
+Theoretically, the biggest change is that msndfile now compiles as C11 (instead
+of C99).  However, since all of the compilers that I care about (GCC and clang)
+support both C99 and C11, I do not consider this to be a big deal.
+
+Also: this is the first release after the move away from SourceForge.  Hooray!
+
+Changes since 1.1:
+
+- fix two bugs found with the clang static analyzer
+- fix support for newer clang versions (however, in order to do this, msndfile
+  must now compile as C11)
+- add some more unit tests
+- some stylistic changes (mainly the use of `strdup()`)
+- some changes to the build system (mainly that it can now import `CC` from the
+  environment)
+- various documentation updates
+
 ## Version 1.1 (2013.11.30)
 
 I decided to throw in another release before working on write support.  It only
