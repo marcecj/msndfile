@@ -17,7 +17,7 @@ Due to the use of [libsndfile](http://www.mega-nerd.com/libsndfile), msndfile
 supports more formats than `wavread`, such as various WAV version not supported by
 `wavread` (e.g., ADPCM, µ-law and A-law), [OGG Vorbis](http://www.vorbis.com/)
 and (in my opinion much more interesting) the Free Lossless Audio Codec
-[FLAC](http://flac.sourceforge.net).
+[FLAC](https://xiph.org/flac/).
 
 Still missing are the corresponding functions for writing data: `msndfile.write`
 and `msndfile.blockwrite`.  Just as with `msndfile.read`, `msndfile.write` is
