@@ -832,9 +832,9 @@ asciidoc.install(2);
 <h1>The msndfile Mex extension</h1>
 <span id="author">Marc Joliet</span><br>
 <span id="email" class="monospaced">&lt;<a href="mailto:marcec@gmx.de">marcec@gmx.de</a>&gt;</span><br>
-<span id="revnumber">version 1.1.5,</span>
+<span id="revnumber">version 1.1.6,</span>
 <span id="revdate">15th July 2015</span>
-<br><span id="revremark">Remove the obsolete reference to the sf.net git repository.</span>
+<br><span id="revremark">Update for 1.1.1 release.  Minor reformulation.</span>
 <div id="toc">
   <div id="toctitle">Table of Contents</div>
   <noscript><p><b>JavaScript must be enabled in your browser to display the table of contents.</b></p></noscript>
@@ -1005,13 +1005,12 @@ In older versions of MATLAB trying to read zero samples will instead read a
 <div class="sect1">
 <h2 id="_download">4. Download</h2>
 <div class="sectionbody">
-<div class="paragraph"><p>The most recent version of msndfile is 1.1. You can download the source
-package, binaries (32 bit Windows, 32 bit and 64 bit Linux) and a PDF version
-of this website <a href="https://github.com/marcecj/msndfile/releases/tag/v1.1">here</a>.
-The 32 bit binaries were compiled using MATLAB 2010a Student Edition, the
-64 bit Linux binaries using 2013a Student Edition.</p></div>
-<div class="paragraph"><p>The Windows binaries bundle the libsndfile DLL.  Under Linux and Mac it is
-expected that libsndfile is already installed (e.g., via a package manager).</p></div>
+<div class="paragraph"><p>The most recent version of msndfile is 1.1.1. You can download the source
+package, binary packages (for whatever platforms are available to me), and a
+PDF version of this website
+<a href="https://github.com/marcecj/msndfile/releases/tag/v1.1.1">here</a>.</p></div>
+<div class="paragraph"><p>The Windows binary packages bundle the libsndfile DLL.  Under Linux and Mac it
+is expected that libsndfile is already installed (e.g., via a package manager).</p></div>
 </div>
 </div>
 <div class="sect1">
@@ -1049,13 +1048,7 @@ MATLAB (tested with 2010a Student Edition)
 </li>
 <li>
 <p>
-a C compiler that supports C99 (e.g., GCC, clang)
-</p>
-</li>
-<li>
-<p>
-<span class="monospaced">stdint.h</span> (a C99 header file; required for reading files in their native
-  format, à la <span class="monospaced">wavread(..., 'native')</span>)
+a C compiler that supports C11 (e.g., GCC, clang)
 </p>
 </li>
 <li>
@@ -1064,13 +1057,11 @@ a C compiler that supports C99 (e.g., GCC, clang)
 </p>
 </li>
 </ul></div>
-<div class="paragraph"><p>The requirement for a compiler that supports C99 means that the Microsoft
+<div class="paragraph"><p>The requirement for a compiler that supports C11 means that the Microsoft
 Visual Compiler cannot be supported anymore.  However, you can still generate
 Visual Studio projects with the SCons based build system; they will simply use
 another compiler <span class="footnote"><br>[I do not know if debugging in VS is possible this
-way; it might be with the appropriate add-ins, e.g., VisualGDB.]<br></span>.  If
-<span class="monospaced">stdint.h</span> is not available (as might be the case for older compilers), a
-compatibility header (<span class="monospaced">stdint_compat.h</span>) is used instead.</p></div>
+way; it might be with the appropriate add-ins, e.g., VisualGDB.]<br></span>.</p></div>
 <div class="paragraph"><p>To obtain libsndfile, you may try the following steps:</p></div>
 <div class="dlist"><dl>
 <dt class="hdlist1">
@@ -1162,7 +1153,7 @@ the defaults to your needs.</p></div>
 <div class="title">Note</div>
 </td>
 <td class="content">
-<div class="paragraph"><p>If <span class="monospaced">mex -setup</span> does not find a C99 compatible compiler, you will have
+<div class="paragraph"><p>If <span class="monospaced">mex -setup</span> does not find a C11 compatible compiler, you will have
 to configure mex manually.  The options I know of are:</p></div>
 <div class="ulist"><ul>
 <li>
@@ -2058,6 +2049,11 @@ margin-left:auto; margin-right:auto;
 <td class="tableblock halign-left valign-top" ><p class="tableblock">2015.07.15</p></td>
 <td class="tableblock halign-left valign-top" ><p class="tableblock">Remove the obsolete reference to the sf.net git repository.</p></td>
 </tr>
+<tr>
+<td class="tableblock halign-left valign-top" ><p class="tableblock">1.1.6</p></td>
+<td class="tableblock halign-left valign-top" ><p class="tableblock">2015.07.15</p></td>
+<td class="tableblock halign-left valign-top" ><p class="tableblock">Update for 1.1.1 release.  Minor reformulation.</p></td>
+</tr>
 </tbody>
 </table>
 </div>
@@ -2066,8 +2062,8 @@ margin-left:auto; margin-right:auto;
 <div id="footnotes"><hr></div>
 <div id="footer">
 <div id="footer-text">
-Version 1.1.5<br>
-Last updated 2015-07-15 01:15:14 CEST
+Version 1.1.6<br>
+Last updated 2015-07-15 22:14:19 CEST
 </div>
 </div>
 </body>
