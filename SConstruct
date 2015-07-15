@@ -214,7 +214,7 @@ msndfile_inst = env.Install(install_path, pkg_src)
 
 sndfile_pkg = env.Package(
     NAME        = "msndfile",
-    VERSION     = "1.1",
+    VERSION     = "1.1.1",
     PACKAGETYPE = "zip",
     source = msndfile_inst + ['README.md', 'LICENSE', 'LGPL-2.1']
 )
