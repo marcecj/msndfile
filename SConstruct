@@ -130,17 +130,6 @@ if not (GetOption('clean') or GetOption('help')):
     if not conf.CheckLibWithHeader(sndfile_lib, 'sndfile.h', 'c'):
         exit("error: you need to install libsndfile(-dev)")
 
-    if conf.CheckCHeader('stdint.h'):
-        env.Append(CPPDEFINES="HAVE_STDINT_H")
-    elif conf.CheckCHeader('sys/types.h'):
-        env.Append(CPPDEFINES="HAVE_SYS_TYPES_H")
-        if env['PLATFORM'] == 'win32':
-            print "info: using compatibility header in place of stdint.h"
-        else:
-            print "info: using sys/types.h in place of stdint.h"
-    else:
-        print "info: using compatibility header in place of stdint.h"
-
     env = conf.Finish()
 
 #####################

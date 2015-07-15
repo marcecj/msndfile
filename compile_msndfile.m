@@ -11,7 +11,6 @@ function compile_msndfile(varargin)
 %
 %   Name        | Type    | Description                                  | Default
 %   ==================================================================================
-%   HaveStdintH | logical | whether the system has the stdint.h C header | true
 %   Debug       | logical | whether to build msndfile with debug symbols | false
 %   Destdir     | char    | where to install the package directory       | '.'
 %   PkgDir      | char    | the name of the package directory            | '+msndfile'
@@ -31,8 +30,6 @@ p.parse(varargin{:});
 %% build variables
 %
 
-% define whether stdint.h is available
-have_stdint_h = p.Results.HaveStdintH;
 % define whether to create a debug build
 do_debug      = p.Results.Debug;
 % the installation prefix
@@ -51,10 +48,6 @@ end
 
 % -fno-reorder-blocks needed with GCC >= 4.5, otherwise Matlab crashes
 extra_flags = '-std=c11 -fno-reorder-blocks';
-if have_stdint_h
-    extra_flags = [extra_flags ' -DHAVE_STDINT_H'];
-end
-
 src_dir     = 'src/+msndfile';
 
 % the build directory

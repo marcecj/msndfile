@@ -5,11 +5,7 @@
  * directory of the source repository.
  */
 
-#ifdef HAVE_STDINT_H
 #include <stdint.h>
-#else
-#include "stdint_compat.h"
-#endif
 #include <string.h>
 #include <stdio.h>
 #include <uchar.h>
