@@ -16,7 +16,7 @@
  */
 
 /* returns the number of simple formats + RAW */
-unsigned int get_num_formats(void)
+static unsigned int get_num_formats(void)
 {
     int num_formats;
 
@@ -30,7 +30,7 @@ unsigned int get_num_formats(void)
 }
 
 /* returns a list of file extensions to simple formats + RAW */
-char** get_format_extensions(void)
+static char** get_format_extensions(void)
 {
     const unsigned int num_formats = get_num_formats();
     char** file_exts = (char**)malloc(num_formats*sizeof(char*));
@@ -53,7 +53,7 @@ char** get_format_extensions(void)
 
 /* helper function for gen_filename(): return whether a file extension was
  * already checked */
-unsigned int ext_already_checked(char *restrict *restrict extensions, const char* const restrict ext, const unsigned int num_ext)
+static unsigned int ext_already_checked(char *restrict *restrict extensions, const char* const restrict ext, const unsigned int num_ext)
 {
     for( unsigned int i = 0; i < num_ext; i++ )
         if( strcmp(extensions[i], ext) == 0 )

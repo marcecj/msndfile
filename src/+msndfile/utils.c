@@ -22,7 +22,7 @@
 #define FMT_STR_SIZE 10
 
 /* function to get a value from a look-up table */
-int lookup_val(const FMT_TABLE *const restrict array, const char *const restrict name)
+static int lookup_val(const FMT_TABLE *const restrict array, const char *const restrict name)
 {
     for(int i = 0; i < array->size; i++)
         if( strcmp(name, array->table[i].name) == 0 )

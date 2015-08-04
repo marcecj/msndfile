@@ -9,7 +9,7 @@
 #define __FORMAT_TABLES_H__
 
 /* major formats */
-const KEY_VAL maj_fmts_names[] = {
+static const KEY_VAL maj_fmts_names[] = {
     { "WAV"   , SF_FORMAT_WAV, },
     { "AIFF"  , SF_FORMAT_AIFF, },
     { "AU"    , SF_FORMAT_AU, },
@@ -32,10 +32,10 @@ const KEY_VAL maj_fmts_names[] = {
     { "FLAC"  , SF_FORMAT_FLAC, },
     { "CAF"   , SF_FORMAT_CAF, },
 };
-const FMT_TABLE maj_fmts = {maj_fmts_names, 21};
+static const FMT_TABLE maj_fmts = {maj_fmts_names, 21};
 
 /* sample formats */
-const KEY_VAL sub_fmts_names[] = {
+static const KEY_VAL sub_fmts_names[] = {
     { "PCM_S8", SF_FORMAT_PCM_S8, },
     { "PCM_16", SF_FORMAT_PCM_16, },
     { "PCM_24", SF_FORMAT_PCM_24, },
@@ -59,15 +59,15 @@ const KEY_VAL sub_fmts_names[] = {
     { "DPCM_8", SF_FORMAT_DPCM_8, },
     { "DPCM_16", SF_FORMAT_DPCM_16, },
 };
-const FMT_TABLE sub_fmts = {sub_fmts_names, 22};
+static const FMT_TABLE sub_fmts = {sub_fmts_names, 22};
 
 /* endianness options. */
-const KEY_VAL endianness_types_names[] = {
+static const KEY_VAL endianness_types_names[] = {
     { "FILE", SF_ENDIAN_FILE, },
     { "LITTLE", SF_ENDIAN_LITTLE, },
     { "BIG", SF_ENDIAN_BIG, },
     { "CPU", SF_ENDIAN_CPU, },
 };
-const FMT_TABLE endianness_types = {endianness_types_names, 4};
+static const FMT_TABLE endianness_types = {endianness_types_names, 4};
 
 #endif /* __FORMAT_TABLES_H__ */

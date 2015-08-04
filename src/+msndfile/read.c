@@ -21,7 +21,7 @@
 static SNDFILE* sf_input_file=NULL;
 
 /* function for clearing memory after Matlab ends */
-void clear_memory(void)
+static void clear_memory(void)
 {
     if( sf_input_file )
         sf_close(sf_input_file);

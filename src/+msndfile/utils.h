@@ -23,13 +23,6 @@ typedef struct {
 } FMT_TABLE;
 
 /*
- * libsndfile format look-up functions
- */
-
-/* get a value from a look-up table */
-int lookup_val(const FMT_TABLE *const restrict array, const char *const restrict name);
-
-/*
  * misc functions
  */
 

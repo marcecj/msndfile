@@ -28,7 +28,7 @@ enum {
 
 static AUDIO_FILES *file_list=NULL;
 
-void clear_static_vars()
+static void clear_static_vars()
 {
     file_list = destroy_file_list(file_list);
 }
