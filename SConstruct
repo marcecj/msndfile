@@ -97,6 +97,10 @@ if env['CC'] == 'gcc' and env['CCVERSION'] >= '4.5':
     if env['verbose']:
         env.Append(CCFLAGS="-ftree-vectorizer-verbose=2")
 
+if env['CC'] != 'cl':
+
+    env.Append(LINKFLAGS=['-s', '-Wl,--version-script=src/exports.map'])
+
 # if the system is 64 bit and Matlab is 32 bit, compile for 32 bit; since
 # Matlab currently only runs on x86 architectures, checking for x86_64
 # should suffice
