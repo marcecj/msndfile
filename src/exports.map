@@ -1,4 +1,0 @@
-VERSION {
-    global: mexFunction;
-    local: *;
-};

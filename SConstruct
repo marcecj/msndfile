@@ -99,7 +99,10 @@ if env['CC'] == 'gcc' and env['CCVERSION'] >= '4.5':
 
 if env['CC'] != 'cl':
 
-    env.Append(LINKFLAGS=['-s', '-Wl,--version-script=src/exports.map'])
+    # -fvisibility=hidden results in symbols disappearing from .dynsym, but has
+    # no effect on .symtab (though it is removed by the "-s" linker option)
+    env.Append(CCFLAGS=['-fvisibility=hidden'])
+    env.Append(LINKFLAGS=['-s'])
 
 # if the system is 64 bit and Matlab is 32 bit, compile for 32 bit; since
 # Matlab currently only runs on x86 architectures, checking for x86_64

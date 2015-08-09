@@ -12,6 +12,7 @@
 #include <sndfile.h>
 #include "utils.h"
 #include "audio_files.h"
+#include "export_macros.h"
 
 /*
  * This is a simple mex-File using libsndfile for reading in audio files
@@ -33,7 +34,7 @@ static void clear_static_vars()
     file_list = destroy_file_list(file_list);
 }
 
-void mexFunction(int nlhs, mxArray *plhs[],
+void EXPORT mexFunction(int nlhs, mxArray *plhs[],
                  int nrhs, const mxArray *prhs[])
 {
     const int   cmd_size = (nrhs > 0 ? mxGetN(prhs[0])+1 : 1); /* length of the command */

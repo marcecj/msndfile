@@ -13,6 +13,7 @@
 #include <sndfile.h>
 #include "utils.h"
 #include "read_utils.h"
+#include "export_macros.h"
 
 /*
  * This is a simple mex-File using libsndfile for reading in audio files
@@ -27,7 +28,7 @@ static void clear_memory(void)
         sf_close(sf_input_file);
 }
 
-void mexFunction(int nlhs, mxArray *plhs[],
+void EXPORT mexFunction(int nlhs, mxArray *plhs[],
                  int nrhs, const mxArray *prhs[])
 {
     /* "format" needs to be set to 0 before a file is opened for reading,
