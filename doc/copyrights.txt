@@ -26,8 +26,9 @@ and are licensed under the
 http://creativecommons.org/licenses/by-nc-sa/2.5/[Attribution-NonCommercial-ShareAlike
 2.5 Generic (CC BY-NC-SA 2.5)] license.
 
-libsndfile is maintained by Erik de Castro Lopo <erikd@mega-nerd.com> and is
-licensed under the link:http://www.gnu.org/licenses/old-licenses/lgpl-2.1[LGPLv2.1]
-(included in the source directory in the file ``LGPL-2.1'').
+https://github.com/erikd/libsndfile/[libsndfile] is maintained by Erik de
+Castro Lopo and is licensed under the
+link:http://www.gnu.org/licenses/old-licenses/lgpl-2.1[LGPLv2.1] (included in
+the source directory in the file ``LGPL-2.1'').
 
 // vim:ft=asciidoc
