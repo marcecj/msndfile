@@ -1,7 +1,7 @@
 The msndfile Mex extension
 ==========================
 Marc Joliet <marcec@gmx.de>
-v1.1.6, 15th July 2015: Update for 1.1.1 release.  Minor reformulation.
+v1.1.7, 14th November 2015: Replace Erik de Castro Lopo's Email address with the libsndfile GitHub page.
 :toc2:
 :max-width: 50em
 :numbered:
