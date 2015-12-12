@@ -42,45 +42,31 @@ int lookup_val(const FMT_TABLE *const restrict array, const char *const restrict
  * the time of Matlab's wavread(), so some additional time complexity
  * probably won't hurt much.
  */
+#define TRANSPOSE_DATA(out, in, m, n, T) { \
+    for( int i=0; i<m; i++ ) \
+        for( int j=0; j<n; j++ ) \
+            ((T*)out)[i+j*m] = ((T*)in)[i*n+j]; \
+}
 void transpose_data(const void* restrict output, const void* restrict input, const int num_frames, const int num_chns, const mxClassID class_id)
 {
-    /* transpose the data
-     *
-     * To transpose correctly, we need to cast both the input and the output.
-     * Sadly I can't think of any other way to it than below without violating
-     * ANSI C.  (In C99 I could probably just define pointers that point to cast
-     * versions of input and output and use only one loop.)
-     */
     switch ( class_id ) {
         case mxINT8_CLASS:
-            for( int i=0; i<num_frames; i++ )
-                for( int j=0; j<num_chns; j++ )
-                    ((int8_t*)output)[i+j*num_frames] = ((int8_t*)input)[i*num_chns+j];
+            TRANSPOSE_DATA(output, input, num_frames, num_chns, int8_t);
             break;
         case mxUINT8_CLASS:
-            for( int i=0; i<num_frames; i++ )
-                for( int j=0; j<num_chns; j++ )
-                    ((uint8_t*)output)[i+j*num_frames] = ((uint8_t*)input)[i*num_chns+j];
+            TRANSPOSE_DATA(output, input, num_frames, num_chns, uint8_t);
             break;
         case mxINT16_CLASS:
-            for( int i=0; i<num_frames; i++ )
-                for( int j=0; j<num_chns; j++ )
-                    ((int16_t*)output)[i+j*num_frames] = ((int16_t*)input)[i*num_chns+j];
+            TRANSPOSE_DATA(output, input, num_frames, num_chns, int16_t);
             break;
         case mxINT32_CLASS:
-            for( int i=0; i<num_frames; i++ )
-                for( int j=0; j<num_chns; j++ )
-                    ((int32_t*)output)[i+j*num_frames] = ((int32_t*)input)[i*num_chns+j];
+            TRANSPOSE_DATA(output, input, num_frames, num_chns, int32_t);
             break;
         case mxSINGLE_CLASS:
-            for( int i=0; i<num_frames; i++ )
-                for( int j=0; j<num_chns; j++ )
-                    ((float*)output)[i+j*num_frames] = ((float*)input)[i*num_chns+j];
+            TRANSPOSE_DATA(output, input, num_frames, num_chns, float);
             break;
         default:
-            for( int i=0; i<num_frames; i++ )
-                for( int j=0; j<num_chns; j++ )
-                    ((double*)output)[i+j*num_frames] = ((double*)input)[i*num_chns+j];
+            TRANSPOSE_DATA(output, input, num_frames, num_chns, double);
             break;
     }
 }
