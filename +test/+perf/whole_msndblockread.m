@@ -24,7 +24,8 @@ else
                       'msndblockread (WAV, no transposition)'};
 end
 
-file_size = wavread('test_files/test.wav', 'size');
+file_info = audioinfo('test_files/test.wav');
+num_samples = file_info.TotalSamples;
 
 for aa=1:length(block_sizes)
     fprintf('\n');
@@ -36,10 +37,10 @@ for aa=1:length(block_sizes)
     for kk=1:num_run
         msndfile.blockread('open', 'test_files/test.flac');
         tic,
-        for ll=1:b:file_size(1)-b
+        for ll=1:b:num_samples-b
             msndfile.blockread('read', 'test_files/test.flac', b);
         end
-        msndfile.blockread('read', 'test_files/test.flac', [ll file_size(1)]);
+        msndfile.blockread('read', 'test_files/test.flac', [ll num_samples]);
         t_e(kk) = toc;
         msndfile.blockread('close', 'test_files/test.flac');
     end
@@ -50,10 +51,10 @@ for aa=1:length(block_sizes)
     for kk=1:num_run
         msndfile.blockread('open', 'test_files/test.wav');
         tic,
-        for ll=1:b:file_size(1)-b
+        for ll=1:b:num_samples-b
             msndfile.blockread('read', 'test_files/test.wav', b);
         end
-        msndfile.blockread('read', 'test_files/test.wav', [ll file_size(1)]);
+        msndfile.blockread('read', 'test_files/test.wav', [ll num_samples]);
         t_e(kk) = toc;
         msndfile.blockread('close', 'test_files/test.wav');
     end
@@ -64,10 +65,10 @@ for aa=1:length(block_sizes)
     for kk=1:num_run
         msndfile.blockread('open', 'test_files/test.wav');
         tic,
-        for ll=1:b:file_size(1)-b
+        for ll=1:b:num_samples-b
             msndfile.blockread('read', 'test_files/test.wav', b, false);
         end
-        msndfile.blockread('read', 'test_files/test.wav', [ll file_size(1)], false);
+        msndfile.blockread('read', 'test_files/test.wav', [ll num_samples], false);
         t_e(kk) = toc;
         msndfile.blockread('close', 'test_files/test.wav');
     end
@@ -79,10 +80,10 @@ for aa=1:length(block_sizes)
         for kk=1:num_run
             file_h = wavReaderOpen('test_files/test.wav');
             tic,
-            for ll=1:b:file_size(1)-b
+            for ll=1:b:num_samples-b
                 wavReaderReadBlock(file_h, ll, ll+b-1);
             end
-            wavReaderReadBlock(file_h, ll, file_size(1));
+            wavReaderReadBlock(file_h, ll, num_samples);
             t_e(kk) = toc;
             wavReaderClose(file_h);
         end

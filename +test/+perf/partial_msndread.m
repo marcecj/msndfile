@@ -5,7 +5,7 @@ disp(['*** Conducting msndread performance comparison (partial reads) ***']);
 
 timings_mean = zeros(length(block_sizes), 3);
 timings_std  = zeros(length(block_sizes), 3);
-timings_labels = {'msndread (FLAC)', 'msndread (WAV)', 'wavread'};
+timings_labels = {'msndread (FLAC)', 'msndread (WAV)', 'audioread'};
 
 
 for aa=1:length(block_sizes)
@@ -32,10 +32,10 @@ for aa=1:length(block_sizes)
     disp(sprintf('mean time taken by msndread (WAV):\t%.6f +- %.6f', mean(t_e), std(t_e)));
 
     for kk=1:num_run
-        tic, wavread('test_files/test.wav', b);
+        tic, audioread('test_files/test.wav', [1 b]);
         t_e(kk) = toc;
     end
     timings_mean(aa,3) = mean(t_e);
     timings_std(aa,3) = std(t_e);
-    disp(sprintf('mean time taken by wavread:\t\t%.6f +- %.6f', mean(t_e), std(t_e)));
+    disp(sprintf('mean time taken by audioread:\t\t%.6f +- %.6f', mean(t_e), std(t_e)));
 end

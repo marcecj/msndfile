@@ -1,6 +1,6 @@
 function performance(do_write_plots)
 
-[file_size, fs] = wavread('test_files/test.wav', 'size');
+file_info = audioinfo('test_files/test.wav');
 block_sizes = 2.^(8:16).';
 num_run     = 1000;
 
@@ -31,7 +31,7 @@ legend(tl);
 
 perf_h(2) = figure;
 errorbar(tm, ts, 'o');
-title(sprintf('Time taken to read an entire %.2f s audio file @%.1f kHz.', file_size(1)/fs, fs/1e3));
+title(sprintf('Time taken to read an entire %.2f s audio file @%.1f kHz.', file_info.Duration, file_info.SampleRate/1e3));
 set(gca, ...
     'XTick', [1 2 3], ...
     'XTickLabel', tl);

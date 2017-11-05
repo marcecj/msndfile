@@ -12,7 +12,7 @@ timings_std  = zeros(3, 1);
 %                   'wavread'});
 timings_labels = {'msndread (FLAC)', ...
                   'msndread (WAV)', ...
-                  'wavread'};
+                  'audioread'};
 
 fprintf('\n');
 disp(['Conducting performance comparison (' num2str(num_run) ' full reads).']);
@@ -42,9 +42,9 @@ disp(sprintf('mean time taken by msndread (WAV): \t%.6f +- %.6f', mean(t_e), std
 % disp(sprintf('mean time taken by msndread (WAV): \t%.6f +- %.6f', mean(t_e), std(t_e)));
 
 for kk=1:num_run
-    tic, wavread('test_files/test.wav');
+    tic, audioread('test_files/test.wav');
     t_e(kk) = toc;
 end
 timings_mean(3)     = mean(t_e);
 timings_std(3) = std(t_e);
-disp(sprintf('mean time taken by wavread:\t\t%.6f +- %.6f', mean(t_e), std(t_e)));
+disp(sprintf('mean time taken by audioread:\t\t%.6f +- %.6f', mean(t_e), std(t_e)));
