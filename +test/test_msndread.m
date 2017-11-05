@@ -1,24 +1,25 @@
 function test_suite = test_msndread()
-initTestSuite;
 
-function ref_data = setup()
+test_suite = functiontests(localfunctions);
+
+function test_case = setup(test_case)
 
 % the reference: the entire file imported by wavread
-ref_data.in_wav = wavread('test_files/test.wav');
+test_case.TestData.in_wav = wavread('test_files/test.wav');
 
-ref_data.file_info.samplerate   = 44100;
-ref_data.file_info.channels     = 2;
-ref_data.file_info.format       = 'RAW';
-ref_data.file_info.sampleformat = 'PCM_16';
+test_case.TestData.file_info.samplerate   = 44100;
+test_case.TestData.file_info.channels     = 2;
+test_case.TestData.file_info.format       = 'RAW';
+test_case.TestData.file_info.sampleformat = 'PCM_16';
 
-ref_data.file_size = wavread('test_files/test.wav', 'size');
+test_case.TestData.file_size = wavread('test_files/test.wav', 'size');
 
 function test_no_args(~)
 % verify that msndread raises an error when called without input arguments
 
 assertExceptionThrown(@msndfile.read, 'msndfile:argerror');
 
-function test_wav_filename(ref_data)
+function test_wav_filename(test_case)
 % verify that file names without a suffix will have ".wav" appended and that an
 % appropriate errors are thrown
 
@@ -30,13 +31,13 @@ warning('off', 'msndfile:read:ambiguousname');
 msndfile.read('test_files/test'); % should default to test.wav file
 warning('on', 'msndfile:read:ambiguousname');
 msndfile.read('test_files/only_wav/test');
-msndfile.read('test_files/only_raw/test', [], [], ref_data.file_info);
+msndfile.read('test_files/only_raw/test', [], [], test_case.TestData.file_info);
 
 % ambiguous file names should throw exceptions
 assertExceptionThrown(@() msndfile.read('test_files/no_wav/test'), ...
                       'msndfile:read:ambiguousname');
 
-function test_wav_multibyte_filename(ref_data)
+function test_wav_multibyte_filename(test_case)
 % test multi-byte file name support
 
 % UTF-8 encoded file name 'test_files/bläßgans'
@@ -49,13 +50,13 @@ msndfile.read(fname);
 warning('on', 'msndfile:read:ambiguousname');
 msndfile.read([fname '.wav']);
 
-function test_wav_read(ref_data)
+function test_wav_read(test_case)
 % verify that data is read correctly
 
 test_wav  = msndfile.read('test_files/test.wav');
-assertEqual(test_wav, ref_data.in_wav);
+assertEqual(test_wav, test_case.TestData.in_wav);
 
-function test_wav_read_blockwise(ref_data)
+function test_wav_read_blockwise(test_case)
 % test block-wise reading
 
 num_samples  = 16384;
@@ -63,24 +64,24 @@ num_samples  = 16384;
 in_blockwise     = zeros(num_samples, 2);
 in_raw_blockwise = zeros(num_samples, 2);
 in_blockwise(1:1024, :)     = msndfile.read('test_files/test.wav', 1024);
-in_raw_blockwise(1:1024, :) = msndfile.read('test_files/test.raw', 1024, [], ref_data.file_info);
+in_raw_blockwise(1:1024, :) = msndfile.read('test_files/test.raw', 1024, [], test_case.TestData.file_info);
 for kk = 1025:1024:num_samples
     in_blockwise(kk:kk+1023, :)     = msndfile.read('test_files/test.wav', [kk kk+1023]);
-    in_raw_blockwise(kk:kk+1023, :) = msndfile.read('test_files/test.raw', [kk kk+1023], [], ref_data.file_info);
+    in_raw_blockwise(kk:kk+1023, :) = msndfile.read('test_files/test.raw', [kk kk+1023], [], test_case.TestData.file_info);
 end
 
-assertEqual(in_blockwise, ref_data.in_wav(1:num_samples,:));
-assertEqual(in_raw_blockwise, ref_data.in_wav(1:num_samples,:));
+assertEqual(in_blockwise, test_case.TestData.in_wav(1:num_samples,:));
+assertEqual(in_raw_blockwise, test_case.TestData.in_wav(1:num_samples,:));
 
-function test_wav_read_ranges(ref_data)
+function test_wav_read_ranges(test_case)
 % test reading ranges
 
 % test if invalid ranges throw an error
-msndfile.read('test_files/test.wav', [1 ref_data.file_size(1)]);
-assertExceptionThrown(@() msndfile.read('test_files/test.wav', [0 ref_data.file_size(1)]), 'msndfile:argerror');
-assertExceptionThrown(@() msndfile.read('test_files/test.wav', [-1 ref_data.file_size(1)]), 'msndfile:argerror');
-assertExceptionThrown(@() msndfile.read('test_files/test.wav', [1 ref_data.file_size(1)+1]), 'msndfile:argerror');
-msndfile.read('test_files/test.wav', ref_data.file_size(1));
+msndfile.read('test_files/test.wav', [1 test_case.TestData.file_size(1)]);
+assertExceptionThrown(@() msndfile.read('test_files/test.wav', [0 test_case.TestData.file_size(1)]), 'msndfile:argerror');
+assertExceptionThrown(@() msndfile.read('test_files/test.wav', [-1 test_case.TestData.file_size(1)]), 'msndfile:argerror');
+assertExceptionThrown(@() msndfile.read('test_files/test.wav', [1 test_case.TestData.file_size(1)+1]), 'msndfile:argerror');
+msndfile.read('test_files/test.wav', test_case.TestData.file_size(1));
 
 % negative read range yields an error
 if verLessThan('matlab', '7.1')
@@ -93,18 +94,18 @@ end
 warning('off', 'msndfile:sndfile');
 assertTrue(isempty(msndfile.read('test_files/test.wav', 0)));
 warning('on', 'msndfile:sndfile');
-assertExceptionThrown(@() msndfile.read('test_files/test.wav', ref_data.file_size(1)+1), 'msndfile:argerror');
+assertExceptionThrown(@() msndfile.read('test_files/test.wav', test_case.TestData.file_size(1)+1), 'msndfile:argerror');
 
-function test_wav_input_size(ref_data)
+function test_wav_input_size(test_case)
 % test 'size' input argument
 
 file_size = msndfile.read('test_files/test.wav', 'size');
-assertEqual(ref_data.file_size, file_size);
+assertEqual(test_case.TestData.file_size, file_size);
 
-file_size = msndfile.read('test_files/test.raw', 'size', [], ref_data.file_info);
-assertEqual(ref_data.file_size, file_size);
+file_size = msndfile.read('test_files/test.raw', 'size', [], test_case.TestData.file_info);
+assertEqual(test_case.TestData.file_size, file_size);
 
-function test_wav_input_fmt(ref_data)
+function test_wav_input_fmt(test_case)
 % test fmt input argument; doesn't make sense with FLAC
 
 in_test = msndfile.read('test_files/test.wav', 'double');
@@ -117,13 +118,13 @@ in_wav  = wavread('test_files/test.wav', 'native');
 
 assertEqual(in_test, in_wav);
 
-in_test = msndfile.read('test_files/test.raw', [], 'native', ref_data.file_info);
+in_test = msndfile.read('test_files/test.raw', [], 'native', test_case.TestData.file_info);
 
 assertEqual(in_test, in_wav);
 
 assertExceptionThrown(@() msndfile.read('test_files/test.wav', 'bla'), 'msndfile:argerror');
 
-function test_wav_output_fs(ref_data)
+function test_wav_output_fs(test_case)
 % test 'fs' return value
 
 [~, fs_ref] = wavread('test_files/test.wav', 'size');
@@ -131,10 +132,10 @@ function test_wav_output_fs(ref_data)
 [~, fs] = msndfile.read('test_files/test.wav', 'size');
 assertEqual(fs_ref, fs);
 
-[~, fs] = msndfile.read('test_files/test.raw', 'size', [], ref_data.file_info);
+[~, fs] = msndfile.read('test_files/test.raw', 'size', [], test_case.TestData.file_info);
 assertEqual(fs_ref, fs);
 
-function test_wav_output_bits(ref_data)
+function test_wav_output_bits(test_case)
 % test 'nbits' return value
 
 [~, ~, nbits_ref] = wavread('test_files/test.wav', 'size');
@@ -142,7 +143,7 @@ function test_wav_output_bits(ref_data)
 [~, ~, nbits] = msndfile.read('test_files/test.wav', 'size');
 assertEqual(nbits_ref, nbits);
 
-[~, ~, nbits] = msndfile.read('test_files/test.raw', 'size', [], ref_data.file_info);
+[~, ~, nbits] = msndfile.read('test_files/test.raw', 'size', [], test_case.TestData.file_info);
 assertEqual(nbits_ref, nbits);
 
 function test_wav_output_opts(~)
@@ -238,7 +239,7 @@ for k=1:length(info_fields)
     assertEqual(opts_ref.info.(info_fields{k}), opts.info.(info_fields{k}));
 end
 
-function test_flac_filename(ref_data)
+function test_flac_filename(test_case)
 % verify that file names without a suffix will have ".wav" appended and that an
 % appropriate errors are thrown - FLAC only
 
@@ -248,7 +249,7 @@ msndfile.read('test_files/only_flac/test');
 assertExceptionThrown(@() msndfile.read('test_files/no_wav/test'), ...
                       'msndfile:read:ambiguousname');
 
-function test_flac_multibyte_filename(ref_data)
+function test_flac_multibyte_filename(test_case)
 % test multi-byte file name support - FLAC only
 
 % UTF-8 encoded file name 'test_files/bläßgans'
@@ -257,13 +258,13 @@ fname = ['test_files/' native2unicode(utf8_bytes, 'UTF-8') 'gans'];
 
 msndfile.read([fname '.flac']);
 
-function test_flac_read(ref_data)
+function test_flac_read(test_case)
 % verify that data is read correctly - FLAC only
 
 test_flac = msndfile.read('test_files/test.flac');
-assertEqual(test_flac, ref_data.in_wav);
+assertEqual(test_flac, test_case.TestData.in_wav);
 
-function test_flac_read_blockwise(ref_data)
+function test_flac_read_blockwise(test_case)
 % test block-wise reading - FLAC only
 
 num_samples  = 16384;
@@ -275,17 +276,17 @@ for kk = 1025:1024:num_samples
     in_blockwise(kk:kk+1023, :) = msndfile.read('test_files/test.flac', [kk kk+1023]);
 end
 
-assertEqual(in_blockwise, ref_data.in_wav(1:num_samples,:));
+assertEqual(in_blockwise, test_case.TestData.in_wav(1:num_samples,:));
 
-function test_flac_read_ranges(ref_data)
+function test_flac_read_ranges(test_case)
 % test reading ranges - FLAC only
 
 % test if invalid ranges throw an error
-msndfile.read('test_files/test.flac', [1 ref_data.file_size(1)]);
-assertExceptionThrown(@() msndfile.read('test_files/test.flac', [0 ref_data.file_size(1)]), 'msndfile:argerror');
-assertExceptionThrown(@() msndfile.read('test_files/test.flac', [-1 ref_data.file_size(1)]), 'msndfile:argerror');
-assertExceptionThrown(@() msndfile.read('test_files/test.flac', [1 ref_data.file_size(1)+1]), 'msndfile:argerror');
-msndfile.read('test_files/test.flac', ref_data.file_size(1));
+msndfile.read('test_files/test.flac', [1 test_case.TestData.file_size(1)]);
+assertExceptionThrown(@() msndfile.read('test_files/test.flac', [0 test_case.TestData.file_size(1)]), 'msndfile:argerror');
+assertExceptionThrown(@() msndfile.read('test_files/test.flac', [-1 test_case.TestData.file_size(1)]), 'msndfile:argerror');
+assertExceptionThrown(@() msndfile.read('test_files/test.flac', [1 test_case.TestData.file_size(1)+1]), 'msndfile:argerror');
+msndfile.read('test_files/test.flac', test_case.TestData.file_size(1));
 
 % negative read range yields an error
 if verLessThan('matlab', '7.1')
@@ -298,15 +299,15 @@ end
 warning('off', 'msndfile:sndfile');
 assertTrue(isempty(msndfile.read('test_files/test.flac', 0)));
 warning('on', 'msndfile:sndfile');
-assertExceptionThrown(@() msndfile.read('test_files/test.flac', ref_data.file_size(1)+1), 'msndfile:argerror');
+assertExceptionThrown(@() msndfile.read('test_files/test.flac', test_case.TestData.file_size(1)+1), 'msndfile:argerror');
 
-function test_flac_input_size(ref_data)
+function test_flac_input_size(test_case)
 % test 'size' input argument - FLAC only
 
 file_size = msndfile.read('test_files/test.flac', 'size');
-assertEqual(ref_data.file_size, file_size);
+assertEqual(test_case.TestData.file_size, file_size);
 
-function test_flac_output_fs(ref_data)
+function test_flac_output_fs(test_case)
 % test 'fs' return value - FLAC only
 
 [~, fs_ref] = wavread('test_files/test.wav', 'size');
@@ -314,7 +315,7 @@ function test_flac_output_fs(ref_data)
 [~, fs] = msndfile.read('test_files/test.flac', 'size');
 assertEqual(fs_ref, fs);
 
-function test_flac_output_bits(ref_data)
+function test_flac_output_bits(test_case)
 % test 'nbits' return value - FLAC only
 
 [~, ~, nbits_ref] = wavread('test_files/test.wav', 'size');
@@ -358,9 +359,9 @@ file_info.sampleformat = 'PCM_16';
 file_info.endianness   = 'FILE';
 [in_sig, fs] = msndfile.read('test_files/test.raw', [], [], file_info);
 
-function test_raw_read(ref_data)
+function test_raw_read(test_case)
 % test the RAW file import
 
-[in_raw, fs] = msndfile.read('test_files/test.raw', [], [], ref_data.file_info);
+[in_raw, fs] = msndfile.read('test_files/test.raw', [], [], test_case.TestData.file_info);
 
-assertEqual(ref_data.in_wav, in_raw);
+assertEqual(test_case.TestData.in_wav, in_raw);

@@ -7,7 +7,7 @@ do_perf_tests = false;
 
 disp('Test file used in all tests: test.wav (also as RAW and FLAC)')
 
-runtests('test', '-verbose');
+runtests('test');
 
 %
 %% Test 4: performance comparisons
