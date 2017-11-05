@@ -100,16 +100,20 @@ msndfile.blockread('open', 'test_files/test.wav');
 % reading backwards from the start should fail
 if verLessThan('matlab', '7.1')
     assertExceptionThrown(@() msndfile.blockread('read', 'test_files/test.wav', -1), 'MATLAB:p32bitsize');
-else
+elseif verLessThan('matlab', '9.0')
     assertExceptionThrown(@() msndfile.blockread('read', 'test_files/test.wav', -1), 'MATLAB:nomem');
+else
+    assertExceptionThrown(@() msndfile.blockread('read', 'test_files/test.wav', -1), 'MATLAB:array:SizeLimitExceeded');
 end
 
 % reading backwards from the end should also fail
 msndfile.blockread('seek', 'test_files/test.wav', test_case.TestData.file_size(1));
 if verLessThan('matlab', '7.1')
     assertExceptionThrown(@() msndfile.blockread('read', 'test_files/test.wav', -1), 'MATLAB:p32bitsize');
-else
+elseif verLessThan('matlab', '9.0')
     assertExceptionThrown(@() msndfile.blockread('read', 'test_files/test.wav', -1), 'MATLAB:nomem');
+else
+    assertExceptionThrown(@() msndfile.blockread('read', 'test_files/test.wav', -1), 'MATLAB:array:SizeLimitExceeded');
 end
 
 function test_wav_read_zero_samples(test_case)
@@ -389,16 +393,20 @@ msndfile.blockread('open', 'test_files/test.flac');
 % reading backwards from the start should fail
 if verLessThan('matlab', '7.1')
     assertExceptionThrown(@() msndfile.blockread('read', 'test_files/test.flac', -1), 'MATLAB:p32bitsize');
-else
+elseif verLessThan('matlab', '9.0')
     assertExceptionThrown(@() msndfile.blockread('read', 'test_files/test.flac', -1), 'MATLAB:nomem');
+else
+    assertExceptionThrown(@() msndfile.blockread('read', 'test_files/test.flac', -1), 'MATLAB:array:SizeLimitExceeded');
 end
 
 % reading backwards from the end should also fail
 msndfile.blockread('seek', 'test_files/test.flac', test_case.TestData.file_size(1));
 if verLessThan('matlab', '7.1')
     assertExceptionThrown(@() msndfile.blockread('read', 'test_files/test.flac', -1), 'MATLAB:p32bitsize');
-else
+elseif verLessThan('matlab', '9.0')
     assertExceptionThrown(@() msndfile.blockread('read', 'test_files/test.flac', -1), 'MATLAB:nomem');
+else
+    assertExceptionThrown(@() msndfile.blockread('read', 'test_files/test.flac', -1), 'MATLAB:array:SizeLimitExceeded');
 end
 
 function test_flac_read_zero_samples(test_case)

@@ -86,8 +86,10 @@ msndfile.read('test_files/test.wav', test_case.TestData.file_size(1));
 % negative read range yields an error
 if verLessThan('matlab', '7.1')
     assertExceptionThrown(@() msndfile.read('test_files/test.wav', -1), 'MATLAB:p32bitsize');
-else
+elseif verLessThan('matlab', '9.0')
     assertExceptionThrown(@() msndfile.read('test_files/test.wav', -1), 'MATLAB:nomem');
+else
+    assertExceptionThrown(@() msndfile.read('test_files/test.wav', -1), 'MATLAB:array:SizeLimitExceeded');
 end
 
 % reading zero samples should yield an empty matrix
@@ -291,8 +293,10 @@ msndfile.read('test_files/test.flac', test_case.TestData.file_size(1));
 % negative read range yields an error
 if verLessThan('matlab', '7.1')
     assertExceptionThrown(@() msndfile.read('test_files/test.flac', -1), 'MATLAB:p32bitsize');
-else
+elseif verLessThan('matlab', '9.0')
     assertExceptionThrown(@() msndfile.read('test_files/test.flac', -1), 'MATLAB:nomem');
+else
+    assertExceptionThrown(@() msndfile.read('test_files/test.flac', -1), 'MATLAB:array:SizeLimitExceeded');
 end
 
 % reading zero samples should yield an empty matrix
