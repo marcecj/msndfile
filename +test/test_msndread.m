@@ -4,15 +4,16 @@ test_suite = functiontests(localfunctions);
 
 function test_case = setup(test_case)
 
-% the reference: the entire file imported by wavread
-test_case.TestData.in_wav = wavread('test_files/test.wav');
+% the reference: the entire file imported by audioread
+test_case.TestData.in_wav = audioread('test_files/test.wav');
 
 test_case.TestData.file_info.samplerate   = 44100;
 test_case.TestData.file_info.channels     = 2;
 test_case.TestData.file_info.format       = 'RAW';
 test_case.TestData.file_info.sampleformat = 'PCM_16';
 
-test_case.TestData.file_size = wavread('test_files/test.wav', 'size');
+file_info = audioinfo('test_files/test.wav');
+test_case.TestData.file_size = [file_info.TotalSamples file_info.NumChannels];
 
 function test_no_args(~)
 % verify that msndread raises an error when called without input arguments
@@ -111,12 +112,12 @@ function test_wav_input_fmt(test_case)
 % test fmt input argument; doesn't make sense with FLAC
 
 in_test = msndfile.read('test_files/test.wav', 'double');
-in_wav  = wavread('test_files/test.wav', 'double');
+in_wav  = audioread('test_files/test.wav', 'double');
 
 assertEqual(in_test, in_wav);
 
 in_test = msndfile.read('test_files/test.wav', 'native');
-in_wav  = wavread('test_files/test.wav', 'native');
+in_wav  = audioread('test_files/test.wav', 'native');
 
 assertEqual(in_test, in_wav);
 

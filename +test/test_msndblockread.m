@@ -4,15 +4,16 @@ test_suite = functiontests(localfunctions);
 
 function test_case = setup(test_case)
 
-% the reference: the entire file imported by wavread
-test_case.TestData.in_wav = wavread('test_files/test.wav');
+% the reference: the entire file imported by audioread
+test_case.TestData.in_wav = audioread('test_files/test.wav');
 
 test_case.TestData.file_info.samplerate   = 44100;
 test_case.TestData.file_info.channels     = 2;
 test_case.TestData.file_info.format       = 'RAW';
 test_case.TestData.file_info.sampleformat = 'PCM_16';
 
-test_case.TestData.file_size    = wavread('test_files/test.wav', 'size');
+file_info = audioinfo('test_files/test.wav');
+test_case.TestData.file_size    = [file_info.TotalSamples file_info.NumChannels];
 test_case.TestData.block_size   = 1024;
 
 function teardown(~)
@@ -242,7 +243,7 @@ assertExceptionThrown(@() msndfile.blockread('seek', 'test_files/test.wav', file
 msndfile.blockread('seek', 'test_files/test.wav', 1);
 msndfile.blockread('seek', 'test_files/test.wav', file_len);
 
-% Read 100 random samples and compare with wavread() to verify that "seek"
+% Read 100 random samples and compare with audioread() to verify that "seek"
 % actually seeks to the correct position.
 for k=1:100
     pos = randi([0 file_len], 1);
@@ -250,7 +251,7 @@ for k=1:100
     msndfile.blockread('seek', 'test_files/test.wav', pos);
 
     data1 = msndfile.blockread('read', 'test_files/test.wav', 1);
-    data2 = wavread('test_files/test.wav', [pos pos]);
+    data2 = audioread('test_files/test.wav', [pos pos]);
 
     assertEqual(data1, data2);
 end
@@ -292,7 +293,7 @@ file_len = test_case.TestData.file_size(1);
 
 msndfile.blockread('open', 'test_files/test.raw', test_case.TestData.file_info);
 
-% Read 100 random samples and compare with wavread() to verify that "seek"
+% Read 100 random samples and compare with audioread() to verify that "seek"
 % actually seeks to the correct position.
 for k=1:100
     pos = randi([0 file_len], 1);
@@ -300,7 +301,7 @@ for k=1:100
     msndfile.blockread('seek', 'test_files/test.raw', pos);
 
     data1 = msndfile.blockread('read', 'test_files/test.raw', 1);
-    data2 = wavread('test_files/test.wav', [pos pos]);
+    data2 = audioread('test_files/test.wav', [pos pos]);
 
     assertEqual(data1, data2);
 end
