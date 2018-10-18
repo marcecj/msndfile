@@ -1,7 +1,7 @@
 The msndfile Mex extension
 ==========================
 Marc Joliet <marcec@gmx.de>
-v1.1.7, 14th November 2015: Replace Erik de Castro Lopo's Email address with the libsndfile GitHub page.
+v1.1.8, 18th October 2018: Remove references to the old SF.net project page.
 :toc2:
 :max-width: 50em
 :numbered:
@@ -9,7 +9,6 @@ v1.1.7, 14th November 2015: Replace Erik de Castro Lopo's Email address with the
 :source-highlighter: pygments
 :keywords:      matlab, mex, libsndfile, audio
 :website:       https://marcecj.github.io/msndfile/
-:projectpage:   http://sourceforge.net/projects/msndfile/[project page]
 :githubpage:    http://github.com/marcecj/msndfile/[github page]
 :asciidoc:      http://www.methods.co.nz/asciidoc/[AsciiDoc]
 :libsndfile:    http://www.mega-nerd.com/libsndfile[libsndfile]
@@ -23,9 +22,6 @@ reading and writing audio files.
 
 This project lives at github.com.  Got to the {githubpage} for access to the
 git repository, bug tracker, downloads, etc..
-
-The old SF.net {projectpage} is considered obsolete and will be removed in the
-future.
 
 include::intro.txt[]
 

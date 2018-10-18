@@ -16,6 +16,7 @@ Document revision history
 | 1.1.5   | 2015.07.15 | Remove the obsolete reference to the sf.net git repository.
 | 1.1.6   | 2015.07.15 | Update for 1.1.1 release.  Minor reformulation.
 | 1.1.7   | 2015.11.14 | Replace Erik de Castro Lopo's Email address with the libsndfile GitHub page.
+| 1.1.8   | 2018.10.18 | Remove references to the old SF.net project page.
 |========================================
 
 // vim:ft=asciidoc
