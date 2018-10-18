@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
 <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
-<meta name="generator" content="AsciiDoc 8.6.9">
+<meta name="generator" content="AsciiDoc 8.6.10">
 <meta name="keywords" content="matlab, mex, libsndfile, audio">
 <title>The msndfile Mex extension</title>
 <style type="text/css">
@@ -832,9 +832,9 @@ asciidoc.install(2);
 <h1>The msndfile Mex extension</h1>
 <span id="author">Marc Joliet</span><br>
 <span id="email" class="monospaced">&lt;<a href="mailto:marcec@gmx.de">marcec@gmx.de</a>&gt;</span><br>
-<span id="revnumber">version 1.1.7,</span>
-<span id="revdate">14th November 2015</span>
-<br><span id="revremark">Replace Erik de Castro Lopo&#8217;s Email address with the libsndfile GitHub page.</span>
+<span id="revnumber">version 1.1.8,</span>
+<span id="revdate">18th October 2018</span>
+<br><span id="revremark">Remove references to the old SF.net project page.</span>
 <div id="toc">
   <div id="toctitle">Table of Contents</div>
   <noscript><p><b>JavaScript must be enabled in your browser to display the table of contents.</b></p></noscript>
@@ -847,8 +847,6 @@ asciidoc.install(2);
 reading and writing audio files.</p></div>
 <div class="paragraph"><p>This project lives at github.com.  Got to the <a href="http://github.com/marcecj/msndfile/">github page</a> for access to the
 git repository, bug tracker, downloads, etc..</p></div>
-<div class="paragraph"><p>The old SF.net <a href="http://sourceforge.net/projects/msndfile/">project page</a> is considered obsolete and will be removed in the
-future.</p></div>
 </div>
 </div>
 <div class="sect1">
@@ -1312,7 +1310,7 @@ First <span class="monospaced">wavread</span>:</p></div>
 <div class="title">Example 1. Output of <span class="monospaced">wavread(..., 'size')</span></div>
 <div class="content">
 <div class="listingblock">
-<div class="content"><div class="highlight"><pre><span class="n">EDU</span><span class="o">&gt;&gt;</span> <span class="p">[</span><span class="n">dim</span><span class="p">,</span> <span class="n">fs</span><span class="p">,</span> <span class="n">nbits</span><span class="p">,</span> <span class="n">opts</span><span class="p">]</span> <span class="p">=</span> <span class="n">wavread</span><span class="p">(</span><span class="s">&#39;test_files/test.wav&#39;</span><span class="p">,</span> <span class="s">&#39;size&#39;</span><span class="p">);</span>
+<div class="content"><div class="highlight"><pre><span></span><span class="n">EDU</span><span class="o">&gt;&gt;</span> <span class="p">[</span><span class="n">dim</span><span class="p">,</span> <span class="n">fs</span><span class="p">,</span> <span class="n">nbits</span><span class="p">,</span> <span class="n">opts</span><span class="p">]</span> <span class="p">=</span> <span class="n">wavread</span><span class="p">(</span><span class="s">&#39;test_files/test.wav&#39;</span><span class="p">,</span> <span class="s">&#39;size&#39;</span><span class="p">);</span>
 <span class="n">EDU</span><span class="o">&gt;&gt;</span> <span class="n">dim</span>
 <span class="n">dim</span> <span class="p">=</span>
       <span class="mi">418853</span>           <span class="mi">2</span>
@@ -1346,7 +1344,7 @@ First <span class="monospaced">wavread</span>:</p></div>
 <div class="title">Example 2. Output of <span class="monospaced">msndfile.read(..., 'size')</span>&#8201;&#8212;&#8201;WAV file</div>
 <div class="content">
 <div class="listingblock">
-<div class="content"><div class="highlight"><pre><span class="n">EDU</span><span class="o">&gt;&gt;</span> <span class="p">[</span><span class="n">dim</span><span class="p">,</span> <span class="n">fs</span><span class="p">,</span> <span class="n">nbits</span><span class="p">,</span> <span class="n">opts</span><span class="p">]</span> <span class="p">=</span> <span class="n">msndfile</span><span class="p">.</span><span class="n">read</span><span class="p">(</span><span class="s">&#39;test_files/test.wav&#39;</span><span class="p">,</span> <span class="s">&#39;size&#39;</span><span class="p">);</span>
+<div class="content"><div class="highlight"><pre><span></span><span class="n">EDU</span><span class="o">&gt;&gt;</span> <span class="p">[</span><span class="n">dim</span><span class="p">,</span> <span class="n">fs</span><span class="p">,</span> <span class="n">nbits</span><span class="p">,</span> <span class="n">opts</span><span class="p">]</span> <span class="p">=</span> <span class="n">msndfile</span><span class="p">.</span><span class="n">read</span><span class="p">(</span><span class="s">&#39;test_files/test.wav&#39;</span><span class="p">,</span> <span class="s">&#39;size&#39;</span><span class="p">);</span>
 <span class="n">EDU</span><span class="o">&gt;&gt;</span> <span class="n">dim</span>
 <span class="n">dim</span> <span class="p">=</span>
       <span class="mi">418853</span>           <span class="mi">2</span>
@@ -1380,7 +1378,7 @@ First <span class="monospaced">wavread</span>:</p></div>
 <div class="title">Example 3. Output of <span class="monospaced">msndfile.read(..., 'size')</span>&#8201;&#8212;&#8201;FLAC file</div>
 <div class="content">
 <div class="listingblock">
-<div class="content"><div class="highlight"><pre><span class="n">EDU</span><span class="o">&gt;&gt;</span> <span class="p">[</span><span class="n">dim</span><span class="p">,</span> <span class="n">fs</span><span class="p">,</span> <span class="n">nbits</span><span class="p">,</span> <span class="n">opts</span><span class="p">]</span> <span class="p">=</span> <span class="n">msndfile</span><span class="p">.</span><span class="n">read</span><span class="p">(</span><span class="s">&#39;test_files/test.flac&#39;</span><span class="p">,</span> <span class="s">&#39;size&#39;</span><span class="p">);</span>
+<div class="content"><div class="highlight"><pre><span></span><span class="n">EDU</span><span class="o">&gt;&gt;</span> <span class="p">[</span><span class="n">dim</span><span class="p">,</span> <span class="n">fs</span><span class="p">,</span> <span class="n">nbits</span><span class="p">,</span> <span class="n">opts</span><span class="p">]</span> <span class="p">=</span> <span class="n">msndfile</span><span class="p">.</span><span class="n">read</span><span class="p">(</span><span class="s">&#39;test_files/test.flac&#39;</span><span class="p">,</span> <span class="s">&#39;size&#39;</span><span class="p">);</span>
 <span class="n">EDU</span><span class="o">&gt;&gt;</span> <span class="n">dim</span>
 <span class="n">dim</span> <span class="p">=</span>
       <span class="mi">418853</span>           <span class="mi">2</span>
@@ -1429,7 +1427,7 @@ First <span class="monospaced">wavread</span>:</p></div>
 <div class="title">Example 4. Reading the first and last ten samples&#8201;&#8212;&#8201;<span class="monospaced">wavread()</span></div>
 <div class="content">
 <div class="listingblock">
-<div class="content"><div class="highlight"><pre><span class="n">EDU</span><span class="o">&gt;&gt;</span> <span class="n">wavread</span><span class="p">(</span><span class="s">&#39;test_files/test.wav&#39;</span><span class="p">,</span> <span class="mi">10</span><span class="p">)</span>
+<div class="content"><div class="highlight"><pre><span></span><span class="n">EDU</span><span class="o">&gt;&gt;</span> <span class="n">wavread</span><span class="p">(</span><span class="s">&#39;test_files/test.wav&#39;</span><span class="p">,</span> <span class="mi">10</span><span class="p">)</span>
 <span class="nb">ans</span> <span class="p">=</span>
    <span class="mf">1.0e-03</span> <span class="o">*</span>
    <span class="o">-</span><span class="mf">0.0305</span>         <span class="mi">0</span>
@@ -1475,7 +1473,7 @@ First <span class="monospaced">wavread</span>:</p></div>
 <div class="title">Example 5. Reading the first and last ten samples&#8201;&#8212;&#8201;<span class="monospaced">msndfile.read()</span></div>
 <div class="content">
 <div class="listingblock">
-<div class="content"><div class="highlight"><pre><span class="n">EDU</span><span class="o">&gt;&gt;</span> <span class="n">msndfile</span><span class="p">.</span><span class="n">read</span><span class="p">(</span><span class="s">&#39;test_files/test.wav&#39;</span><span class="p">,</span> <span class="mi">10</span><span class="p">)</span>
+<div class="content"><div class="highlight"><pre><span></span><span class="n">EDU</span><span class="o">&gt;&gt;</span> <span class="n">msndfile</span><span class="p">.</span><span class="n">read</span><span class="p">(</span><span class="s">&#39;test_files/test.wav&#39;</span><span class="p">,</span> <span class="mi">10</span><span class="p">)</span>
 <span class="nb">ans</span> <span class="p">=</span>
    <span class="mf">1.0e-03</span> <span class="o">*</span>
    <span class="o">-</span><span class="mf">0.0305</span>         <span class="mi">0</span>
@@ -1522,7 +1520,7 @@ option:</p></div>
 <div class="title">Example 6. Reading the first and last ten samples with the <span class="monospaced">native</span> option</div>
 <div class="content">
 <div class="listingblock">
-<div class="content"><div class="highlight"><pre><span class="n">EDU</span><span class="o">&gt;&gt;</span> <span class="n">wavread</span><span class="p">(</span><span class="s">&#39;test_files/test.wav&#39;</span><span class="p">,</span> <span class="p">[</span><span class="mi">1</span> <span class="mi">10</span><span class="p">],</span> <span class="s">&#39;native&#39;</span><span class="p">)</span>
+<div class="content"><div class="highlight"><pre><span></span><span class="n">EDU</span><span class="o">&gt;&gt;</span> <span class="n">wavread</span><span class="p">(</span><span class="s">&#39;test_files/test.wav&#39;</span><span class="p">,</span> <span class="p">[</span><span class="mi">1</span> <span class="mi">10</span><span class="p">],</span> <span class="s">&#39;native&#39;</span><span class="p">)</span>
 <span class="nb">ans</span> <span class="p">=</span>
      <span class="o">-</span><span class="mi">1</span>      <span class="mi">0</span>
       <span class="mi">0</span>      <span class="mi">0</span>
@@ -1554,7 +1552,7 @@ output using a FLAC file:</p></div>
 <div class="title">Example 7. Using <span class="monospaced">msndfile.read(..., 'native')</span> with a FLAC file</div>
 <div class="content">
 <div class="listingblock">
-<div class="content"><div class="highlight"><pre><span class="n">EDU</span><span class="o">&gt;&gt;</span> <span class="n">msndfile</span><span class="p">.</span><span class="n">read</span><span class="p">(</span><span class="s">&#39;test_files/test.flac&#39;</span><span class="p">,</span> <span class="mi">10</span><span class="p">,</span> <span class="s">&#39;native&#39;</span><span class="p">)</span>
+<div class="content"><div class="highlight"><pre><span></span><span class="n">EDU</span><span class="o">&gt;&gt;</span> <span class="n">msndfile</span><span class="p">.</span><span class="n">read</span><span class="p">(</span><span class="s">&#39;test_files/test.flac&#39;</span><span class="p">,</span> <span class="mi">10</span><span class="p">,</span> <span class="s">&#39;native&#39;</span><span class="p">)</span>
 <span class="nb">ans</span> <span class="p">=</span>
   <span class="o">-</span><span class="mi">8056</span> <span class="o">-</span><span class="mi">25196</span>
    <span class="mi">9239</span>   <span class="mi">5111</span>
@@ -1577,7 +1575,7 @@ example showing how to set up the necessary <span class="monospaced">struct</spa
 <span class="monospaced">channels</span> and <span class="monospaced">sampleformat</span>.  If either of these is not set, <span class="monospaced">msndfile.read</span>
 will output an error.</p></div>
 <div class="listingblock">
-<div class="content"><div class="highlight"><pre><span class="n">EDU</span><span class="o">&gt;&gt;</span> <span class="n">file_info</span><span class="p">.</span><span class="n">samplerate</span> <span class="p">=</span> <span class="mi">44100</span><span class="p">;</span>
+<div class="content"><div class="highlight"><pre><span></span><span class="n">EDU</span><span class="o">&gt;&gt;</span> <span class="n">file_info</span><span class="p">.</span><span class="n">samplerate</span> <span class="p">=</span> <span class="mi">44100</span><span class="p">;</span>
 <span class="n">EDU</span><span class="o">&gt;&gt;</span> <span class="n">file_info</span><span class="p">.</span><span class="n">channels</span> <span class="p">=</span> <span class="mi">2</span><span class="p">;</span>
 <span class="n">EDU</span><span class="o">&gt;&gt;</span> <span class="n">msndfile</span><span class="p">.</span><span class="n">read</span><span class="p">(</span><span class="s">&#39;test_files/test.raw&#39;</span><span class="p">,</span> <span class="mi">10</span><span class="p">,</span> <span class="p">[],</span> <span class="n">file_info</span><span class="p">)</span>
 ??? <span class="n">Error</span> <span class="n">using</span> <span class="o">==&gt;</span> <span class="n">read</span>
@@ -1585,7 +1583,7 @@ will output an error.</p></div>
 </pre></div></div></div>
 <div class="paragraph"><p>Now with all required fields set:</p></div>
 <div class="listingblock">
-<div class="content"><div class="highlight"><pre><span class="n">EDU</span><span class="o">&gt;&gt;</span> <span class="n">file_info</span><span class="p">.</span><span class="n">sampleformat</span> <span class="p">=</span> <span class="s">&#39;PCM_16&#39;</span><span class="p">;</span>
+<div class="content"><div class="highlight"><pre><span></span><span class="n">EDU</span><span class="o">&gt;&gt;</span> <span class="n">file_info</span><span class="p">.</span><span class="n">sampleformat</span> <span class="p">=</span> <span class="s">&#39;PCM_16&#39;</span><span class="p">;</span>
 <span class="n">EDU</span><span class="o">&gt;&gt;</span> <span class="n">msndfile</span><span class="p">.</span><span class="n">read</span><span class="p">(</span><span class="s">&#39;test_files/test.raw&#39;</span><span class="p">,</span> <span class="mi">10</span><span class="p">,</span> <span class="p">[],</span> <span class="n">file_info</span><span class="p">)</span>
 <span class="nb">ans</span> <span class="p">=</span>
    <span class="mf">1.0e-03</span> <span class="o">*</span>
@@ -1602,7 +1600,7 @@ will output an error.</p></div>
 </pre></div></div></div>
 <div class="paragraph"><p>Of course <span class="monospaced">'native'</span> works here, too:</p></div>
 <div class="listingblock">
-<div class="content"><div class="highlight"><pre><span class="n">EDU</span><span class="o">&gt;&gt;</span> <span class="n">msndfile</span><span class="p">.</span><span class="n">read</span><span class="p">(</span><span class="s">&#39;test_files/test.raw&#39;</span><span class="p">,</span> <span class="mi">10</span><span class="p">,</span> <span class="s">&#39;native&#39;</span><span class="p">,</span> <span class="n">file_info</span><span class="p">)</span>
+<div class="content"><div class="highlight"><pre><span></span><span class="n">EDU</span><span class="o">&gt;&gt;</span> <span class="n">msndfile</span><span class="p">.</span><span class="n">read</span><span class="p">(</span><span class="s">&#39;test_files/test.raw&#39;</span><span class="p">,</span> <span class="mi">10</span><span class="p">,</span> <span class="s">&#39;native&#39;</span><span class="p">,</span> <span class="n">file_info</span><span class="p">)</span>
 <span class="nb">ans</span> <span class="p">=</span>
      <span class="o">-</span><span class="mi">1</span>      <span class="mi">0</span>
       <span class="mi">0</span>      <span class="mi">0</span>
@@ -1625,7 +1623,7 @@ will output an error.</p></div>
 <div class="title">Example 9. Basic usage of <span class="monospaced">msndfile.blockread</span>&#8201;&#8212;&#8201;<span class="monospaced">open</span> and <span class="monospaced">read</span> commands</div>
 <div class="content">
 <div class="listingblock">
-<div class="content"><div class="highlight"><pre><span class="n">EDU</span><span class="o">&gt;&gt;</span> <span class="n">msndfile</span><span class="p">.</span><span class="n">blockread</span><span class="p">(</span><span class="s">&#39;open&#39;</span><span class="p">,</span> <span class="s">&#39;test_files/test.wav&#39;</span><span class="p">);</span>
+<div class="content"><div class="highlight"><pre><span></span><span class="n">EDU</span><span class="o">&gt;&gt;</span> <span class="n">msndfile</span><span class="p">.</span><span class="n">blockread</span><span class="p">(</span><span class="s">&#39;open&#39;</span><span class="p">,</span> <span class="s">&#39;test_files/test.wav&#39;</span><span class="p">);</span>
 <span class="n">EDU</span><span class="o">&gt;&gt;</span> <span class="n">msndfile</span><span class="p">.</span><span class="n">blockread</span><span class="p">(</span><span class="s">&#39;read&#39;</span><span class="p">,</span> <span class="s">&#39;test_files/test.wav&#39;</span><span class="p">,</span> <span class="mi">10</span><span class="p">)</span>
 <span class="nb">ans</span> <span class="p">=</span>
    <span class="mf">1.0e-03</span> <span class="o">*</span>
@@ -1659,7 +1657,7 @@ will output an error.</p></div>
 <div class="title">Example 10. Basic usage of <span class="monospaced">msndfile.blockread</span>&#8201;&#8212;&#8201;<span class="monospaced">seek</span> and <span class="monospaced">tell</span> commands</div>
 <div class="content">
 <div class="listingblock">
-<div class="content"><div class="highlight"><pre><span class="n">EDU</span><span class="o">&gt;&gt;</span> <span class="n">msndfile</span><span class="p">.</span><span class="n">blockread</span><span class="p">(</span><span class="s">&#39;seek&#39;</span><span class="p">,</span> <span class="s">&#39;test_files/test.wav&#39;</span><span class="p">,</span> <span class="mi">1</span><span class="p">)</span>
+<div class="content"><div class="highlight"><pre><span></span><span class="n">EDU</span><span class="o">&gt;&gt;</span> <span class="n">msndfile</span><span class="p">.</span><span class="n">blockread</span><span class="p">(</span><span class="s">&#39;seek&#39;</span><span class="p">,</span> <span class="s">&#39;test_files/test.wav&#39;</span><span class="p">,</span> <span class="mi">1</span><span class="p">)</span>
 <span class="n">EDU</span><span class="o">&gt;&gt;</span> <span class="n">msndfile</span><span class="p">.</span><span class="n">blockread</span><span class="p">(</span><span class="s">&#39;tell&#39;</span><span class="p">,</span> <span class="s">&#39;test_files/test.wav&#39;</span><span class="p">)</span>
 <span class="nb">ans</span> <span class="p">=</span>
      <span class="mi">1</span>
@@ -1698,7 +1696,7 @@ the next read would occur if you do not pass the start position.</p></div>
 <div class="title">Example 11. Basic usage of <span class="monospaced">msndfile.blockread</span>&#8201;&#8212;&#8201;<span class="monospaced">close</span> command</div>
 <div class="content">
 <div class="listingblock">
-<div class="content"><div class="highlight"><pre><span class="n">EDU</span><span class="o">&gt;&gt;</span> <span class="n">msndfile</span><span class="p">.</span><span class="n">blockread</span><span class="p">(</span><span class="s">&#39;close&#39;</span><span class="p">,</span> <span class="s">&#39;test_files/test.wav&#39;</span><span class="p">)</span>
+<div class="content"><div class="highlight"><pre><span></span><span class="n">EDU</span><span class="o">&gt;&gt;</span> <span class="n">msndfile</span><span class="p">.</span><span class="n">blockread</span><span class="p">(</span><span class="s">&#39;close&#39;</span><span class="p">,</span> <span class="s">&#39;test_files/test.wav&#39;</span><span class="p">)</span>
 <span class="n">EDU</span><span class="o">&gt;&gt;</span> <span class="n">msndfile</span><span class="p">.</span><span class="n">blockread</span><span class="p">(</span><span class="s">&#39;close&#39;</span><span class="p">,</span> <span class="s">&#39;test_files/test.wav&#39;</span><span class="p">)</span>
 ??? <span class="n">Error</span> <span class="n">using</span> <span class="o">==&gt;</span> <span class="n">blockread</span>
 <span class="n">File</span> <span class="n">not</span> <span class="n">open</span><span class="p">.</span>
@@ -1713,7 +1711,7 @@ performance boost, you can turn that off by passing a fourth argument to
 <div class="title">Example 12. Not transposing the output</div>
 <div class="content">
 <div class="listingblock">
-<div class="content"><div class="highlight"><pre><span class="n">EDU</span><span class="o">&gt;&gt;</span> <span class="n">msndfile</span><span class="p">.</span><span class="n">blockread</span><span class="p">(</span><span class="s">&#39;read&#39;</span><span class="p">,</span> <span class="s">&#39;test_files/test.wav&#39;</span><span class="p">,</span> <span class="mi">10</span><span class="p">,</span> <span class="n">false</span><span class="p">)</span>
+<div class="content"><div class="highlight"><pre><span></span><span class="n">EDU</span><span class="o">&gt;&gt;</span> <span class="n">msndfile</span><span class="p">.</span><span class="n">blockread</span><span class="p">(</span><span class="s">&#39;read&#39;</span><span class="p">,</span> <span class="s">&#39;test_files/test.wav&#39;</span><span class="p">,</span> <span class="mi">10</span><span class="p">,</span> <span class="n">false</span><span class="p">)</span>
 <span class="nb">ans</span> <span class="p">=</span>
    <span class="mf">1.0e-03</span> <span class="o">*</span>
   <span class="n">Columns</span> <span class="mi">1</span> <span class="n">through</span> <span class="mi">9</span>
@@ -2060,6 +2058,11 @@ margin-left:auto; margin-right:auto;
 <td class="tableblock halign-left valign-top" ><p class="tableblock">2015.11.14</p></td>
 <td class="tableblock halign-left valign-top" ><p class="tableblock">Replace Erik de Castro Lopo&#8217;s Email address with the libsndfile GitHub page.</p></td>
 </tr>
+<tr>
+<td class="tableblock halign-left valign-top" ><p class="tableblock">1.1.8</p></td>
+<td class="tableblock halign-left valign-top" ><p class="tableblock">2018.10.18</p></td>
+<td class="tableblock halign-left valign-top" ><p class="tableblock">Remove references to the old SF.net project page.</p></td>
+</tr>
 </tbody>
 </table>
 </div>
@@ -2068,8 +2071,9 @@ margin-left:auto; margin-right:auto;
 <div id="footnotes"><hr></div>
 <div id="footer">
 <div id="footer-text">
-Version 1.1.7<br>
-Last updated 2015-11-14 10:39:40 CET
+Version 1.1.8<br>
+Last updated
+ 2018-10-18 19:19:00 CEST
 </div>
 </div>
 </body>
