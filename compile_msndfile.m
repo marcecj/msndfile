@@ -20,7 +20,6 @@ function compile_msndfile(varargin)
 %
 
 p = inputParser();
-p.addParamValue('HaveStdintH' , true        , @islogical);
 p.addParamValue('Debug'       , false       , @islogical);
 p.addParamValue('Destdir'     , '.'         , @(x) ischar(x) && isdir(x));
 p.addParamValue('PkgDir'      , '+msndfile' , @ischar);
